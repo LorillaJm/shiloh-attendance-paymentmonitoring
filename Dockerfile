@@ -37,17 +37,19 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Copy composer files first for better caching
-COPY composer.json composer.lock ./
-
-# Install Composer dependencies (production only)
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts
+# Set composer to allow plugins
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
 # Copy application files
 COPY . /var/www/html
 
-# Run post-autoload scripts
-RUN composer dump-autoload --optimize
+# Install Composer dependencies (production only)
+RUN composer install \
+    --no-dev \
+    --optimize-autoloader \
+    --no-interaction \
+    --prefer-dist \
+    --verbose
 
 # Copy Docker configuration files
 COPY docker/nginx.conf /etc/nginx/nginx.conf
