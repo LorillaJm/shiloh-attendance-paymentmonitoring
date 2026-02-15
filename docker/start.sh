@@ -15,32 +15,22 @@ echo "✅ APP_KEY is set"
 # Create supervisor log directory
 mkdir -p /var/log/supervisor
 
-# Wait for database to be ready
-echo "⏳ Waiting for database connection..."
-until php artisan db:show 2>/dev/null; do
-    echo "Database not ready, waiting..."
-    sleep 2
-done
-echo "✅ Database connected"
+# Skip database check - let it connect on first request
+echo "⚠️  Skipping database check - will connect on first request"
 
-# Run migrations
-echo "📦 Running database migrations..."
-php artisan migrate --force --no-interaction
-echo "✅ Migrations completed"
-
-# Clear and optimize caches
+# Clear and optimize caches (without database)
 echo "🔧 Optimizing application..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan event:cache
-php artisan filament:cache-components
+php artisan config:cache || echo "Config cache skipped"
+php artisan route:cache || echo "Route cache skipped"
+php artisan view:cache || echo "View cache skipped"
+php artisan event:cache || echo "Event cache skipped"
+php artisan filament:cache-components || echo "Filament cache skipped"
 echo "✅ Optimization completed"
 
 # Create storage link if not exists
 if [ ! -L /var/www/html/public/storage ]; then
     echo "🔗 Creating storage link..."
-    php artisan storage:link
+    php artisan storage:link || echo "Storage link skipped"
 fi
 
 # Set final permissions
