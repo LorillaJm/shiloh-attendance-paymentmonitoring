@@ -1,0 +1,50 @@
+================================================================================
+SHILOH ATTENDANCE SYSTEM - QUICK START
+================================================================================
+
+STEP 1: Run Setup
+-----------------
+Double-click: setup.bat
+
+(This will install dependencies, setup database, and create admin user)
+Wait 5-10 minutes for it to complete.
+
+
+STEP 2: Start Server
+--------------------
+Open PowerShell in this folder and run:
+  php artisan serve
+
+
+STEP 3: Access Application
+--------------------------
+Open browser and go to:
+  http://localhost:8000/admin
+
+Login with:
+  Email: admin@shiloh.local
+  Password: Admin123!
+
+
+================================================================================
+THAT'S IT! You're ready to use the system.
+================================================================================
+
+TROUBLESHOOTING:
+- If "php is not recognized": Close and reopen PowerShell
+- If setup fails: Read INSTALLATION_GUIDE.md for manual steps
+- If database error: Check .env file has correct Supabase credentials
+
+WHAT YOU CAN DO NOW:
+- View admin dashboard
+- Create/edit/delete users
+- Assign ADMIN or USER roles
+- Test different user permissions
+
+NEXT PHASES:
+- Phase 1: Student/Staff management
+- Phase 2: Attendance tracking  
+- Phase 3: Payment monitoring
+- Phase 4: Reports
+
+================================================================================

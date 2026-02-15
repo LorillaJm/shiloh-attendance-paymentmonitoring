@@ -1,0 +1,86 @@
+================================================================================
+ADMIN LOGIN - QUICK START
+================================================================================
+
+ADMIN CREDENTIALS
+-----------------
+Email:    admin@shiloh.local
+Password: password
+
+LOGIN URL
+---------
+http://localhost/admin/login
+
+OR if using php artisan serve:
+http://localhost:8000/admin/login
+
+FIRST TIME SETUP
+----------------
+1. Start your development server:
+   php artisan serve
+
+2. Open browser and go to:
+   http://localhost:8000/admin/login
+
+3. Login with credentials above
+
+4. IMPORTANT: Change your password after first login!
+
+RECREATE ADMIN USER
+-------------------
+If you need to recreate the admin user:
+
+php artisan db:seed --class=AdminUserSeeder
+
+This will create/update:
+- Email: admin@shiloh.local
+- Password: password
+
+FORGOT PASSWORD?
+----------------
+Reset password using tinker:
+
+php artisan tinker
+
+Then run:
+$user = App\Models\User::where('email', 'admin@shiloh.local')->first();
+$user->password = Hash::make('new-password');
+$user->save();
+exit
+
+TROUBLESHOOTING
+---------------
+1. Can't access /admin/login?
+   - Make sure server is running: php artisan serve
+   - Check URL is correct
+   - Clear cache: php artisan config:clear
+
+2. Invalid credentials?
+   - Check email is exactly: admin@shiloh.local
+   - Password is: password (lowercase)
+   - Recreate user: php artisan db:seed --class=AdminUserSeeder
+
+3. Database error?
+   - Check .env database settings
+   - Run migrations: php artisan migrate
+   - Check database is running
+
+AFTER LOGIN
+-----------
+You'll have access to:
+- Dashboard
+- Enrollments (create, view, edit)
+- Students management
+- Packages management
+- Payment Schedules (mark as paid)
+- Due Payments monitoring
+- Overdue Payments tracking
+- Collections Summary
+
+SECURITY WARNING
+----------------
+⚠️  The default password is "password" - this is NOT secure!
+⚠️  Change it immediately after first login!
+⚠️  Never use default credentials in production!
+
+================================================================================
