@@ -18,13 +18,20 @@ mkdir -p /var/log/supervisor
 # Skip database check - let it connect on first request
 echo "⚠️  Skipping database check - will connect on first request"
 
-# Clear and optimize caches (without database)
+# Clear and optimize caches (without view:cache which causes issues)
 echo "🔧 Optimizing application..."
+php artisan config:clear || echo "Config clear skipped"
+php artisan route:clear || echo "Route clear skipped"
+php artisan view:clear || echo "View clear skipped"
+php artisan cache:clear || echo "Cache clear skipped"
+
+# Cache config and routes only (skip view:cache)
 php artisan config:cache || echo "Config cache skipped"
 php artisan route:cache || echo "Route cache skipped"
-php artisan view:cache || echo "View cache skipped"
-php artisan event:cache || echo "Event cache skipped"
+
+# Cache Filament components
 php artisan filament:cache-components || echo "Filament cache skipped"
+
 echo "✅ Optimization completed"
 
 # Create storage link if not exists
