@@ -17,7 +17,8 @@ RUN apk add --no-cache \
     oniguruma-dev \
     curl \
     git \
-    bash
+    bash \
+    unzip
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -29,13 +30,24 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     zip \
     mbstring \
     opcache \
-    bcmath
+    bcmath \
+    exif \
+    pcntl
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Copy composer files first for better caching
+COPY composer.json composer.lock ./
+
+# Install Composer dependencies (production only)
+RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts
+
 # Copy application files
 COPY . /var/www/html
+
+# Run post-autoload scripts
+RUN composer dump-autoload --optimize
 
 # Copy Docker configuration files
 COPY docker/nginx.conf /etc/nginx/nginx.conf
@@ -45,9 +57,6 @@ COPY docker/start.sh /usr/local/bin/start.sh
 
 # Set permissions
 RUN chmod +x /usr/local/bin/start.sh
-
-# Install Composer dependencies (production only)
-RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html \
