@@ -1,5 +1,5 @@
-# Use PHP 8.2 with FPM
-FROM php:8.2-fpm-alpine
+# Use PHP 8.3 with FPM (updated from 8.2)
+FROM php:8.3-fpm-alpine
 
 # Set working directory
 WORKDIR /var/www/html
@@ -18,10 +18,13 @@ RUN apk add --no-cache \
     curl \
     git \
     bash \
-    unzip
+    unzip \
+    icu-dev \
+    icu-data-full
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-configure intl \
     && docker-php-ext-install -j$(nproc) \
     pdo \
     pdo_pgsql \
@@ -32,7 +35,8 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     opcache \
     bcmath \
     exif \
-    pcntl
+    pcntl \
+    intl
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
