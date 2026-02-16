@@ -11,6 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Trust proxies for HTTPS detection (Render, AWS, etc.)
+        $middleware->trustProxies(
+            at: config('trustedproxy.proxies'),
+            headers: config('trustedproxy.headers')
+        );
+        
         // Add security headers to all responses
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
         
