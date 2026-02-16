@@ -1,0 +1,99 @@
+========================================
+RENDER ENVIRONMENT VARIABLES
+Copy these to Render Dashboard → Environment
+========================================
+
+CRITICAL VARIABLES (Set these first):
+-------------------------------------
+APP_URL=https://shiloh-attendance-paymentmonitoring.onrender.com
+ASSET_URL=https://shiloh-attendance-paymentmonitoring.onrender.com
+TRUSTED_PROXIES=*
+SESSION_SECURE_COOKIE=true
+CACHE_DRIVER=file
+SESSION_DRIVER=file
+LOG_CHANNEL=stderr
+LOG_LEVEL=debug
+
+FULL VARIABLE LIST:
+-------------------
+APP_NAME=Shiloh Attendance System
+APP_ENV=production
+APP_KEY=[Generate with: php artisan key:generate --show]
+APP_DEBUG=true
+APP_URL=https://shiloh-attendance-paymentmonitoring.onrender.com
+APP_TIMEZONE=UTC
+
+TRUSTED_PROXIES=*
+ASSET_URL=https://shiloh-attendance-paymentmonitoring.onrender.com
+
+DB_CONNECTION=pgsql
+DB_HOST=aws-1-ap-southeast-1.pooler.supabase.com
+DB_PORT=6543
+DB_DATABASE=postgres
+DB_USERNAME=postgres.lggzjlevfmqlqhqoinwh
+DB_PASSWORD=116161Shiloh2026
+DB_SSLMODE=require
+
+CACHE_DRIVER=file
+CACHE_STORE=file
+CACHE_PREFIX=shiloh_cache
+
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_SECURE_COOKIE=true
+SESSION_HTTP_ONLY=true
+SESSION_SAME_SITE=lax
+
+QUEUE_CONNECTION=sync
+
+LOG_CHANNEL=stderr
+LOG_LEVEL=debug
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+
+MAIL_MAILER=log
+MAIL_FROM_ADDRESS=noreply@shiloh.local
+MAIL_FROM_NAME=Shiloh Attendance System
+
+MAX_EXECUTION_TIME=60
+MEMORY_LIMIT=256M
+
+ATTENDANCE_ENCODER_LIMIT=100
+EXPORT_WARNING_THRESHOLD=1000
+EXPORT_MAX_RECORDS=5000
+
+FILAMENT_FILESYSTEM_DISK=local
+
+LIVEWIRE_ASSET_URL=
+LIVEWIRE_APP_URL=
+
+========================================
+HOW TO ADD IN RENDER:
+========================================
+1. Go to Render Dashboard
+2. Click your web service
+3. Click "Environment" tab
+4. Click "Add Environment Variable"
+5. Copy each line above (format: KEY=VALUE)
+6. Paste Key in "Key" field
+7. Paste Value in "Value" field
+8. Click "Save Changes"
+9. Render will auto-redeploy
+
+========================================
+VERIFY AFTER DEPLOY:
+========================================
+1. Visit: https://shiloh-attendance-paymentmonitoring.onrender.com/check-env.php
+2. Check all URLs show "https://"
+3. Test login at /admin/login
+4. Check browser console for errors
+5. Check Render logs if issues persist
+
+========================================
+MOST IMPORTANT:
+========================================
+- APP_URL must be HTTPS
+- TRUSTED_PROXIES must be *
+- SESSION_SECURE_COOKIE must be true
+- CACHE_DRIVER and SESSION_DRIVER must be file

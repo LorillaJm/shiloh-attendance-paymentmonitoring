@@ -1,0 +1,77 @@
+===========================================
+RENDER ENVIRONMENT VARIABLES - COPY THESE
+===========================================
+
+IMPORTANT: Replace "your-app.onrender.com" with your actual Render URL!
+
+# Application - CRITICAL
+APP_NAME=Shiloh Attendance System
+APP_ENV=production
+APP_KEY=[Generate with: php artisan key:generate --show]
+APP_DEBUG=true
+APP_URL=https://your-app.onrender.com
+APP_TIMEZONE=UTC
+
+# Proxy Configuration - CRITICAL for HTTPS
+TRUSTED_PROXIES=*
+ASSET_URL=https://your-app.onrender.com
+
+# Database - Supabase PostgreSQL
+DB_CONNECTION=pgsql
+DB_HOST=aws-1-ap-southeast-1.pooler.supabase.com
+DB_PORT=6543
+DB_DATABASE=postgres
+DB_USERNAME=postgres.lggzjlevfmqlqhqoinwh
+DB_PASSWORD=116161Shiloh2026
+DB_SSLMODE=require
+
+# Cache & Session
+CACHE_STORE=file
+CACHE_DRIVER=file
+CACHE_PREFIX=shiloh_cache
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_SECURE_COOKIE=true
+
+# Queue
+QUEUE_CONNECTION=sync
+
+# Logging - CRITICAL for debugging
+LOG_CHANNEL=stderr
+LOG_LEVEL=debug
+LOG_STACK=single
+LOG_DEPRECATIONS_CHANNEL=null
+
+# Mail
+MAIL_MAILER=log
+MAIL_FROM_ADDRESS=noreply@shiloh.local
+MAIL_FROM_NAME=Shiloh Attendance System
+
+# Performance
+MAX_EXECUTION_TIME=60
+MEMORY_LIMIT=256M
+
+# Attendance
+ATTENDANCE_ENCODER_LIMIT=100
+EXPORT_WARNING_THRESHOLD=1000
+EXPORT_MAX_RECORDS=5000
+
+# Filament
+FILAMENT_FILESYSTEM_DISK=local
+
+# Livewire - Leave empty to use APP_URL
+LIVEWIRE_ASSET_URL=
+LIVEWIRE_APP_URL=
+
+===========================================
+MOST CRITICAL VARIABLES (set these first):
+===========================================
+
+APP_URL=https://your-app.onrender.com
+TRUSTED_PROXIES=*
+ASSET_URL=https://your-app.onrender.com
+APP_DEBUG=true
+LOG_CHANNEL=stderr
+LOG_LEVEL=debug
+SESSION_SECURE_COOKIE=true
