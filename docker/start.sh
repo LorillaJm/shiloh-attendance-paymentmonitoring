@@ -18,19 +18,16 @@ mkdir -p /var/log/supervisor
 # Skip database check - let it connect on first request
 echo "⚠️  Skipping database check - will connect on first request"
 
-# Clear and optimize caches (without view:cache which causes issues)
-echo "🔧 Optimizing application..."
+# Clear all caches
+echo "🔧 Clearing caches..."
 php artisan config:clear || echo "Config clear skipped"
 php artisan route:clear || echo "Route clear skipped"
 php artisan view:clear || echo "View clear skipped"
 php artisan cache:clear || echo "Cache clear skipped"
 
-# Cache config and routes only (skip view:cache)
+# Only cache config (skip route and view cache to avoid Heroicon issues)
+echo "🔧 Caching config only..."
 php artisan config:cache || echo "Config cache skipped"
-php artisan route:cache || echo "Route cache skipped"
-
-# Cache Filament components
-php artisan filament:cache-components || echo "Filament cache skipped"
 
 echo "✅ Optimization completed"
 
