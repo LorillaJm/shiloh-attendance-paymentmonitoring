@@ -15,10 +15,19 @@ echo "✅ APP_KEY is set"
 # Create supervisor log directory
 mkdir -p /var/log/supervisor
 
-# Set permissions FIRST before any artisan commands
-echo "🔒 Setting initial permissions..."
+# Create directories and set permissions FIRST before any artisan commands
+echo "🔒 Creating directories and setting permissions..."
+mkdir -p /var/www/html/storage/framework/cache/data
+mkdir -p /var/www/html/storage/framework/sessions
+mkdir -p /var/www/html/storage/framework/views
+mkdir -p /var/www/html/storage/logs
+mkdir -p /var/www/html/bootstrap/cache
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
+echo "📋 Verifying directory structure..."
+ls -la /var/www/html/storage/
+ls -la /var/www/html/bootstrap/cache/
 
 # Skip database check - let it connect on first request
 echo "⚠️  Skipping database check - will connect on first request"
