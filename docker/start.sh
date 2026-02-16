@@ -15,6 +15,11 @@ echo "✅ APP_KEY is set"
 # Create supervisor log directory
 mkdir -p /var/log/supervisor
 
+# Set permissions FIRST before any artisan commands
+echo "🔒 Setting initial permissions..."
+chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Skip database check - let it connect on first request
 echo "⚠️  Skipping database check - will connect on first request"
 
@@ -36,11 +41,6 @@ if [ ! -L /var/www/html/public/storage ]; then
     echo "🔗 Creating storage link..."
     php artisan storage:link || echo "Storage link skipped"
 fi
-
-# Set final permissions
-echo "🔒 Setting permissions..."
-chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
 echo "✅ Application ready!"
 echo "🌐 Starting web server..."
