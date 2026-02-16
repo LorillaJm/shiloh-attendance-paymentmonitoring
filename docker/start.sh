@@ -32,6 +32,15 @@ ls -la /var/www/html/bootstrap/cache/
 # Skip database check - let it connect on first request
 echo "⚠️  Skipping database check - will connect on first request"
 
+# Publish Livewire and Filament assets
+echo "📦 Publishing Livewire and Filament assets..."
+php artisan vendor:publish --tag=livewire:assets --force || echo "Livewire assets publish skipped"
+php artisan vendor:publish --tag=filament-assets --force || echo "Filament assets publish skipped"
+
+# Verify assets were published
+echo "📋 Verifying published assets..."
+ls -la /var/www/html/public/vendor/ || echo "No vendor assets directory yet"
+
 # Clear all caches
 echo "🔧 Clearing caches..."
 php artisan config:clear || echo "Config clear skipped"
