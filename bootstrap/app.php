@@ -12,15 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         // Trust proxies for HTTPS detection (Render, AWS, etc.)
-        // Use '*' to trust all proxies or specify IPs
-        $middleware->trustProxies(
-            at: env('TRUSTED_PROXIES', '*'),
-            headers: \Illuminate\Http\Request::HEADER_X_FORWARDED_FOR |
-                     \Illuminate\Http\Request::HEADER_X_FORWARDED_HOST |
-                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PORT |
-                     \Illuminate\Http\Request::HEADER_X_FORWARDED_PROTO |
-                     \Illuminate\Http\Request::HEADER_X_FORWARDED_AWS_ELB
-        );
+        $middleware->use([
+            \App\Http\Middleware\TrustProxies::class,
+        ]);
         
         // Add security headers to all responses
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
