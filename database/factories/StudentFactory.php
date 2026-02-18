@@ -11,11 +11,13 @@ class StudentFactory extends Factory
 
     public function definition(): array
     {
+        $birthdate = fake()->dateTimeBetween('-15 years', '-3 years');
+
         return [
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
             'middle_name' => fake()->optional(0.7)->lastName(),
-            'birthdate' => fake()->dateTimeBetween('-18 years', '-5 years'),
+            'birthdate' => $birthdate,
             'sex' => fake()->randomElement(['Male', 'Female']),
             'address' => fake()->address(),
             'guardian_name' => fake()->name(),

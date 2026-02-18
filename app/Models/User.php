@@ -55,8 +55,13 @@ class User extends Authenticatable implements FilamentUser
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        // Both ADMIN and USER can access the panel
-        return true;
+        // Parents have limited access - only to their portal pages
+        if ($this->isParent()) {
+            return true;
+        }
+
+        // All other roles can access panel
+        return in_array($this->role?->value, ['ADMIN', 'TEACHER', 'USER']);
     }
 
     /**
@@ -81,5 +86,45 @@ class User extends Authenticatable implements FilamentUser
     public function attendanceRecords()
     {
         return $this->hasMany(AttendanceRecord::class, 'encoded_by_user_id');
+    }
+
+    /**
+     * Get guardian profile if user is a parent.
+     */
+    public function guardian()
+    {
+        return $this->hasOne(Guardian::class);
+    }
+
+    /**
+     * Get assigned schedules if user is a teacher.
+     */
+    public function assignedSchedules()
+    {
+        return $this->hasMany(StudentSchedule::class, 'teacher_id');
+    }
+
+    /**
+     * Get assigned session occurrences if user is a teacher.
+     */
+    public function assignedSessions()
+    {
+        return $this->hasMany(SessionOccurrence::class, 'teacher_id');
+    }
+
+    /**
+     * Check if user is a teacher.
+     */
+    public function isTeacher(): bool
+    {
+        return $this->role === UserRole::TEACHER || $this->role?->value === 'TEACHER';
+    }
+
+    /**
+     * Check if user is a parent.
+     */
+    public function isParent(): bool
+    {
+        return $this->role === UserRole::PARENT || $this->role?->value === 'PARENT';
     }
 }

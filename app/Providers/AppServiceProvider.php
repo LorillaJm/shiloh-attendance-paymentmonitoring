@@ -31,5 +31,8 @@ class AppServiceProvider extends ServiceProvider
         Gate::before(function (User $user, string $ability) {
             return $user->isAdmin() ? true : null;
         });
+
+        // Register observers
+        \App\Models\Student::observe(\App\Observers\StudentObserver::class);
     }
 }

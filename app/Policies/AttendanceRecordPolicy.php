@@ -12,7 +12,7 @@ class AttendanceRecordPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true; // Both ADMIN and USER can view
+        return $user->isAdmin() || $user->isTeacher() || $user->isUser();
     }
 
     /**
@@ -20,7 +20,16 @@ class AttendanceRecordPolicy
      */
     public function view(User $user, AttendanceRecord $attendanceRecord): bool
     {
-        return true; // Both ADMIN and USER can view
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        // Teachers can view attendance for their assigned students
+        if ($user->isTeacher() && $attendanceRecord->sessionOccurrence) {
+            return $attendanceRecord->sessionOccurrence->teacher_id === $user->id;
+        }
+
+        return true;
     }
 
     /**
@@ -28,7 +37,7 @@ class AttendanceRecordPolicy
      */
     public function create(User $user): bool
     {
-        return true; // Both ADMIN and USER can create
+        return $user->isAdmin() || $user->isTeacher() || $user->isUser();
     }
 
     /**
@@ -44,6 +53,11 @@ class AttendanceRecordPolicy
         // Check if within edit window
         if (!$attendanceRecord->canBeEdited()) {
             return false;
+        }
+
+        // Teachers can edit attendance for their sessions
+        if ($user->isTeacher() && $attendanceRecord->sessionOccurrence) {
+            return $attendanceRecord->sessionOccurrence->teacher_id === $user->id;
         }
 
         // User can edit their own records
@@ -90,7 +104,7 @@ class AttendanceRecordPolicy
      */
     public function batchEncode(User $user): bool
     {
-        return true; // Both ADMIN and USER can batch encode
+        return $user->isAdmin() || $user->isTeacher() || $user->isUser();
     }
 
     /**

@@ -107,4 +107,46 @@ class Student extends Model
     {
         return $this->hasMany(AttendanceRecord::class);
     }
+
+    /**
+     * Get the guardians for the student.
+     */
+    public function guardians()
+    {
+        return $this->belongsToMany(Guardian::class, 'guardian_student')
+            ->withPivot('is_primary')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get the student schedules.
+     */
+    public function studentSchedules()
+    {
+        return $this->hasMany(StudentSchedule::class);
+    }
+
+    /**
+     * Get the session occurrences.
+     */
+    public function sessionOccurrences()
+    {
+        return $this->hasMany(SessionOccurrence::class);
+    }
+
+    /**
+     * Get age from birthdate.
+     */
+    public function getAgeAttribute(): ?int
+    {
+        return $this->birthdate ? $this->birthdate->age : null;
+    }
+
+    /**
+     * Check if student requires monitoring (age 10 and below).
+     */
+    public function getRequiresMonitoringAttribute(): bool
+    {
+        return $this->age !== null && $this->age <= 10;
+    }
 }

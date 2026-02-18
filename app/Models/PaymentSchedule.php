@@ -36,6 +36,29 @@ class PaymentSchedule extends Model
         return $this->belongsTo(Enrollment::class);
     }
 
+    public function transactions()
+    {
+        return $this->hasMany(PaymentTransaction::class);
+    }
+
+    /**
+     * Get total amount paid for this schedule from transactions.
+     */
+    public function getTotalPaidForScheduleAttribute(): float
+    {
+        return $this->transactions()
+            ->where('type', 'PAYMENT')
+            ->sum('amount');
+    }
+
+    /**
+     * Get remaining balance for this schedule.
+     */
+    public function getRemainingBalanceAttribute(): float
+    {
+        return max(0, $this->amount_due - $this->total_paid_for_schedule);
+    }
+
     /**
      * Scope to get overdue schedules (dynamically computed).
      */

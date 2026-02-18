@@ -75,6 +75,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 'Overview',
+                'User Management',
+                'Session Management',
                 'Enrollment Management',
                 'Payment Management',
                 'Attendance Management',

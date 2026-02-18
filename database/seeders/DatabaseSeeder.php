@@ -13,7 +13,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminSeeder::class,
-            RealisticDataSeeder::class,
+            SessionTypeSeeder::class,
+            TeacherSeeder::class,
+            ShilohStudentsSeeder::class,
+            // RealisticDataSeeder::class, // Comment out old seeder
         ]);
     }
 }

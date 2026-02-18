@@ -36,6 +36,11 @@ class AttendanceRecord extends Model
         return $this->belongsTo(User::class, 'encoded_by_user_id');
     }
 
+    public function sessionOccurrence(): BelongsTo
+    {
+        return $this->belongsTo(SessionOccurrence::class);
+    }
+
     /**
      * Check if this record can be edited (within 7 days).
      */

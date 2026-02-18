@@ -48,6 +48,15 @@ class AttendanceRecordResource extends Resource
                     ->description('Record student attendance details')
                     ->icon('heroicon-o-clipboard-document-check')
                     ->schema([
+                        Forms\Components\Select::make('session_occurrence_id')
+                            ->label('Session (Optional)')
+                            ->relationship('sessionOccurrence', 'id')
+                            ->getOptionLabelFromRecordUsing(fn ($record) => 
+                                "{$record->student->student_no} - {$record->sessionType->name} - {$record->session_date->format('M d, Y')}"
+                            )
+                            ->searchable()
+                            ->preload(),
+
                         Forms\Components\Select::make('student_id')
                             ->relationship('student', 'first_name')
                             ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->student_no} - {$record->full_name}")

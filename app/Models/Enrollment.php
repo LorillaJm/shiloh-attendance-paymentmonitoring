@@ -48,14 +48,19 @@ class Enrollment extends Model
         return $this->hasMany(PaymentSchedule::class);
     }
 
+    public function paymentTransactions(): HasMany
+    {
+        return $this->hasMany(PaymentTransaction::class);
+    }
+
     /**
-     * Get total amount paid.
+     * Get total amount paid from transactions ledger.
      */
     public function getTotalPaidAttribute(): float
     {
-        return $this->paymentSchedules()
-            ->where('status', 'PAID')
-            ->sum('amount_due');
+        return $this->paymentTransactions()
+            ->where('type', 'PAYMENT')
+            ->sum('amount');
     }
 
     /**
