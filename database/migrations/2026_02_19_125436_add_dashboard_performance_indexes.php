@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -11,26 +12,24 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('payment_schedules', function (Blueprint $table) {
-            // Critical indexes for dashboard queries
-            $table->index(['status', 'due_date'], 'idx_status_due_date');
-            $table->index(['status', 'paid_at'], 'idx_status_paid_at');
-            $table->index('enrollment_id', 'idx_enrollment_id');
-        });
-
-        Schema::table('students', function (Blueprint $table) {
-            $table->index('status', 'idx_status');
-        });
-
-        Schema::table('enrollments', function (Blueprint $table) {
-            $table->index(['status', 'remaining_balance'], 'idx_status_balance');
-            $table->index('student_id', 'idx_student_id');
-        });
-
-        Schema::table('attendance_records', function (Blueprint $table) {
-            $table->index(['attendance_date', 'status'], 'idx_date_status');
-            $table->index('student_id', 'idx_student_id');
-        });
+        // Use raw SQL to create indexes only if they don't exist
+        // This is safer for PostgreSQL
+        
+        // Payment Schedules indexes
+        DB::statement('CREATE INDEX IF NOT EXISTS idx_status_due_date ON payment_schedules (status, due_date)');
+        DB::statement('CREATE INDEX IF NOT EXISTS idx_status_paid_at ON payment_schedules (status, paid_at)');
+        DB::statement('CREATE INDEX IF NOT EXISTS idx_enrollment_id ON payment_schedules (enrollment_id)');
+        
+        // Students indexes
+        DB::statement('CREATE INDEX IF NOT EXISTS idx_status ON students (status)');
+        
+        // Enrollments indexes
+        DB::statement('CREATE INDEX IF NOT EXISTS idx_status_balance ON enrollments (status, remaining_balance)');
+        DB::statement('CREATE INDEX IF NOT EXISTS idx_student_id_enrollments ON enrollments (student_id)');
+        
+        // Attendance Records indexes
+        DB::statement('CREATE INDEX IF NOT EXISTS idx_date_status ON attendance_records (attendance_date, status)');
+        DB::statement('CREATE INDEX IF NOT EXISTS idx_student_id_attendance ON attendance_records (student_id)');
     }
 
     /**
@@ -38,24 +37,14 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('payment_schedules', function (Blueprint $table) {
-            $table->dropIndex('idx_status_due_date');
-            $table->dropIndex('idx_status_paid_at');
-            $table->dropIndex('idx_enrollment_id');
-        });
-
-        Schema::table('students', function (Blueprint $table) {
-            $table->dropIndex('idx_status');
-        });
-
-        Schema::table('enrollments', function (Blueprint $table) {
-            $table->dropIndex('idx_status_balance');
-            $table->dropIndex('idx_student_id');
-        });
-
-        Schema::table('attendance_records', function (Blueprint $table) {
-            $table->dropIndex('idx_date_status');
-            $table->dropIndex('idx_student_id');
-        });
+        // Drop indexes if they exist
+        DB::statement('DROP INDEX IF EXISTS idx_status_due_date');
+        DB::statement('DROP INDEX IF EXISTS idx_status_paid_at');
+        DB::statement('DROP INDEX IF EXISTS idx_enrollment_id');
+        DB::statement('DROP INDEX IF EXISTS idx_status');
+        DB::statement('DROP INDEX IF EXISTS idx_status_balance');
+        DB::statement('DROP INDEX IF EXISTS idx_student_id_enrollments');
+        DB::statement('DROP INDEX IF EXISTS idx_date_status');
+        DB::statement('DROP INDEX IF EXISTS idx_student_id_attendance');
     }
 };
