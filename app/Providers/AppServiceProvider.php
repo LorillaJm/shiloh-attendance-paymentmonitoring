@@ -34,5 +34,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Register observers
         \App\Models\Student::observe(\App\Observers\StudentObserver::class);
+        \App\Models\PaymentSchedule::observe(\App\Observers\PaymentScheduleObserver::class);
+        \App\Models\AttendanceRecord::observe(\App\Observers\AttendanceRecordObserver::class);
     }
 }

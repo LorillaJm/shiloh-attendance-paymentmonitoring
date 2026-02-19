@@ -14,4 +14,17 @@ class StudentObserver
             $student->requires_monitoring = $student->age <= 10;
         }
     }
+
+    public function updated(Student $student): void
+    {
+        // Clear dashboard caches if status changed
+        if ($student->wasChanged('status')) {
+            \App\Services\DashboardCacheService::clearStudentCaches();
+        }
+    }
+
+    public function deleted(Student $student): void
+    {
+        \App\Services\DashboardCacheService::clearStudentCaches();
+    }
 }
