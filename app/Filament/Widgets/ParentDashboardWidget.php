@@ -12,20 +12,38 @@ class ParentDashboardWidget extends Widget
 
     public function getStudents()
     {
-        $guardian = Auth::user()->guardian;
-        
-        if (!$guardian) {
+        try {
+            $user = Auth::user();
+            
+            // Only for parents
+            if (!$user || !$user->isParent()) {
+                return collect();
+            }
+            
+            $guardian = $user->guardian;
+            
+            if (!$guardian) {
+                return collect();
+            }
+
+            return $guardian->students()->with([
+                'enrollments' => fn($q) => $q->where('status', 'ACTIVE'),
+                'sessionOccurrences' => fn($q) => $q->where('session_date', '>=', now()->subDays(7)),
+            ])->get();
+        } catch (\Exception $e) {
+            // Log error but don't break the dashboard
+            \Log::error('ParentDashboardWidget error: ' . $e->getMessage());
             return collect();
         }
-
-        return $guardian->students()->with([
-            'enrollments' => fn($q) => $q->where('status', 'ACTIVE'),
-            'sessionOccurrences' => fn($q) => $q->where('session_date', '>=', now()->subDays(7)),
-        ])->get();
     }
 
     public static function canView(): bool
     {
-        return Auth::user()->isParent();
+        try {
+            $user = Auth::user();
+            return $user && $user->isParent();
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }
