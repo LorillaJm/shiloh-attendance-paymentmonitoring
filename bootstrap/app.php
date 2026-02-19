@@ -9,6 +9,12 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
+        then: function () {
+            // Add deployment routes (for Render free tier without shell access)
+            if (file_exists(__DIR__.'/../routes/deploy.php')) {
+                require __DIR__.'/../routes/deploy.php';
+            }
+        }
     )
     ->withMiddleware(function (Middleware $middleware) {
         // Trust proxies for HTTPS detection (Render, AWS, etc.)

@@ -35,7 +35,7 @@ class Dashboard extends BaseDashboard
         $user = auth()->user();
         
         if ($user->isAdmin()) {
-            return 'Real-time overview of students, payments, and attendance';
+            return 'Optimized real-time overview - cached for performance';
         }
         
         return 'Your personal dashboard';
@@ -46,14 +46,12 @@ class Dashboard extends BaseDashboard
         $user = auth()->user();
         
         if ($user->isAdmin()) {
+            // Use optimized widgets for production performance
             return [
-                \App\Filament\Widgets\StatsOverviewWidget::class,
-                \App\Filament\Widgets\CollectionsTrendChart::class,
-                \App\Filament\Widgets\PaymentsDueTrendChart::class,
-                \App\Filament\Widgets\DueNextTable::class,
-                \App\Filament\Widgets\OverdueTable::class,
-                \App\Filament\Widgets\RecentPaymentsTable::class,
-                \App\Filament\Widgets\AttendanceSnapshotWidget::class,
+                \App\Filament\Widgets\OptimizedStatsOverviewWidget::class,
+                \App\Filament\Widgets\OptimizedCollectionsTrendChart::class,
+                \App\Filament\Widgets\OptimizedAlertsWidget::class,
+                \App\Filament\Widgets\OptimizedRecentActivityWidget::class,
             ];
         }
         
@@ -62,6 +60,25 @@ class Dashboard extends BaseDashboard
             \App\Filament\Widgets\UserQuickActionsWidget::class,
             \App\Filament\Widgets\UserAttendanceSummaryWidget::class,
             \App\Filament\Widgets\UserRecentAttendanceWidget::class,
+        ];
+    }
+    
+    protected function getHeaderActions(): array
+    {
+        return [
+            \Filament\Actions\Action::make('refresh')
+                ->label('Refresh Data')
+                ->icon('heroicon-o-arrow-path')
+                ->color('gray')
+                ->action(function () {
+                    \App\Services\DashboardCacheService::clearAll();
+                    $this->dispatch('$refresh');
+                    \Filament\Notifications\Notification::make()
+                        ->success()
+                        ->title('Dashboard Refreshed')
+                        ->body('All data has been reloaded.')
+                        ->send();
+                }),
         ];
     }
 }
