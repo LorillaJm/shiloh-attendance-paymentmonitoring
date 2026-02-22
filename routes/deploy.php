@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,31 @@ use Illuminate\Support\Facades\Artisan;
 | SECURITY: These routes are protected and should only be used during deployment
 |
 */
+
+Route::get('/deploy/reset-connection', function () {
+    if (app()->environment('local')) {
+        return response()->json(['error' => 'Not available in local environment'], 403);
+    }
+
+    try {
+        // Disconnect and reconnect to clear failed transactions
+        DB::disconnect();
+        DB::reconnect();
+        
+        // Test the connection
+        DB::select('SELECT 1');
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Database connection reset successfully'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});
 
 Route::get('/deploy/migrate', function () {
     if (app()->environment('local')) {
@@ -88,9 +114,19 @@ Route::get('/deploy/all', function () {
     try {
         $results = [];
         
+        // First, disconnect and reconnect to clear any failed transactions
+        DB::disconnect();
+        DB::reconnect();
+        $results['connection'] = 'Database reconnected';
+        
         // Run migration
-        Artisan::call('migrate', ['--force' => true]);
-        $results['migrate'] = Artisan::output();
+        try {
+            Artisan::call('migrate', ['--force' => true]);
+            $results['migrate'] = Artisan::output();
+        } catch (\Exception $e) {
+            $results['migrate'] = 'Error: ' . $e->getMessage();
+            // Continue anyway - indexes might already exist
+        }
         
         // Clear caches
         Artisan::call('optimize:clear');
