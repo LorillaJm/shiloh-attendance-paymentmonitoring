@@ -73,9 +73,9 @@ return [
             'search_path' => 'public',
             'sslmode' => env('DB_SSLMODE', 'prefer'),
             'options' => extension_loaded('pdo_pgsql') ? array_filter([
-                // Connection timeout (30 seconds for Supabase)
-                PDO::ATTR_TIMEOUT => env('DB_TIMEOUT', 30),
-                // Persistent connections disabled for pooler compatibility
+                // Connection timeout (10 seconds - shorter for faster failure)
+                PDO::ATTR_TIMEOUT => env('DB_CONNECT_TIMEOUT', 10),
+                // Persistent connections disabled for Supabase compatibility
                 PDO::ATTR_PERSISTENT => false,
                 // Error mode
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
