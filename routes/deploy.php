@@ -47,6 +47,10 @@ Route::get('/deploy/migrate', function () {
     }
 
     try {
+        // First, disconnect and reconnect to clear any failed transactions
+        DB::disconnect();
+        DB::reconnect();
+        
         Artisan::call('migrate', ['--force' => true]);
         $output = Artisan::output();
         
@@ -58,7 +62,8 @@ Route::get('/deploy/migrate', function () {
     } catch (\Exception $e) {
         return response()->json([
             'success' => false,
-            'error' => $e->getMessage()
+            'error' => $e->getMessage(),
+            'trace' => app()->environment('production') ? 'Hidden in production' : $e->getTraceAsString()
         ], 500);
     }
 });

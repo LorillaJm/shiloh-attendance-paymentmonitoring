@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 Route::get('/diagnostic/db-config', function () {
     return response()->json([
@@ -12,6 +13,37 @@ Route::get('/diagnostic/db-config', function () {
         'sslmode' => config('database.connections.pgsql.sslmode'),
         'timeout' => config('database.connections.pgsql.options')[PDO::ATTR_TIMEOUT] ?? 'not set',
     ]);
+});
+
+Route::get('/diagnostic/db-test', function () {
+    try {
+        DB::select('SELECT 1');
+        
+        // Check if migrations table exists
+        $hasMigrations = Schema::hasTable('migrations');
+        
+        // Check if users table exists
+        $hasUsers = Schema::hasTable('users');
+        
+        // Get migration count
+        $migrationCount = $hasMigrations ? DB::table('migrations')->count() : 0;
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Database connection working',
+            'tables' => [
+                'migrations' => $hasMigrations,
+                'users' => $hasUsers,
+            ],
+            'migration_count' => $migrationCount,
+            'needs_migration' => !$hasUsers,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ], 500);
+    }
 });
 
 Route::get('/diagnostic/network-test', function () {
@@ -41,32 +73,19 @@ Route::get('/diagnostic/network-test', function () {
     }
 });
 
-Route::get('/diagnostic/supabase-alternatives', function () {
-    // Get Supabase project reference from the host
-    $host = config('database.connections.pgsql.host');
-    $projectRef = explode('.', $host)[0] ?? 'unknown';
-    
-    return response()->json([
-        'current_host' => $host,
-        'current_port' => config('database.connections.pgsql.port'),
-        'project_ref' => $projectRef,
-        'alternatives' => [
-            'direct_connection' => [
-                'host' => "db.{$projectRef}.supabase.co",
-                'port' => 5432,
-                'note' => 'Direct connection (bypasses pooler)',
-            ],
-            'ipv4_pooler' => [
-                'host' => $host,
-                'port' => 6543,
-                'note' => 'Transaction pooler (IPv4)',
-            ],
-            'session_pooler' => [
-                'host' => $host,
-                'port' => 5432,
-                'note' => 'Session pooler',
-            ],
-        ],
-        'recommendation' => 'Try using db.{project-ref}.supabase.co:5432 for direct connection',
-    ]);
+Route::get('/diagnostic/tables', function () {
+    try {
+        $tables = DB::select("SELECT tablename FROM pg_tables WHERE schemaname = 'public' ORDER BY tablename");
+        
+        return response()->json([
+            'success' => true,
+            'count' => count($tables),
+            'tables' => array_map(fn($t) => $t->tablename, $tables),
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+        ], 500);
+    }
 });
