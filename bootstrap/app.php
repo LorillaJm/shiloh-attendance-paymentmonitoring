@@ -14,6 +14,10 @@ return Application::configure(basePath: dirname(__DIR__))
             if (file_exists(__DIR__.'/../routes/deploy.php')) {
                 require __DIR__.'/../routes/deploy.php';
             }
+            // Add diagnostic routes
+            if (file_exists(__DIR__.'/../routes/diagnostic.php')) {
+                require __DIR__.'/../routes/diagnostic.php';
+            }
         }
     )
     ->withMiddleware(function (Middleware $middleware) {
