@@ -5,8 +5,13 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
 Route::get('/setup/create-admin', function () {
-    if (app()->environment('local')) {
-        return response()->json(['error' => 'Not available in local environment'], 403);
+    // Only allow in production or when APP_ENV is not local
+    if (app()->environment('local') && !request()->has('force')) {
+        return response()->json([
+            'error' => 'Not available in local environment',
+            'note' => 'Add ?force=1 to the URL if you really want to run this locally',
+            'current_env' => app()->environment(),
+        ], 403);
     }
 
     try {
@@ -51,8 +56,13 @@ Route::get('/setup/create-admin', function () {
 });
 
 Route::get('/setup/reset-admin-password', function () {
-    if (app()->environment('local')) {
-        return response()->json(['error' => 'Not available in local environment'], 403);
+    // Only allow in production or when APP_ENV is not local
+    if (app()->environment('local') && !request()->has('force')) {
+        return response()->json([
+            'error' => 'Not available in local environment',
+            'note' => 'Add ?force=1 to the URL if you really want to run this locally',
+            'current_env' => app()->environment(),
+        ], 403);
     }
 
     try {
@@ -89,8 +99,13 @@ Route::get('/setup/reset-admin-password', function () {
 });
 
 Route::get('/setup/list-users', function () {
-    if (app()->environment('local')) {
-        return response()->json(['error' => 'Not available in local environment'], 403);
+    // Only allow in production or when APP_ENV is not local
+    if (app()->environment('local') && !request()->has('force')) {
+        return response()->json([
+            'error' => 'Not available in local environment',
+            'note' => 'Add ?force=1 to the URL if you really want to run this locally',
+            'current_env' => app()->environment(),
+        ], 403);
     }
 
     try {

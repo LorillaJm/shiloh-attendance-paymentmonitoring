@@ -4,6 +4,17 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
+Route::get('/diagnostic/env', function () {
+    return response()->json([
+        'app_env' => app()->environment(),
+        'app_debug' => config('app.debug'),
+        'app_url' => config('app.url'),
+        'db_connection' => config('database.default'),
+        'cache_driver' => config('cache.default'),
+        'session_driver' => config('session.driver'),
+    ]);
+});
+
 Route::get('/diagnostic/db-config', function () {
     return response()->json([
         'host' => config('database.connections.pgsql.host'),
