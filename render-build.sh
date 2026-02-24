@@ -11,6 +11,12 @@ composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist
 
 echo "✅ Composer dependencies installed"
 
+# Install npm dependencies and build assets
+npm ci
+npm run build
+
+echo "✅ Assets built"
+
 # Run database migrations (continue even if it fails - indexes might exist)
 php artisan migrate --force --no-interaction || echo "⚠️ Migration had warnings (this is OK if indexes already exist)"
 
