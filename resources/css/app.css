@@ -1,3 +1,51 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Dashboard Stat Cards - Professional Styling */
+@layer components {
+    /* Uniform card sizing */
+    .stat-card-uniform {
+        min-height: 120px !important;
+    }
+
+    /* Currency values - prevent overflow */
+    .stat-card-currency [class*="fi-stats-overview-stat-value"] {
+        font-family: ui-monospace, 'Courier New', monospace !important;
+        font-size: clamp(1.25rem, 2vw, 1.75rem) !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* Stat card improvements */
+    [class*="fi-stats-overview-stat"] {
+        transition: all 0.2s ease-in-out !important;
+    }
+
+    [class*="fi-stats-overview-stat"]:hover {
+        transform: translateY(-2px) !important;
+    }
+
+    /* Prevent text wrapping in stat labels */
+    [class*="fi-stats-overview-stat-label"] {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    /* Stat values sizing */
+    [class*="fi-stats-overview-stat-value"] {
+        font-size: clamp(1.5rem, 3vw, 2rem) !important;
+        font-weight: 700 !important;
+        line-height: 1.2 !important;
+    }
+
+    /* Description text */
+    [class*="fi-stats-overview-stat-description"] {
+        font-size: 0.75rem !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+}

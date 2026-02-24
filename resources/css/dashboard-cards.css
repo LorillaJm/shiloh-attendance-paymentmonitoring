@@ -1,0 +1,105 @@
+/* Dashboard Stat Cards - Professional Styling */
+
+/* Uniform card sizing and spacing */
+.stat-card-uniform {
+    min-height: 120px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+}
+
+/* Currency values - prevent overflow */
+.stat-card-currency .fi-stats-overview-stat-value {
+    font-family: 'Courier New', Courier, monospace !important;
+    font-size: 1.5rem !important;
+    font-weight: 700 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+}
+
+/* Regular stat values */
+.fi-stats-overview-stat-value {
+    font-size: 1.875rem !important;
+    font-weight: 700 !important;
+    line-height: 1.2 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* Stat card labels - prevent wrapping */
+.fi-stats-overview-stat-label {
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    max-width: 100% !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Stat card descriptions */
+.fi-stats-overview-stat-description {
+    font-size: 0.75rem !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    margin-top: 0.25rem !important;
+}
+
+/* Card container spacing */
+.fi-stats-overview-stat {
+    padding: 1.25rem !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.fi-stats-overview-stat:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Icon sizing */
+.fi-stats-overview-stat-icon {
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .fi-stats-overview-stat-value {
+        font-size: 1.5rem !important;
+    }
+    
+    .stat-card-currency .fi-stats-overview-stat-value {
+        font-size: 1.25rem !important;
+    }
+    
+    .fi-stats-overview-stat {
+        padding: 1rem !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .fi-stats-overview-stat-value {
+        font-size: 2rem !important;
+    }
+    
+    .stat-card-currency .fi-stats-overview-stat-value {
+        font-size: 1.75rem !important;
+    }
+}
+
+/* Grid layout improvements */
+.fi-stats-overview-stats-ctn {
+    gap: 1rem !important;
+}
+
+/* Chart in stat cards */
+.fi-stats-overview-stat-chart {
+    margin-top: 0.75rem !important;
+    height: 40px !important;
+}

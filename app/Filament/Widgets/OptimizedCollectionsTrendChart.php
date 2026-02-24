@@ -8,23 +8,27 @@ use Illuminate\Support\Facades\DB;
 
 class OptimizedCollectionsTrendChart extends ChartWidget
 {
-    protected static ?string $heading = 'Collections Trend (Last 7 Days)';
+    protected static ?string $heading = 'Collections Trend (Last 30 Days)';
     
-    protected static ?int $sort = 2;
+    protected static ?int $sort = 10; // Move after all stat cards
     
-    // No polling - user can manually refresh
+    // No polling
     protected static ?string $pollingInterval = null;
     
-    protected static ?string $maxHeight = '250px';
+    // Make chart larger
+    protected static ?string $maxHeight = '400px';
+    
+    // Take full width
+    protected int | string | array $columnSpan = 'full';
 
     protected function getData(): array
     {
         // Cache for 5 minutes
-        return Cache::remember('dashboard_collections_trend_v2', 300, function () {
+        return Cache::remember('dashboard_collections_trend_v3', 300, function () {
             $today = now('Asia/Manila');
-            $startDate = $today->copy()->subDays(6); // Last 7 days
+            $startDate = $today->copy()->subDays(29); // Last 30 days
 
-            // Optimized query - only last 7 days
+            // Optimized query - grouped by date
             $collections = DB::table('payment_schedules')
                 ->select(
                     DB::raw('DATE(paid_at) as date'),
@@ -40,7 +44,8 @@ class OptimizedCollectionsTrendChart extends ChartWidget
             $labels = [];
             $data = [];
             
-            for ($i = 6; $i >= 0; $i--) {
+            // Build 30-day dataset
+            for ($i = 29; $i >= 0; $i--) {
                 $date = $today->copy()->subDays($i);
                 $dateStr = $date->format('Y-m-d');
                 $labels[] = $date->format('M d');
@@ -55,7 +60,7 @@ class OptimizedCollectionsTrendChart extends ChartWidget
                         'borderColor' => '#10b981',
                         'backgroundColor' => 'rgba(16, 185, 129, 0.1)',
                         'fill' => true,
-                        'tension' => 0.4,
+                        'tension' => 0.3,
                     ],
                 ],
                 'labels' => $labels,
@@ -66,5 +71,35 @@ class OptimizedCollectionsTrendChart extends ChartWidget
     protected function getType(): string
     {
         return 'line';
+    }
+    
+    protected function getOptions(): array
+    {
+        return [
+            'plugins' => [
+                'legend' => [
+                    'display' => true,
+                    'position' => 'top',
+                ],
+                'title' => [
+                    'display' => false,
+                ],
+            ],
+            'scales' => [
+                'y' => [
+                    'beginAtZero' => true,
+                    'ticks' => [
+                        'callback' => 'function(value) { return "₱" + value.toLocaleString(); }',
+                    ],
+                ],
+                'x' => [
+                    'grid' => [
+                        'display' => false,
+                    ],
+                ],
+            ],
+            'maintainAspectRatio' => false,
+            'responsive' => true,
+        ];
     }
 }

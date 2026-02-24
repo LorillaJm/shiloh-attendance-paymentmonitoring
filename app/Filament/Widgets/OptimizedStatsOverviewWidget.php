@@ -2,9 +2,6 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\Student;
-use App\Models\Enrollment;
-use App\Models\PaymentSchedule;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use Illuminate\Support\Facades\Cache;
@@ -12,83 +9,105 @@ use Illuminate\Support\Facades\DB;
 
 class OptimizedStatsOverviewWidget extends BaseWidget
 {
-    protected static ?int $sort = 1;
+    protected static ?int $sort = 0; // Changed to 0 to ensure it's first
     
-    // Reduced polling - only refresh every 5 minutes
-    protected static ?string $pollingInterval = '300s';
+    // No auto-polling - user can manually refresh
+    protected static ?string $pollingInterval = null;
+    
+    // Make responsive - full width
+    protected int | string | array $columnSpan = 'full';
 
     protected function getStats(): array
     {
         try {
-            // Cache for 5 minutes - dashboard KPIs don't need real-time updates
-            $stats = Cache::remember('dashboard_kpi_stats_v2', 300, function () {
+            // Cache for 3 minutes
+            $stats = Cache::remember('dashboard_kpi_stats_v3', 180, function () {
                 $today = now('Asia/Manila')->format('Y-m-d');
                 $thisMonth = now('Asia/Manila');
                 
-                // Calculate next 15th
-                $next15th = now('Asia/Manila');
-                if ($next15th->day > 15) {
-                    $next15th->addMonth();
-                }
-                $next15th->day(15);
-                $next15thDate = $next15th->format('Y-m-d');
-
-                // Single optimized query for all KPIs
-                $kpis = DB::select("
+                // Single optimized query - all KPIs in one shot
+                $kpis = DB::selectOne("
                     SELECT 
                         (SELECT COUNT(*) FROM students WHERE status = 'ACTIVE') as total_students,
-                        (SELECT COUNT(*) FROM enrollments WHERE status = 'ACTIVE' AND remaining_balance <= 0) as fully_paid,
-                        (SELECT COUNT(*) FROM enrollments WHERE status = 'ACTIVE' AND remaining_balance > 0) as with_balance,
-                        (SELECT COUNT(*) FROM payment_schedules WHERE status = 'UNPAID' AND due_date = ?) as due_next_15th,
+                        (SELECT COUNT(*) FROM students WHERE status = 'ACTIVE' 
+                         AND EXISTS (SELECT 1 FROM enrollments WHERE student_id = students.id AND status = 'ACTIVE')) as active_students,
+                        (SELECT COUNT(*) FROM payment_schedules WHERE status = 'UNPAID' AND due_date = ?) as due_today,
                         (SELECT COUNT(*) FROM payment_schedules WHERE status = 'UNPAID' AND due_date < ?) as overdue,
                         (SELECT COALESCE(SUM(amount_due), 0) FROM payment_schedules WHERE status = 'PAID' AND DATE(paid_at) = ?) as collected_today,
-                        (SELECT COALESCE(SUM(amount_due), 0) FROM payment_schedules WHERE status = 'PAID' AND YEAR(paid_at) = ? AND MONTH(paid_at) = ?) as collected_this_month
-                ", [$next15thDate, $today, $today, $thisMonth->year, $thisMonth->month]);
-
-                $data = $kpis[0];
+                        (SELECT COALESCE(SUM(amount_due), 0) FROM payment_schedules WHERE status = 'PAID' 
+                         AND EXTRACT(YEAR FROM paid_at) = ? AND EXTRACT(MONTH FROM paid_at) = ?) as collected_this_month,
+                        (SELECT COALESCE(SUM(remaining_balance), 0) FROM enrollments WHERE status = 'ACTIVE') as outstanding_balance
+                ", [$today, $today, $today, $thisMonth->year, $thisMonth->month]);
 
                 return [
-                    'total_students' => $data->total_students,
-                    'fully_paid' => $data->fully_paid,
-                    'with_balance' => $data->with_balance,
-                    'due_next_15th' => $data->due_next_15th,
-                    'overdue' => $data->overdue,
-                    'collected_today' => $data->collected_today,
-                    'collected_this_month' => $data->collected_this_month,
-                    'next_15th_date' => $next15th->format('M d, Y'),
+                    'total_students' => $kpis->total_students ?? 0,
+                    'active_students' => $kpis->active_students ?? 0,
+                    'due_today' => $kpis->due_today ?? 0,
+                    'overdue' => $kpis->overdue ?? 0,
+                    'collected_today' => $kpis->collected_today ?? 0,
+                    'collected_this_month' => $kpis->collected_this_month ?? 0,
+                    'outstanding_balance' => $kpis->outstanding_balance ?? 0,
                 ];
             });
 
             return [
-                Stat::make('Active Students', number_format($stats['total_students']))
-                    ->description('Currently enrolled')
+                Stat::make('Total Students', number_format($stats['total_students']))
+                    ->description('Registered in system')
                     ->descriptionIcon('heroicon-o-user-group')
-                    ->color('primary'),
+                    ->color('primary')
+                    ->chart([7, 3, 4, 5, 6, 3, 5, 3])
+                    ->extraAttributes([
+                        'class' => 'stat-card-uniform',
+                    ]),
 
-                Stat::make('Fully Paid', number_format($stats['fully_paid']))
-                    ->description('No balance remaining')
+                Stat::make('Active Students', number_format($stats['active_students']))
+                    ->description('With active enrollment')
                     ->descriptionIcon('heroicon-o-check-circle')
-                    ->color('success'),
+                    ->color('success')
+                    ->chart([3, 5, 6, 7, 8, 6, 7, 8])
+                    ->extraAttributes([
+                        'class' => 'stat-card-uniform',
+                    ]),
 
-                Stat::make('With Balance', number_format($stats['with_balance']))
-                    ->description('Has remaining payments')
-                    ->descriptionIcon('heroicon-o-banknotes')
-                    ->color('warning'),
-
-                Stat::make('Due Next 15th', number_format($stats['due_next_15th']))
-                    ->description($stats['next_15th_date'])
+                Stat::make('Due Today', number_format($stats['due_today']))
+                    ->description('Scheduled for today')
                     ->descriptionIcon('heroicon-o-clock')
-                    ->color('info'),
+                    ->color('warning')
+                    ->extraAttributes([
+                        'class' => 'stat-card-uniform',
+                    ]),
 
                 Stat::make('Overdue', number_format($stats['overdue']))
                     ->description('Needs attention')
                     ->descriptionIcon('heroicon-o-exclamation-triangle')
-                    ->color('danger'),
+                    ->color('danger')
+                    ->extraAttributes([
+                        'class' => 'stat-card-uniform',
+                    ]),
 
-                Stat::make('Collected Today', '₱' . number_format($stats['collected_today'], 2))
-                    ->description('Today\'s collections')
+                Stat::make('Today', '₱' . number_format($stats['collected_today'], 2))
+                    ->description('Collections received')
                     ->descriptionIcon('heroicon-o-currency-dollar')
-                    ->color('success'),
+                    ->color('success')
+                    ->extraAttributes([
+                        'class' => 'stat-card-uniform stat-card-currency',
+                    ]),
+
+                Stat::make('This Month', '₱' . number_format($stats['collected_this_month'], 2))
+                    ->description('Month to date')
+                    ->descriptionIcon('heroicon-o-banknotes')
+                    ->color('info')
+                    ->extraAttributes([
+                        'class' => 'stat-card-uniform stat-card-currency',
+                    ]),
+
+                Stat::make('Outstanding', '₱' . number_format($stats['outstanding_balance'], 2))
+                    ->description('Total receivables')
+                    ->descriptionIcon('heroicon-o-chart-bar')
+                    ->color('gray')
+                    ->extraAttributes([
+                        'class' => 'stat-card-uniform stat-card-currency',
+                    ]),
             ];
             
         } catch (\Exception $e) {
@@ -96,7 +115,8 @@ class OptimizedStatsOverviewWidget extends BaseWidget
             
             return [
                 Stat::make('Error', 'Unable to load stats')
-                    ->description('Please refresh')
+                    ->description('Please refresh the page')
+                    ->descriptionIcon('heroicon-o-exclamation-circle')
                     ->color('danger'),
             ];
         }

@@ -12,6 +12,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class StudentResource extends Resource
 {
@@ -240,8 +242,7 @@ class StudentResource extends Resource
             ->defaultSort('student_no', 'desc')
             ->defaultPaginationPageOption(25)
             ->deferLoading()
-            ->striped()
-            ->poll('30s');
+            ->striped();
     }
 
     public static function getRelations(): array
@@ -262,7 +263,16 @@ class StudentResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status', 'ACTIVE')->count();
+        // Use cached counts to avoid duplicate queries
+        $counts = Cache::remember('student_status_counts', 60, function () {
+            return DB::table('students')
+                ->select('status', DB::raw('COUNT(*) as count'))
+                ->groupBy('status')
+                ->pluck('count', 'status')
+                ->toArray();
+        });
+        
+        return (string) ($counts['ACTIVE'] ?? 0);
     }
 
     public static function getNavigationBadgeColor(): ?string

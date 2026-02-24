@@ -5,13 +5,23 @@
         </x-slot>
 
         <x-slot name="headerEnd">
-            <x-filament::link 
-                :href="route('filament.admin.resources.payment-schedules.index')"
-                tag="a"
-                wire:navigate
-            >
-                View All
-            </x-filament::link>
+            @php
+                try {
+                    $viewAllUrl = route('filament.admin.resources.payment-schedules.index');
+                } catch (\Exception $e) {
+                    $viewAllUrl = null;
+                }
+            @endphp
+            
+            @if($viewAllUrl)
+                <x-filament::link 
+                    :href="$viewAllUrl"
+                    tag="a"
+                    wire:navigate
+                >
+                    View All
+                </x-filament::link>
+            @endif
         </x-slot>
 
         <div class="overflow-x-auto">

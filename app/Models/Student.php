@@ -52,6 +52,25 @@ class Student extends Model
                 $student->student_no = StudentNumberGenerator::generate();
             }
         });
+
+        // Clear cache when student is created
+        static::created(function ($student) {
+            \App\Services\StudentCacheService::clearStatusCounts();
+        });
+
+        // Clear cache when student is updated (especially status changes)
+        static::updated(function ($student) {
+            if ($student->wasChanged('status')) {
+                \App\Services\StudentCacheService::clearAll();
+            } else {
+                \App\Services\StudentCacheService::clearStatusCounts();
+            }
+        });
+
+        // Clear cache when student is deleted
+        static::deleted(function ($student) {
+            \App\Services\StudentCacheService::clearStatusCounts();
+        });
     }
 
     /**

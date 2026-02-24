@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\DashboardCacheService;
 use Illuminate\Console\Command;
 
 class WarmDashboardCache extends Command
@@ -18,29 +19,22 @@ class WarmDashboardCache extends Command
      *
      * @var string
      */
-    protected $description = 'Warm up dashboard caches by pre-loading all widget data';
+    protected $description = 'Warm up dashboard caches for optimal performance';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
         $this->info('Warming up dashboard caches...');
-
+        
         try {
-            \App\Services\DashboardCacheService::warmUp();
+            DashboardCacheService::warmUp();
             
-            $this->info('✓ Dashboard caches warmed successfully!');
-            $this->line('');
-            $this->line('Cached data:');
-            $this->line('  - KPI Stats (5 min TTL)');
-            $this->line('  - Collections Trend (5 min TTL)');
-            $this->line('  - Alerts (5 min TTL)');
-            $this->line('  - Recent Payments (3 min TTL)');
-            
+            $this->info('✓ Dashboard caches warmed up successfully');
             return Command::SUCCESS;
         } catch (\Exception $e) {
-            $this->error('Failed to warm dashboard caches: ' . $e->getMessage());
+            $this->error('Failed to warm up caches: ' . $e->getMessage());
             return Command::FAILURE;
         }
     }
