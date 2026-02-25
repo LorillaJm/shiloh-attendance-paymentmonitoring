@@ -59,19 +59,52 @@ class Dashboard extends BaseDashboard
             $user = auth()->user();
             
             if (!$user) {
+                \Log::warning('Dashboard: No authenticated user');
                 return [];
             }
             
             if ($user->isAdmin()) {
                 // Optimized admin dashboard with responsive layout
-                return [
-                    \App\Filament\Widgets\OptimizedStatsOverviewWidget::class,
-                    \App\Filament\Widgets\OptimizedCollectionsTrendChart::class,
-                    \App\Filament\Widgets\FinancialSummaryWidget::class,
-                    \App\Filament\Widgets\AttendanceSummaryWidget::class,
-                    \App\Filament\Widgets\OptimizedAlertsWidget::class,
-                    \App\Filament\Widgets\OptimizedRecentActivityWidget::class,
-                ];
+                // Load widgets one by one with error handling
+                $widgets = [];
+                
+                try {
+                    $widgets[] = \App\Filament\Widgets\OptimizedStatsOverviewWidget::class;
+                } catch (\Exception $e) {
+                    \Log::error('Dashboard: OptimizedStatsOverviewWidget failed - ' . $e->getMessage());
+                }
+                
+                try {
+                    $widgets[] = \App\Filament\Widgets\FinancialSummaryWidget::class;
+                } catch (\Exception $e) {
+                    \Log::error('Dashboard: FinancialSummaryWidget failed - ' . $e->getMessage());
+                }
+                
+                try {
+                    $widgets[] = \App\Filament\Widgets\AttendanceSummaryWidget::class;
+                } catch (\Exception $e) {
+                    \Log::error('Dashboard: AttendanceSummaryWidget failed - ' . $e->getMessage());
+                }
+                
+                try {
+                    $widgets[] = \App\Filament\Widgets\OptimizedCollectionsTrendChart::class;
+                } catch (\Exception $e) {
+                    \Log::error('Dashboard: OptimizedCollectionsTrendChart failed - ' . $e->getMessage());
+                }
+                
+                try {
+                    $widgets[] = \App\Filament\Widgets\OptimizedAlertsWidget::class;
+                } catch (\Exception $e) {
+                    \Log::error('Dashboard: OptimizedAlertsWidget failed - ' . $e->getMessage());
+                }
+                
+                try {
+                    $widgets[] = \App\Filament\Widgets\OptimizedRecentActivityWidget::class;
+                } catch (\Exception $e) {
+                    \Log::error('Dashboard: OptimizedRecentActivityWidget failed - ' . $e->getMessage());
+                }
+                
+                return $widgets;
             }
             
             // User dashboard - simplified for attendance encoding
@@ -82,6 +115,7 @@ class Dashboard extends BaseDashboard
             ];
         } catch (\Exception $e) {
             \Log::error('Dashboard getWidgets error: ' . $e->getMessage());
+            \Log::error('Dashboard getWidgets trace: ' . $e->getTraceAsString());
             return [];
         }
     }
