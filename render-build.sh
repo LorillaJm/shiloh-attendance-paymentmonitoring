@@ -20,6 +20,12 @@ npm run build
 
 echo "✅ Assets built"
 
+# Generate APP_KEY if not set
+if [ -z "$APP_KEY" ]; then
+    echo "⚠️ APP_KEY not set, generating..."
+    php artisan key:generate --force --no-interaction
+fi
+
 # Run database migrations (continue even if it fails - indexes might exist)
 echo "🗄️ Running migrations..."
 php artisan migrate --force --no-interaction || echo "⚠️ Migration had warnings (this is OK if indexes already exist)"
@@ -42,5 +48,9 @@ echo "🔥 Warming up dashboard cache..."
 php artisan dashboard:warm-cache || echo "⚠️ Dashboard cache warming skipped"
 
 echo "✅ Dashboard cache warmed"
+
+# Run diagnostics
+echo "🔍 Running diagnostics..."
+php artisan diagnose:render || echo "⚠️ Diagnostics had warnings"
 
 echo "🎉 Build completed successfully!"
