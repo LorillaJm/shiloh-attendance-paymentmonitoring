@@ -46,7 +46,6 @@ class AdminPanelProvider extends PanelProvider
             ->font('Inter')
             ->darkMode(true)
             ->brandName('Shiloh')
-            ->brandLogo(asset('images/logo.svg'))
             ->brandLogoHeight('2rem')
             ->favicon(asset('favicon.ico'))
             ->sidebarCollapsibleOnDesktop()
