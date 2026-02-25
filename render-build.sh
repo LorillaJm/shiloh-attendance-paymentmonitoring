@@ -24,7 +24,18 @@ echo "✅ Assets built"
 if [ -z "$APP_KEY" ]; then
     echo "⚠️ APP_KEY not set, generating..."
     php artisan key:generate --force --no-interaction
+    echo "✅ APP_KEY generated"
+else
+    echo "✅ APP_KEY already set"
 fi
+
+# Ensure APP_URL is set correctly
+if [ -z "$APP_URL" ]; then
+    echo "⚠️ APP_URL not set, using default..."
+    export APP_URL="https://shiloh-attendance-paymentmonitoring.onrender.com"
+fi
+
+echo "📍 APP_URL: $APP_URL"
 
 # Run database migrations (continue even if it fails - indexes might exist)
 echo "🗄️ Running migrations..."
