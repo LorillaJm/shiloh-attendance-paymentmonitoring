@@ -22,32 +22,61 @@ class OptimizedStatsOverviewWidget extends BaseWidget
         try {
             // Cache for 3 minutes
             $stats = Cache::remember('dashboard_kpi_stats_v3', 180, function () {
-                $today = now('Asia/Manila')->format('Y-m-d');
-                $thisMonth = now('Asia/Manila');
-                
-                // Single optimized query - all KPIs in one shot
-                $kpis = DB::selectOne("
-                    SELECT 
-                        (SELECT COUNT(*) FROM students WHERE status = 'ACTIVE') as total_students,
-                        (SELECT COUNT(*) FROM students WHERE status = 'ACTIVE' 
-                         AND EXISTS (SELECT 1 FROM enrollments WHERE student_id = students.id AND status = 'ACTIVE')) as active_students,
-                        (SELECT COUNT(*) FROM payment_schedules WHERE status = 'UNPAID' AND due_date = ?) as due_today,
-                        (SELECT COUNT(*) FROM payment_schedules WHERE status = 'UNPAID' AND due_date < ?) as overdue,
-                        (SELECT COALESCE(SUM(amount_due), 0) FROM payment_schedules WHERE status = 'PAID' AND DATE(paid_at) = ?) as collected_today,
-                        (SELECT COALESCE(SUM(amount_due), 0) FROM payment_schedules WHERE status = 'PAID' 
-                         AND EXTRACT(YEAR FROM paid_at) = ? AND EXTRACT(MONTH FROM paid_at) = ?) as collected_this_month,
-                        (SELECT COALESCE(SUM(remaining_balance), 0) FROM enrollments WHERE status = 'ACTIVE') as outstanding_balance
-                ", [$today, $today, $today, $thisMonth->year, $thisMonth->month]);
+                try {
+                    $today = now('Asia/Manila')->format('Y-m-d');
+                    $thisMonth = now('Asia/Manila');
+                    
+                    // Check if required tables exist
+                    if (!DB::getSchemaBuilder()->hasTable('students') ||
+                        !DB::getSchemaBuilder()->hasTable('payment_schedules') ||
+                        !DB::getSchemaBuilder()->hasTable('enrollments')) {
+                        \Log::warning('OptimizedStatsOverviewWidget: Required tables not found');
+                        return [
+                            'total_students' => 0,
+                            'active_students' => 0,
+                            'due_today' => 0,
+                            'overdue' => 0,
+                            'collected_today' => 0,
+                            'collected_this_month' => 0,
+                            'outstanding_balance' => 0,
+                        ];
+                    }
+                    
+                    // Single optimized query - all KPIs in one shot
+                    $kpis = DB::selectOne("
+                        SELECT 
+                            (SELECT COUNT(*) FROM students WHERE status = 'ACTIVE') as total_students,
+                            (SELECT COUNT(*) FROM students WHERE status = 'ACTIVE' 
+                             AND EXISTS (SELECT 1 FROM enrollments WHERE student_id = students.id AND status = 'ACTIVE')) as active_students,
+                            (SELECT COUNT(*) FROM payment_schedules WHERE status = 'UNPAID' AND due_date = ?) as due_today,
+                            (SELECT COUNT(*) FROM payment_schedules WHERE status = 'UNPAID' AND due_date < ?) as overdue,
+                            (SELECT COALESCE(SUM(amount_due), 0) FROM payment_schedules WHERE status = 'PAID' AND DATE(paid_at) = ?) as collected_today,
+                            (SELECT COALESCE(SUM(amount_due), 0) FROM payment_schedules WHERE status = 'PAID' 
+                             AND EXTRACT(YEAR FROM paid_at) = ? AND EXTRACT(MONTH FROM paid_at) = ?) as collected_this_month,
+                            (SELECT COALESCE(SUM(remaining_balance), 0) FROM enrollments WHERE status = 'ACTIVE') as outstanding_balance
+                    ", [$today, $today, $today, $thisMonth->year, $thisMonth->month]);
 
-                return [
-                    'total_students' => $kpis->total_students ?? 0,
-                    'active_students' => $kpis->active_students ?? 0,
-                    'due_today' => $kpis->due_today ?? 0,
-                    'overdue' => $kpis->overdue ?? 0,
-                    'collected_today' => $kpis->collected_today ?? 0,
-                    'collected_this_month' => $kpis->collected_this_month ?? 0,
-                    'outstanding_balance' => $kpis->outstanding_balance ?? 0,
-                ];
+                    return [
+                        'total_students' => $kpis->total_students ?? 0,
+                        'active_students' => $kpis->active_students ?? 0,
+                        'due_today' => $kpis->due_today ?? 0,
+                        'overdue' => $kpis->overdue ?? 0,
+                        'collected_today' => $kpis->collected_today ?? 0,
+                        'collected_this_month' => $kpis->collected_this_month ?? 0,
+                        'outstanding_balance' => $kpis->outstanding_balance ?? 0,
+                    ];
+                } catch (\Exception $e) {
+                    \Log::error('OptimizedStatsOverviewWidget query error: ' . $e->getMessage());
+                    return [
+                        'total_students' => 0,
+                        'active_students' => 0,
+                        'due_today' => 0,
+                        'overdue' => 0,
+                        'collected_today' => 0,
+                        'collected_this_month' => 0,
+                        'outstanding_balance' => 0,
+                    ];
+                }
             });
 
             return [
@@ -112,13 +141,10 @@ class OptimizedStatsOverviewWidget extends BaseWidget
             
         } catch (\Exception $e) {
             \Log::error('OptimizedStatsOverviewWidget error: ' . $e->getMessage());
+            \Log::error('OptimizedStatsOverviewWidget trace: ' . $e->getTraceAsString());
             
-            return [
-                Stat::make('Error', 'Unable to load stats')
-                    ->description('Please refresh the page')
-                    ->descriptionIcon('heroicon-o-exclamation-circle')
-                    ->color('danger'),
-            ];
+            // Return empty array instead of crashing
+            return [];
         }
     }
 }
