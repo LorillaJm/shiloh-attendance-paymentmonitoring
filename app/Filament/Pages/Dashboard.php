@@ -55,6 +55,11 @@ class Dashboard extends BaseDashboard
 
     public function getWidgets(): array
     {
+        // Temporarily return empty array to test if dashboard loads
+        // This will help identify if widgets are the problem
+        return [];
+        
+        /* COMMENTED OUT FOR DEBUGGING
         try {
             $user = auth()->user();
             
@@ -118,6 +123,7 @@ class Dashboard extends BaseDashboard
             \Log::error('Dashboard getWidgets trace: ' . $e->getTraceAsString());
             return [];
         }
+        */
     }
     
     protected function getHeaderActions(): array
