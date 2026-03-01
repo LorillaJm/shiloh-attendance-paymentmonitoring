@@ -55,11 +55,6 @@ class Dashboard extends BaseDashboard
 
     public function getWidgets(): array
     {
-        // Temporarily return empty array to test if dashboard loads
-        // This will help identify if widgets are the problem
-        return [];
-        
-        /* COMMENTED OUT FOR DEBUGGING
         try {
             $user = auth()->user();
             
@@ -69,50 +64,14 @@ class Dashboard extends BaseDashboard
             }
             
             if ($user->isAdmin()) {
-                // Optimized admin dashboard with responsive layout
-                // Load widgets one by one with error handling
-                $widgets = [];
-                
-                try {
-                    $widgets[] = \App\Filament\Widgets\OptimizedStatsOverviewWidget::class;
-                } catch (\Exception $e) {
-                    \Log::error('Dashboard: OptimizedStatsOverviewWidget failed - ' . $e->getMessage());
-                }
-                
-                try {
-                    $widgets[] = \App\Filament\Widgets\FinancialSummaryWidget::class;
-                } catch (\Exception $e) {
-                    \Log::error('Dashboard: FinancialSummaryWidget failed - ' . $e->getMessage());
-                }
-                
-                try {
-                    $widgets[] = \App\Filament\Widgets\AttendanceSummaryWidget::class;
-                } catch (\Exception $e) {
-                    \Log::error('Dashboard: AttendanceSummaryWidget failed - ' . $e->getMessage());
-                }
-                
-                try {
-                    $widgets[] = \App\Filament\Widgets\OptimizedCollectionsTrendChart::class;
-                } catch (\Exception $e) {
-                    \Log::error('Dashboard: OptimizedCollectionsTrendChart failed - ' . $e->getMessage());
-                }
-                
-                try {
-                    $widgets[] = \App\Filament\Widgets\OptimizedAlertsWidget::class;
-                } catch (\Exception $e) {
-                    \Log::error('Dashboard: OptimizedAlertsWidget failed - ' . $e->getMessage());
-                }
-                
-                try {
-                    $widgets[] = \App\Filament\Widgets\OptimizedRecentActivityWidget::class;
-                } catch (\Exception $e) {
-                    \Log::error('Dashboard: OptimizedRecentActivityWidget failed - ' . $e->getMessage());
-                }
-                
-                return $widgets;
+                // Re-enable widgets one by one
+                // Start with just the KPI stats widget
+                return [
+                    \App\Filament\Widgets\OptimizedStatsOverviewWidget::class,
+                ];
             }
             
-            // User dashboard - simplified for attendance encoding
+            // User dashboard
             return [
                 \App\Filament\Widgets\UserQuickActionsWidget::class,
                 \App\Filament\Widgets\UserAttendanceSummaryWidget::class,
@@ -120,10 +79,8 @@ class Dashboard extends BaseDashboard
             ];
         } catch (\Exception $e) {
             \Log::error('Dashboard getWidgets error: ' . $e->getMessage());
-            \Log::error('Dashboard getWidgets trace: ' . $e->getTraceAsString());
             return [];
         }
-        */
     }
     
     protected function getHeaderActions(): array
