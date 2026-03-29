@@ -82,7 +82,6 @@ class OptimizedStatsOverviewWidget extends BaseWidget
             return [
                 Stat::make('Total Students', number_format($stats['total_students']))
                     ->description('Registered in system')
-                    ->descriptionIcon('heroicon-o-user-group')
                     ->color('primary')
                     ->chart([7, 3, 4, 5, 6, 3, 5, 3])
                     ->extraAttributes([
@@ -91,7 +90,6 @@ class OptimizedStatsOverviewWidget extends BaseWidget
 
                 Stat::make('Active Students', number_format($stats['active_students']))
                     ->description('With active enrollment')
-                    ->descriptionIcon('heroicon-o-check-circle')
                     ->color('success')
                     ->chart([3, 5, 6, 7, 8, 6, 7, 8])
                     ->extraAttributes([
@@ -100,7 +98,6 @@ class OptimizedStatsOverviewWidget extends BaseWidget
 
                 Stat::make('Due Today', number_format($stats['due_today']))
                     ->description('Scheduled for today')
-                    ->descriptionIcon('heroicon-o-clock')
                     ->color('warning')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform',
@@ -108,7 +105,6 @@ class OptimizedStatsOverviewWidget extends BaseWidget
 
                 Stat::make('Overdue', number_format($stats['overdue']))
                     ->description('Needs attention')
-                    ->descriptionIcon('heroicon-o-exclamation-triangle')
                     ->color('danger')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform',
@@ -116,7 +112,6 @@ class OptimizedStatsOverviewWidget extends BaseWidget
 
                 Stat::make('Today', '₱' . number_format($stats['collected_today'], 2))
                     ->description('Collections received')
-                    ->descriptionIcon('heroicon-o-currency-dollar')
                     ->color('success')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform stat-card-currency',
@@ -124,7 +119,6 @@ class OptimizedStatsOverviewWidget extends BaseWidget
 
                 Stat::make('This Month', '₱' . number_format($stats['collected_this_month'], 2))
                     ->description('Month to date')
-                    ->descriptionIcon('heroicon-o-banknotes')
                     ->color('info')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform stat-card-currency',
@@ -132,7 +126,6 @@ class OptimizedStatsOverviewWidget extends BaseWidget
 
                 Stat::make('Outstanding', '₱' . number_format($stats['outstanding_balance'], 2))
                     ->description('Total receivables')
-                    ->descriptionIcon('heroicon-o-chart-bar')
                     ->color('gray')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform stat-card-currency',

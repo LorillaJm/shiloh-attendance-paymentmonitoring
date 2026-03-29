@@ -64,10 +64,10 @@ class Dashboard extends BaseDashboard
             }
             
             if ($user->isAdmin()) {
-                // Re-enable widgets one by one
-                // Start with just the KPI stats widget
+                // Use optimized stats widget + chart
                 return [
                     \App\Filament\Widgets\OptimizedStatsOverviewWidget::class,
+                    \App\Filament\Widgets\RevenueChartWidget::class,
                 ];
             }
             

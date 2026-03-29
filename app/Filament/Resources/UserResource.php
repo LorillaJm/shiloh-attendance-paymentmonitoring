@@ -22,11 +22,14 @@ class UserResource extends Resource
     protected static ?string $navigationGroup = 'Administration';
 
     protected static ?int $navigationSort = 1;
+    
+    // Apply UserPolicy to all actions
+    protected static ?string $modelPolicy = \App\Policies\UserPolicy::class;
 
     public static function shouldRegisterNavigation(): bool
     {
-        // Only show to admins
-        return auth()->user()?->isAdmin() ?? false;
+        // Only show to superadmin
+        return auth()->user()?->isSuperadmin() ?? false;
     }
 
     public static function form(Form $form): Form
@@ -37,26 +40,68 @@ class UserResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->validationMessages([
+                                'required' => 'Name is required.',
+                                'max' => 'Name cannot exceed 255 characters.',
+                            ]),
                         Forms\Components\TextInput::make('email')
                             ->email()
                             ->required()
                             ->unique(ignoreRecord: true)
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->validationMessages([
+                                'required' => 'Email address is required.',
+                                'email' => 'Please enter a valid email address.',
+                                'unique' => 'This email address is already registered.',
+                            ]),
                         Forms\Components\Select::make('role')
-                            ->options([
-                                UserRole::ADMIN->value => UserRole::ADMIN->label(),
-                                UserRole::USER->value => UserRole::USER->label(),
-                            ])
+                            ->options(function () {
+                                $user = auth()->user();
+                                
+                                // Only superadmin can see and assign SUPERADMIN role
+                                if ($user?->isSuperadmin()) {
+                                    return [
+                                        UserRole::SUPERADMIN->value => UserRole::SUPERADMIN->label(),
+                                        UserRole::ADMIN->value => UserRole::ADMIN->label(),
+                                        UserRole::PARENT->value => UserRole::PARENT->label(),
+                                    ];
+                                }
+                                
+                                return [
+                                    UserRole::ADMIN->value => UserRole::ADMIN->label(),
+                                    UserRole::PARENT->value => UserRole::PARENT->label(),
+                                ];
+                            })
                             ->required()
-                            ->default(UserRole::USER->value),
+                            ->default(UserRole::ADMIN->value)
+                            ->disabled(function ($record) {
+                                // Prevent users from changing their own role
+                                return $record && auth()->id() === $record->id;
+                            })
+                            ->helperText(function ($record) {
+                                if ($record && auth()->id() === $record->id) {
+                                    return 'You cannot change your own role.';
+                                }
+                                return 'Note: Parent users should be created via the Guardian resource.';
+                            })
+                            ->visible(fn () => auth()->user()?->isSuperadmin() ?? false)
+                            ->in([UserRole::SUPERADMIN->value, UserRole::ADMIN->value, UserRole::PARENT->value])
+                            ->validationMessages([
+                                'required' => 'Please select a user role.',
+                                'in' => 'Invalid role selected. Must be SUPERADMIN, ADMIN, or PARENT.',
+                            ]),
                         Forms\Components\TextInput::make('password')
                             ->password()
                             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
                             ->dehydrated(fn ($state) => filled($state))
                             ->required(fn (string $context): bool => $context === 'create')
                             ->minLength(8)
-                            ->maxLength(255),
+                            ->maxLength(255)
+                            ->validationMessages([
+                                'required' => 'Password is required for new users.',
+                                'min' => 'Password must be at least 8 characters long for security.',
+                            ]),
                     ])
                     ->columns(2),
             ]);
@@ -74,8 +119,9 @@ class UserResource extends Resource
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('role')
                     ->colors([
+                        'success' => UserRole::SUPERADMIN->value,
                         'danger' => UserRole::ADMIN->value,
-                        'success' => UserRole::USER->value,
+                        'info' => UserRole::PARENT->value,
                     ])
                     ->formatStateUsing(fn (UserRole $state): string => $state->label()),
                 Tables\Columns\TextColumn::make('created_at')
@@ -90,17 +136,40 @@ class UserResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('role')
                     ->options([
+                        UserRole::SUPERADMIN->value => UserRole::SUPERADMIN->label(),
                         UserRole::ADMIN->value => UserRole::ADMIN->label(),
-                        UserRole::USER->value => UserRole::USER->label(),
+                        UserRole::PARENT->value => UserRole::PARENT->label(),
                     ]),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Tables\Actions\DeleteAction $action, User $record) {
+                        // Prevent deleting yourself
+                        if (auth()->id() === $record->id) {
+                            \Filament\Notifications\Notification::make()
+                                ->danger()
+                                ->title('Cannot delete your own account')
+                                ->send();
+                            
+                            $action->cancel();
+                        }
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function (Tables\Actions\DeleteBulkAction $action, $records) {
+                            // Prevent deleting yourself in bulk action
+                            if ($records->contains('id', auth()->id())) {
+                                \Filament\Notifications\Notification::make()
+                                    ->danger()
+                                    ->title('Cannot delete your own account')
+                                    ->send();
+                                
+                                $action->cancel();
+                            }
+                        }),
                 ]),
             ]);
     }

@@ -1,6 +1,43 @@
+/* Import Apple Dashboard Styles */
+@import './apple-dashboard.css';
+
+/* Import Dark Mode Improvements */
+@import './dark-mode-improvements.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Dark Mode Theme Variables */
+@layer base {
+    :root {
+        --theme-bg-primary: 255, 255, 255;
+        --theme-bg-secondary: 249, 250, 251;
+        --theme-text-primary: 17, 24, 39;
+        --theme-text-secondary: 107, 114, 128;
+        --theme-border: 229, 231, 235;
+    }
+
+    .dark {
+        --theme-bg-primary: 17, 24, 39;
+        --theme-bg-secondary: 31, 41, 55;
+        --theme-text-primary: 243, 244, 246;
+        --theme-text-secondary: 156, 163, 175;
+        --theme-border: 55, 65, 81;
+    }
+
+    /* Smooth theme transitions */
+    * {
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Disable transitions for specific elements that shouldn't animate */
+    *:where(:not(.theme-transition)) {
+        transition-property: background-color, color, border-color;
+        transition-duration: 0.3s;
+        transition-timing-function: ease;
+    }
+}
 
 /* Dashboard Stat Cards - Professional Styling */
 @layer components {
@@ -47,5 +84,74 @@
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
+    }
+
+    /* Dark mode enhancements for custom components */
+    .dark .custom-card {
+        @apply bg-gray-800 border-gray-700;
+    }
+
+    .dark .custom-text {
+        @apply text-gray-200;
+    }
+
+    .dark .custom-text-muted {
+        @apply text-gray-400;
+    }
+}
+
+/* Smooth theme transitions */
+@layer utilities {
+    .theme-transition {
+        transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    /* Touch-friendly utilities */
+    .touch-target {
+        @apply min-h-[44px] min-w-[44px];
+    }
+    
+    /* Responsive text utilities */
+    .text-responsive-sm {
+        font-size: clamp(0.75rem, 2vw, 0.875rem);
+    }
+    
+    .text-responsive-base {
+        font-size: clamp(0.875rem, 2.5vw, 1rem);
+    }
+    
+    .text-responsive-lg {
+        font-size: clamp(1rem, 3vw, 1.125rem);
+    }
+    
+    .text-responsive-xl {
+        font-size: clamp(1.125rem, 3.5vw, 1.25rem);
+    }
+    
+    .text-responsive-2xl {
+        font-size: clamp(1.25rem, 4vw, 1.5rem);
+    }
+    
+    /* Spacing utilities */
+    .space-comfortable {
+        @apply space-y-4 md:space-y-6;
+    }
+    
+    .space-compact {
+        @apply space-y-2 md:space-y-3;
+    }
+    
+    /* Container utilities */
+    .container-responsive {
+        @apply px-4 sm:px-6 lg:px-8;
+    }
+    
+    /* Grid utilities */
+    .grid-auto-fit {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    
+    .grid-auto-fill {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
 }

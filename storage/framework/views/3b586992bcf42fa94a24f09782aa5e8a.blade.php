@@ -1,0 +1,1 @@
+@vite(["resources/js/apple-dashboard.js", "resources/js/theme-toggle.js"])

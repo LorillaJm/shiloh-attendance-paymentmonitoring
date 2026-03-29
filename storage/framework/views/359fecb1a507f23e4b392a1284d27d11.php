@@ -1,0 +1,1 @@
+<?php echo app('Illuminate\Foundation\Vite')(["resources/js/apple-dashboard.js", "resources/js/theme-toggle.js"]); ?><?php /**PATH C:\Users\pc1\Downloads\Attendance-Payment\storage\framework\views/3b586992bcf42fa94a24f09782aa5e8a.blade.php ENDPATH**/ ?>

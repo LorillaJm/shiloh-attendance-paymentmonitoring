@@ -32,11 +32,11 @@ class ParentPortal extends Page
 
     public static function canAccess(): bool
     {
-        return Auth::user()->isParent();
+        return Auth::check() && Auth::user()?->isParent();
     }
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()->isParent();
+        return Auth::check() && Auth::user()?->isParent();
     }
 }

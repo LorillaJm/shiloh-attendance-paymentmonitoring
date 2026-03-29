@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
+use App\Scopes\ParentAttendanceScope;
 
 class AttendanceRecord extends Model
 {
@@ -24,6 +25,38 @@ class AttendanceRecord extends Model
         return [
             'attendance_date' => 'date',
         ];
+    }
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        // Apply global scope for parent users
+        static::addGlobalScope(new ParentAttendanceScope());
+
+        // Clear cache when attendance is created
+        static::created(function ($attendance) {
+            \App\Services\DashboardCacheService::clearAttendanceSummary($attendance->attendance_date);
+        });
+
+        // Clear cache when attendance is updated
+        static::updated(function ($attendance) {
+            \App\Services\DashboardCacheService::clearAttendanceSummary($attendance->attendance_date);
+            
+            // If date changed, clear old date cache too
+            if ($attendance->wasChanged('attendance_date')) {
+                $originalDate = \Carbon\Carbon::parse($attendance->getOriginal('attendance_date'));
+                \App\Services\DashboardCacheService::clearAttendanceSummary($originalDate);
+            }
+        });
+
+        // Clear cache when attendance is deleted
+        static::deleted(function ($attendance) {
+            \App\Services\DashboardCacheService::clearAttendanceSummary($attendance->attendance_date);
+        });
     }
 
     public function student(): BelongsTo

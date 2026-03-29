@@ -31,12 +31,14 @@ class StudentResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public static function canViewAny(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public static function form(Form $form): Form
@@ -87,12 +89,13 @@ class StudentResource extends Resource
                             ->placeholder('Dela Cruz'),
                         
                         Forms\Components\DatePicker::make('birthdate')
-                            ->native(false)
+                            ->native(true)
                             ->displayFormat('M d, Y')
                             ->maxDate(now()->subYears(3))
                             ->minDate(now()->subYears(25))
                             ->helperText('Student must be between 3 and 25 years old')
-                            ->placeholder('Select birthdate'),
+                            ->placeholder('Select birthdate')
+                            ->required(),
                         
                         Forms\Components\Select::make('sex')
                             ->options(Sex::options())
@@ -241,6 +244,7 @@ class StudentResource extends Resource
             ])
             ->defaultSort('student_no', 'desc')
             ->defaultPaginationPageOption(25)
+            ->paginationPageOptions([10, 25, 50, 100])
             ->deferLoading()
             ->striped();
     }

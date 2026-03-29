@@ -24,7 +24,15 @@ class SessionHistory extends Page
         return [
             Forms\Components\Select::make('studentId')
                 ->label('Student')
-                ->options(Student::active()->pluck('full_name', 'id'))
+                ->options(function () {
+                    return Student::active()
+                        ->orderBy('first_name')
+                        ->orderBy('last_name')
+                        ->get()
+                        ->mapWithKeys(function ($student) {
+                            return [$student->id => $student->full_name];
+                        });
+                })
                 ->searchable()
                 ->required(),
             Forms\Components\DatePicker::make('startDate')
@@ -43,7 +51,7 @@ class SessionHistory extends Page
         }
 
         $query = SessionOccurrence::where('student_id', $this->studentId)
-            ->with(['sessionType', 'teacher', 'attendanceRecord']);
+            ->with(['sessionType', 'attendanceRecord']);
 
         if ($this->startDate) {
             $query->where('session_date', '>=', $this->startDate);
@@ -58,7 +66,7 @@ class SessionHistory extends Page
 
     public static function canAccess(): bool
     {
-        $user = Auth::user();
-        return $user->isAdmin() || $user->isTeacher();
+        // Only ADMIN can access session history
+        return Auth::check() && Auth::user()?->isAdmin();
     }
 }

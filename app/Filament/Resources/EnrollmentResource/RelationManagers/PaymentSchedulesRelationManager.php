@@ -134,15 +134,26 @@ class PaymentSchedulesRelationManager extends RelationManager
                             return;
                         }
                         
-                        $service = app(PaymentScheduleService::class);
-                        
-                        // Update with custom paid_at if provided
+                        // Update payment schedule
                         $record->update([
                             'status' => 'PAID',
                             'paid_at' => $data['paid_at'],
                             'payment_method' => $data['payment_method'],
                             'receipt_no' => $data['receipt_no'] ?? null,
                             'remarks' => $data['remarks'] ?? null,
+                        ]);
+
+                        // Create payment transaction for ledger
+                        \App\Models\PaymentTransaction::create([
+                            'enrollment_id' => $record->enrollment_id,
+                            'payment_schedule_id' => $record->id,
+                            'transaction_date' => $data['paid_at'],
+                            'type' => 'PAYMENT',
+                            'amount' => $record->amount_due,
+                            'payment_method' => $data['payment_method'],
+                            'receipt_no' => $data['receipt_no'] ?? null,
+                            'remarks' => $data['remarks'] ?? null,
+                            'processed_by_user_id' => auth()->id(),
                         ]);
 
                         // Log the activity

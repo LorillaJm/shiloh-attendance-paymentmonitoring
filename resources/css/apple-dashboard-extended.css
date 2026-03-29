@@ -1,0 +1,422 @@
+/* ============================================
+   APPLE DASHBOARD - EXTENDED COMPONENTS
+   Additional premium UI elements
+   ============================================ */
+
+/* ============================================
+   1. APPLE-STYLE BUTTONS
+   ============================================ */
+
+.apple-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    border-radius: var(--radius-full);
+    background: var(--apple-blue);
+    color: var(--apple-white);
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.apple-button:hover {
+    background: var(--apple-blue-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.apple-button:active {
+    transform: translateY(0);
+}
+
+.apple-button-secondary {
+    background: transparent;
+    color: var(--apple-blue);
+    border: 1px solid var(--apple-blue);
+}
+
+.apple-button-secondary:hover {
+    background: rgba(0, 113, 227, 0.1);
+}
+
+/* ============================================
+   2. APPLE-STYLE NAVIGATION
+   ============================================ */
+
+.apple-nav {
+    display: flex;
+    gap: var(--space-lg);
+    align-items: center;
+    padding: var(--space-sm) 0;
+}
+
+.apple-nav-item {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--apple-gray-600);
+    text-decoration: none;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    transition: all var(--transition-fast);
+}
+
+.apple-nav-item:hover {
+    color: var(--apple-gray-800);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.apple-nav-item.active {
+    color: var(--apple-blue);
+    background: rgba(0, 113, 227, 0.1);
+}
+
+/* ============================================
+   3. APPLE-STYLE SECTIONS
+   ============================================ */
+
+.apple-section {
+    padding: var(--space-3xl) var(--space-lg);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.apple-section-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    margin-bottom: var(--space-md);
+    background: var(--gradient-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.apple-section-subtitle {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    color: var(--apple-gray-500);
+    max-width: 800px;
+    margin: 0 auto var(--space-xl);
+    line-height: 1.5;
+}
+
+/* ============================================
+   4. FEATURE GRID
+   ============================================ */
+
+.apple-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-xl);
+    margin-top: var(--space-2xl);
+}
+
+.apple-feature-card {
+    background: var(--gradient-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-xl);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.apple-feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-xl);
+}
+
+.apple-feature-icon {
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--space-md);
+    background: var(--gradient-accent);
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--apple-white);
+}
+
+.apple-feature-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: var(--space-sm);
+    color: var(--apple-gray-800);
+}
+
+.apple-feature-description {
+    font-size: 1rem;
+    color: var(--apple-gray-500);
+    line-height: 1.6;
+}
+
+/* ============================================
+   5. PROGRESS INDICATORS
+   ============================================ */
+
+.apple-progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--apple-gray-200);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    position: relative;
+}
+
+.apple-progress-fill {
+    height: 100%;
+    background: var(--gradient-accent);
+    border-radius: var(--radius-full);
+    transition: width var(--transition-slow);
+}
+
+.apple-progress-ring {
+    width: 120px;
+    height: 120px;
+    position: relative;
+}
+
+.apple-progress-ring svg {
+    transform: rotate(-90deg);
+}
+
+.apple-progress-ring circle {
+    fill: none;
+    stroke-width: 8;
+    stroke-linecap: round;
+}
+
+.apple-progress-ring .background {
+    stroke: var(--apple-gray-200);
+}
+
+.apple-progress-ring .progress {
+    stroke: var(--apple-blue);
+    stroke-dasharray: 339.292;
+    stroke-dashoffset: 339.292;
+    transition: stroke-dashoffset var(--transition-slow);
+}
+
+/* ============================================
+   6. BADGES & TAGS
+   ============================================ */
+
+.apple-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.apple-badge.primary {
+    background: rgba(0, 113, 227, 0.1);
+    color: var(--apple-blue);
+}
+
+.apple-badge.success {
+    background: rgba(48, 209, 88, 0.1);
+    color: var(--apple-green);
+}
+
+.apple-badge.warning {
+    background: rgba(255, 149, 0, 0.1);
+    color: var(--apple-orange);
+}
+
+.apple-badge.danger {
+    background: rgba(255, 59, 48, 0.1);
+    color: var(--apple-red);
+}
+
+/* ============================================
+   7. TOOLTIPS
+   ============================================ */
+
+.apple-tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.apple-tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    padding: 8px 12px;
+    background: var(--apple-gray-800);
+    color: var(--apple-white);
+    font-size: 0.75rem;
+    border-radius: var(--radius-md);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all var(--transition-fast);
+}
+
+.apple-tooltip:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-4px);
+}
+
+/* ============================================
+   8. DIVIDERS
+   ============================================ */
+
+.apple-divider {
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--apple-gray-200) 50%,
+        transparent 100%
+    );
+    margin: var(--space-xl) 0;
+}
+
+/* ============================================
+   9. SPOTLIGHT EFFECT
+   ============================================ */
+
+.apple-spotlight {
+    position: relative;
+    overflow: hidden;
+}
+
+.apple-spotlight::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(
+        circle,
+        rgba(0, 113, 227, 0.1) 0%,
+        transparent 70%
+    );
+    opacity: 0;
+    transition: opacity var(--transition-slow);
+    pointer-events: none;
+}
+
+.apple-spotlight:hover::before {
+    opacity: 1;
+}
+
+/* ============================================
+   10. SCROLL INDICATORS
+   ============================================ */
+
+.apple-scroll-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-accent);
+    transform-origin: left;
+    transform: scaleX(0);
+    z-index: 9999;
+}
+
+/* ============================================
+   11. SKELETON LOADERS
+   ============================================ */
+
+.apple-skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--apple-gray-100) 25%,
+        var(--apple-gray-50) 50%,
+        var(--apple-gray-100) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: var(--radius-md);
+}
+
+.apple-skeleton-text {
+    height: 1em;
+    margin-bottom: 0.5em;
+}
+
+.apple-skeleton-title {
+    height: 2em;
+    width: 60%;
+    margin-bottom: 1em;
+}
+
+.apple-skeleton-card {
+    height: 200px;
+    border-radius: var(--radius-xl);
+}
+
+/* ============================================
+   12. NOTIFICATION BADGES
+   ============================================ */
+
+.apple-notification-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 6px;
+    background: var(--apple-red);
+    color: var(--apple-white);
+    font-size: 0.625rem;
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(255, 59, 48, 0.3);
+}
+
+/* ============================================
+   13. RESPONSIVE UTILITIES
+   ============================================ */
+
+@media (max-width: 768px) {
+    .apple-section {
+        padding: var(--space-xl) var(--space-md);
+    }
+    
+    .apple-feature-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+    }
+    
+    .apple-nav {
+        flex-direction: column;
+        gap: var(--space-sm);
+    }
+}
+
+/* ============================================
+   14. PRINT STYLES
+   ============================================ */
+
+@media print {
+    .apple-stat-card,
+    .apple-feature-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid var(--apple-gray-200);
+    }
+    
+    .apple-hero-header {
+        page-break-after: avoid;
+    }
+}

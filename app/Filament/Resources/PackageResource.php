@@ -29,12 +29,14 @@ class PackageResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public static function canViewAny(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public static function form(Form $form): Form

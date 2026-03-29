@@ -12,7 +12,8 @@ class AttendanceRecordPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() || $user->isTeacher() || $user->isUser();
+        // Only ADMIN can view attendance records in admin panel
+        return $user->isAdmin();
     }
 
     /**
@@ -20,16 +21,8 @@ class AttendanceRecordPolicy
      */
     public function view(User $user, AttendanceRecord $attendanceRecord): bool
     {
-        if ($user->isAdmin()) {
-            return true;
-        }
-
-        // Teachers can view attendance for their assigned students
-        if ($user->isTeacher() && $attendanceRecord->sessionOccurrence) {
-            return $attendanceRecord->sessionOccurrence->teacher_id === $user->id;
-        }
-
-        return true;
+        // Only ADMIN can view attendance records
+        return $user->isAdmin();
     }
 
     /**
@@ -37,7 +30,8 @@ class AttendanceRecordPolicy
      */
     public function create(User $user): bool
     {
-        return $user->isAdmin() || $user->isTeacher() || $user->isUser();
+        // Only ADMIN can create attendance records
+        return $user->isAdmin();
     }
 
     /**
@@ -45,23 +39,13 @@ class AttendanceRecordPolicy
      */
     public function update(User $user, AttendanceRecord $attendanceRecord): bool
     {
-        // Admin can edit anything
-        if ($user->isAdmin()) {
-            return true;
-        }
-
-        // Check if within edit window
-        if (!$attendanceRecord->canBeEdited()) {
+        // Only ADMIN can update attendance records
+        if (!$user->isAdmin()) {
             return false;
         }
 
-        // Teachers can edit attendance for their sessions
-        if ($user->isTeacher() && $attendanceRecord->sessionOccurrence) {
-            return $attendanceRecord->sessionOccurrence->teacher_id === $user->id;
-        }
-
-        // User can edit their own records
-        return $attendanceRecord->encoded_by_user_id === $user->id;
+        // Check if within edit window
+        return $attendanceRecord->canBeEdited();
     }
 
     /**
@@ -69,18 +53,13 @@ class AttendanceRecordPolicy
      */
     public function delete(User $user, AttendanceRecord $attendanceRecord): bool
     {
-        // Admin can delete anything
-        if ($user->isAdmin()) {
-            return true;
-        }
-
-        // Check if within edit window
-        if (!$attendanceRecord->canBeEdited()) {
+        // Only ADMIN can delete attendance records
+        if (!$user->isAdmin()) {
             return false;
         }
 
-        // User can delete their own records
-        return $attendanceRecord->encoded_by_user_id === $user->id;
+        // Check if within edit window
+        return $attendanceRecord->canBeEdited();
     }
 
     /**
@@ -104,7 +83,8 @@ class AttendanceRecordPolicy
      */
     public function batchEncode(User $user): bool
     {
-        return $user->isAdmin() || $user->isTeacher() || $user->isUser();
+        // Only ADMIN can batch encode attendance
+        return $user->isAdmin();
     }
 
     /**

@@ -34,7 +34,8 @@ class EnrollmentResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public static function canViewAny(): bool
@@ -52,21 +53,34 @@ class EnrollmentResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('student_id')
                             ->label('Student')
-                            ->relationship('student', 'first_name')
-                            ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->student_no} - {$record->full_name}")
-                            ->searchable(['student_no', 'first_name', 'last_name'])
+                            ->options(function () {
+                                return \App\Models\Student::query()
+                                    ->where('status', 'ACTIVE')
+                                    ->orderBy('student_no')
+                                    ->get()
+                                    ->mapWithKeys(function ($student) {
+                                        return [$student->id => "{$student->student_no} - {$student->full_name}"];
+                                    });
+                            })
+                            ->searchable()
                             ->required()
                             ->preload()
+                            ->placeholder('Select a student')
                             ->columnSpanFull(),
 
                         Forms\Components\Select::make('package_id')
                             ->label('Program/Package')
-                            ->relationship('package', 'name')
+                            ->options(function () {
+                                return \App\Models\Package::query()
+                                    ->orderBy('name')
+                                    ->pluck('name', 'id');
+                            })
                             ->required()
-                            ->reactive()
-                            ->afterStateUpdated(function (Set $set, Get $get, $state) {
+                            ->live()
+                            ->placeholder('Select a program')
+                            ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) {
                                 if ($state) {
-                                    $package = Package::find($state);
+                                    $package = \App\Models\Package::find($state);
                                     if ($package) {
                                         $set('total_fee', $package->total_fee);
                                         $set('downpayment_percent', $package->downpayment_percent);
@@ -75,6 +89,12 @@ class EnrollmentResource extends Resource
                                         $set('downpayment_amount', $downpaymentAmount);
                                         $set('remaining_balance', $package->total_fee - $downpaymentAmount);
                                     }
+                                } else {
+                                    // Clear fields when no package selected
+                                    $set('total_fee', null);
+                                    $set('downpayment_percent', null);
+                                    $set('downpayment_amount', null);
+                                    $set('remaining_balance', null);
                                 }
                             })
                             ->preload(),
@@ -83,7 +103,8 @@ class EnrollmentResource extends Resource
                             ->label('Registration Date')
                             ->required()
                             ->default(now())
-                            ->native(false),
+                            ->native(false)
+                            ->maxDate(now()),
 
                         Forms\Components\Select::make('status')
                             ->options([
@@ -91,7 +112,8 @@ class EnrollmentResource extends Resource
                                 'CANCELLED' => 'Cancelled',
                             ])
                             ->default('ACTIVE')
-                            ->required(),
+                            ->required()
+                            ->native(false),
                     ])
                     ->columns(2)
                     ->collapsible(),
@@ -105,32 +127,77 @@ class EnrollmentResource extends Resource
                             ->numeric()
                             ->prefix('₱')
                             ->required()
-                            ->readOnly()
-                            ->dehydrated(),
+                            ->disabled()
+                            ->dehydrated()
+                            ->placeholder('0.00')
+                            ->formatStateUsing(fn ($state) => $state ? number_format($state, 2) : '0.00'),
 
                         Forms\Components\TextInput::make('downpayment_percent')
                             ->label('Down Payment %')
                             ->numeric()
                             ->suffix('%')
                             ->required()
-                            ->readOnly()
-                            ->dehydrated(),
+                            ->disabled()
+                            ->dehydrated()
+                            ->placeholder('0.00')
+                            ->formatStateUsing(fn ($state) => $state ? number_format($state, 2) : '0.00'),
 
                         Forms\Components\TextInput::make('downpayment_amount')
                             ->label('Down Payment Amount')
                             ->numeric()
                             ->prefix('₱')
                             ->required()
-                            ->readOnly()
-                            ->dehydrated(),
+                            ->disabled()
+                            ->dehydrated()
+                            ->placeholder('0.00')
+                            ->formatStateUsing(fn ($state) => $state ? number_format($state, 2) : '0.00'),
 
                         Forms\Components\TextInput::make('remaining_balance')
                             ->label('Balance to Pay')
                             ->numeric()
                             ->prefix('₱')
                             ->required()
-                            ->readOnly()
-                            ->dehydrated(),
+                            ->disabled()
+                            ->dehydrated()
+                            ->placeholder('0.00')
+                            ->formatStateUsing(fn ($state) => $state ? number_format($state, 2) : '0.00'),
+                    ])
+                    ->columns(2)
+                    ->collapsible(),
+
+                Forms\Components\Section::make('Session Tracking')
+                    ->description('Track student attendance sessions')
+                    ->icon('heroicon-o-calendar-days')
+                    ->schema([
+                        Forms\Components\TextInput::make('total_sessions')
+                            ->label('Total Sessions Included')
+                            ->numeric()
+                            ->default(0)
+                            ->minValue(0)
+                            ->helperText('Total number of sessions included in this enrollment')
+                            ->required(),
+
+                        Forms\Components\TextInput::make('sessions_used')
+                            ->label('Sessions Used')
+                            ->numeric()
+                            ->default(0)
+                            ->disabled()
+                            ->dehydrated()
+                            ->helperText('Automatically updated when attendance is marked'),
+
+                        Forms\Components\Placeholder::make('session_info')
+                            ->label('Remaining Sessions')
+                            ->content(function (Forms\Get $get) {
+                                $total = $get('total_sessions') ?? 0;
+                                $used = $get('sessions_used') ?? 0;
+                                $remaining = max(0, $total - $used);
+                                
+                                if ($total == 0) {
+                                    return 'No sessions configured';
+                                }
+                                
+                                return "{$remaining} sessions remaining out of {$total} total";
+                            }),
                     ])
                     ->columns(2)
                     ->collapsible(),
@@ -183,6 +250,25 @@ class EnrollmentResource extends Resource
                     ->weight('semibold')
                     ->formatStateUsing(fn ($state) => $state <= 0 ? 'Fully Paid' : '₱' . number_format($state, 2)),
 
+                Tables\Columns\TextColumn::make('sessions_remaining')
+                    ->label('Sessions')
+                    ->badge()
+                    ->formatStateUsing(fn ($record) => "{$record->sessions_used} / {$record->total_sessions}")
+                    ->description(fn ($record) => $record->total_sessions > 0 ? "{$record->sessions_remaining} remaining" : 'No sessions')
+                    ->color(fn ($record) => match(true) {
+                        $record->total_sessions == 0 => 'gray',
+                        ($record->sessions_used / max(1, $record->total_sessions)) < 0.5 => 'success',
+                        ($record->sessions_used / max(1, $record->total_sessions)) < 0.8 => 'warning',
+                        default => 'danger'
+                    })
+                    ->icon(fn ($record) => match(true) {
+                        $record->total_sessions == 0 => 'heroicon-o-minus-circle',
+                        $record->sessions_remaining > 0 => 'heroicon-o-check-circle',
+                        default => 'heroicon-o-x-circle'
+                    })
+                    ->sortable(['sessions_used'])
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->colors([
@@ -222,6 +308,8 @@ class EnrollmentResource extends Resource
                     ->icon('heroicon-o-plus'),
             ])
             ->defaultPaginationPageOption(25)
+            ->defaultPaginationPageOption(25)
+            ->paginationPageOptions([10, 25, 50, 100])
             ->striped()
             ->poll('30s');
     }

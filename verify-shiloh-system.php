@@ -36,7 +36,7 @@ foreach ($tables as $table) {
 }
 
 echo "\n👥 User Roles:\n";
-$roles = ['ADMIN', 'TEACHER', 'PARENT', 'USER'];
+$roles = ['SUPERADMIN', 'ADMIN', 'PARENT'];
 foreach ($roles as $role) {
     $count = User::where('role', $role)->count();
     echo "  {$role}: {$count} users\n";
@@ -82,8 +82,8 @@ if (SessionType::count() === 0) {
     $allGood = false;
 }
 
-if (User::where('role', 'TEACHER')->count() === 0) {
-    echo "  ⚠️  No teachers - run: php artisan db:seed --class=TeacherSeeder\n";
+if (User::where('role', 'ADMIN')->count() === 0) {
+    echo "  ⚠️  No admin users - run: php artisan db:seed --class=SuperadminSeeder\n";
     $allGood = false;
 }
 

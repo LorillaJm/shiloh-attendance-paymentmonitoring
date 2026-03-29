@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Services\StudentNumberGenerator;
+use App\Scopes\ParentStudentScope;
 
 class Student extends Model
 {
@@ -47,6 +48,9 @@ class Student extends Model
     {
         parent::boot();
 
+        // Apply global scope for parent users
+        static::addGlobalScope(new ParentStudentScope());
+
         static::creating(function ($student) {
             if (empty($student->student_no)) {
                 $student->student_no = StudentNumberGenerator::generate();
@@ -56,20 +60,24 @@ class Student extends Model
         // Clear cache when student is created
         static::created(function ($student) {
             \App\Services\StudentCacheService::clearStatusCounts();
+            \App\Services\DashboardCacheService::clearStudentCounts();
         });
 
         // Clear cache when student is updated (especially status changes)
         static::updated(function ($student) {
             if ($student->wasChanged('status')) {
                 \App\Services\StudentCacheService::clearAll();
+                \App\Services\DashboardCacheService::clearStudentCounts();
             } else {
                 \App\Services\StudentCacheService::clearStatusCounts();
+                \App\Services\DashboardCacheService::clearStudentCounts();
             }
         });
 
         // Clear cache when student is deleted
         static::deleted(function ($student) {
             \App\Services\StudentCacheService::clearStatusCounts();
+            \App\Services\DashboardCacheService::clearStudentCounts();
         });
     }
 

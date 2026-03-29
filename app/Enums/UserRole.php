@@ -4,18 +4,16 @@ namespace App\Enums;
 
 enum UserRole: string
 {
+    case SUPERADMIN = 'SUPERADMIN';
     case ADMIN = 'ADMIN';
-    case TEACHER = 'TEACHER';
     case PARENT = 'PARENT';
-    case USER = 'USER';
 
     public function label(): string
     {
         return match($this) {
+            self::SUPERADMIN => 'Super Administrator',
             self::ADMIN => 'Administrator',
-            self::TEACHER => 'Teacher',
             self::PARENT => 'Parent/Guardian',
-            self::USER => 'User',
         };
     }
 
@@ -24,18 +22,38 @@ enum UserRole: string
         return $this === self::ADMIN;
     }
 
-    public function isTeacher(): bool
-    {
-        return $this === self::TEACHER;
-    }
-
     public function isParent(): bool
     {
         return $this === self::PARENT;
     }
 
-    public function isUser(): bool
+    /**
+     * Check if this role can manage users.
+     *
+     * @return bool
+     */
+    public function canManageUsers(): bool
     {
-        return $this === self::USER;
+        return $this === self::SUPERADMIN;
+    }
+
+    /**
+     * Check if this role can manage students.
+     *
+     * @return bool
+     */
+    public function canManageStudents(): bool
+    {
+        return in_array($this, [self::SUPERADMIN, self::ADMIN]);
+    }
+
+    /**
+     * Check if this role is read-only.
+     *
+     * @return bool
+     */
+    public function isReadOnly(): bool
+    {
+        return $this === self::PARENT;
     }
 }

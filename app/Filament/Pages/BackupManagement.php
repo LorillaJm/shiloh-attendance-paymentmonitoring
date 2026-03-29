@@ -16,14 +16,16 @@ class BackupManagement extends Page
 
     public static function shouldRegisterNavigation(): bool
     {
-        // Only show to admins
-        return auth()->user()?->isAdmin() ?? false;
+        // Only show to SUPERADMIN and ADMIN
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public static function canAccess(): bool
     {
-        // Only admins can access
-        return auth()->user()?->isAdmin() ?? false;
+        // Only SUPERADMIN and ADMIN can access
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public function generateBackup(): void

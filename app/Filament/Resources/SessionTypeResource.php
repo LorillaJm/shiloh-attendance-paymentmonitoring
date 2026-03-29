@@ -22,7 +22,11 @@ class SessionTypeResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')->required(),
-                Forms\Components\TextInput::make('code')->required()->unique(ignoreRecord: true)->uppercase(),
+                Forms\Components\TextInput::make('code')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->extraInputAttributes(['style' => 'text-transform: uppercase'])
+                    ->dehydrateStateUsing(fn ($state) => strtoupper($state)),
                 Forms\Components\Textarea::make('description')->rows(2),
                 Forms\Components\TextInput::make('default_duration_minutes')
                     ->numeric()
@@ -70,6 +74,7 @@ class SessionTypeResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->isAdmin();
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 }

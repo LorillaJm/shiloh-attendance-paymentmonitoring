@@ -3,7 +3,9 @@
     "type": "module",
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "apple:build": "npm run build && php artisan cache:clear && php artisan view:clear && php artisan optimize",
+        "apple:dev": "vite --host"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.9",

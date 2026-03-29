@@ -24,6 +24,7 @@ class User extends Authenticatable implements FilamentUser
         'email',
         'password',
         'role',
+        'theme',
     ];
 
     /**
@@ -55,13 +56,16 @@ class User extends Authenticatable implements FilamentUser
      */
     public function canAccessPanel(Panel $panel): bool
     {
-        // Parents have limited access - only to their portal pages
-        if ($this->isParent()) {
-            return true;
-        }
+        // SUPERADMIN, ADMIN and PARENT roles can access panels
+        return $this->isSuperadmin() || $this->isAdmin() || $this->isParent();
+    }
 
-        // All other roles can access panel
-        return in_array($this->role?->value, ['ADMIN', 'TEACHER', 'USER']);
+    /**
+     * Check if user is a superadmin.
+     */
+    public function isSuperadmin(): bool
+    {
+        return $this->role === UserRole::SUPERADMIN || $this->role?->value === 'SUPERADMIN';
     }
 
     /**
@@ -73,11 +77,19 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Check if user is a regular user.
+     * Check if user is a parent.
      */
-    public function isUser(): bool
+    public function isParent(): bool
     {
-        return $this->role === UserRole::USER || $this->role?->value === 'USER';
+        return $this->role === UserRole::PARENT || $this->role?->value === 'PARENT';
+    }
+
+    /**
+     * Check if user can manage other users.
+     */
+    public function canManageUsers(): bool
+    {
+        return $this->role?->canManageUsers() ?? false;
     }
 
     /**
@@ -94,37 +106,5 @@ class User extends Authenticatable implements FilamentUser
     public function guardian()
     {
         return $this->hasOne(Guardian::class);
-    }
-
-    /**
-     * Get assigned schedules if user is a teacher.
-     */
-    public function assignedSchedules()
-    {
-        return $this->hasMany(StudentSchedule::class, 'teacher_id');
-    }
-
-    /**
-     * Get assigned session occurrences if user is a teacher.
-     */
-    public function assignedSessions()
-    {
-        return $this->hasMany(SessionOccurrence::class, 'teacher_id');
-    }
-
-    /**
-     * Check if user is a teacher.
-     */
-    public function isTeacher(): bool
-    {
-        return $this->role === UserRole::TEACHER || $this->role?->value === 'TEACHER';
-    }
-
-    /**
-     * Check if user is a parent.
-     */
-    public function isParent(): bool
-    {
-        return $this->role === UserRole::PARENT || $this->role?->value === 'PARENT';
     }
 }

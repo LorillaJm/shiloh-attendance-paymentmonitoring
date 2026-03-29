@@ -11,6 +11,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class StudentScheduleResource extends Resource
 {
@@ -34,9 +35,10 @@ class StudentScheduleResource extends Resource
                     ->relationship('sessionType', 'name')
                     ->required(),
                 Forms\Components\Select::make('teacher_id')
-                    ->label('Assigned Teacher')
-                    ->options(User::where('role', UserRole::TEACHER->value)->pluck('name', 'id'))
-                    ->searchable(),
+                    ->label('Assigned Staff')
+                    ->options(User::where('role', UserRole::ADMIN->value)->pluck('name', 'id'))
+                    ->searchable()
+                    ->helperText('Optional: Assign a staff member to this schedule'),
                 Forms\Components\Select::make('recurrence_type')
                     ->options([
                         'DAILY' => 'Daily',
@@ -70,11 +72,12 @@ class StudentScheduleResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['student', 'sessionType', 'teacher']))
             ->columns([
                 Tables\Columns\TextColumn::make('student.student_no')->searchable(),
                 Tables\Columns\TextColumn::make('student.full_name')->searchable(),
                 Tables\Columns\TextColumn::make('sessionType.name'),
-                Tables\Columns\TextColumn::make('teacher.name')->label('Teacher'),
+                Tables\Columns\TextColumn::make('teacher.name')->label('Assigned Staff'),
                 Tables\Columns\TextColumn::make('recurrence_type'),
                 Tables\Columns\TextColumn::make('start_time')->time('H:i'),
                 Tables\Columns\TextColumn::make('end_time')->time('H:i'),
@@ -84,8 +87,8 @@ class StudentScheduleResource extends Resource
                 Tables\Filters\SelectFilter::make('session_type_id')
                     ->relationship('sessionType', 'name'),
                 Tables\Filters\SelectFilter::make('teacher_id')
-                    ->label('Teacher')
-                    ->options(User::where('role', UserRole::TEACHER->value)->pluck('name', 'id')),
+                    ->label('Assigned Staff')
+                    ->options(User::where('role', UserRole::ADMIN->value)->pluck('name', 'id')),
                 Tables\Filters\TernaryFilter::make('is_active'),
             ])
             ->actions([
@@ -114,7 +117,9 @@ class StudentScheduleResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultPaginationPageOption(25)
+            ->paginationPageOptions([10, 25, 50, 100]);
     }
 
     public static function getPages(): array
@@ -128,7 +133,8 @@ class StudentScheduleResource extends Resource
 
     public static function canViewAny(): bool
     {
+        // Only SUPERADMIN and ADMIN can view student schedules
         $user = auth()->user();
-        return $user->isAdmin() || $user->isTeacher();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 }

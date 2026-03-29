@@ -27,25 +27,35 @@ class ListStudents extends ListRecords
     protected function getStudentStatusCounts(): array
     {
         return Cache::remember('student_status_counts', 60, function () {
-            // Single query with GROUP BY - much more efficient
-            $counts = DB::table('students')
-                ->select('status', DB::raw('COUNT(*) as count'))
-                ->groupBy('status')
-                ->pluck('count', 'status')
-                ->toArray();
-            
-            // Calculate individual counts
-            $active = $counts['ACTIVE'] ?? 0;
-            $inactive = $counts['INACTIVE'] ?? 0;
-            $dropped = $counts['DROPPED'] ?? 0;
-            
-            // Ensure all statuses have a count (even if 0)
-            return [
-                'ACTIVE' => $active,
-                'INACTIVE' => $inactive,
-                'DROPPED' => $dropped,
-                'total' => $active + $inactive + $dropped,
-            ];
+            try {
+                // Single query with GROUP BY - much more efficient
+                $counts = DB::table('students')
+                    ->select('status', DB::raw('COUNT(*) as count'))
+                    ->groupBy('status')
+                    ->pluck('count', 'status')
+                    ->toArray();
+                
+                // Calculate individual counts
+                $active = $counts['ACTIVE'] ?? 0;
+                $inactive = $counts['INACTIVE'] ?? 0;
+                $dropped = $counts['DROPPED'] ?? 0;
+                
+                // Ensure all statuses have a count (even if 0)
+                return [
+                    'ACTIVE' => $active,
+                    'INACTIVE' => $inactive,
+                    'DROPPED' => $dropped,
+                    'total' => $active + $inactive + $dropped,
+                ];
+            } catch (\Exception $e) {
+                // Return default counts if query fails
+                return [
+                    'ACTIVE' => 0,
+                    'INACTIVE' => 0,
+                    'DROPPED' => 0,
+                    'total' => 0,
+                ];
+            }
         });
     }
 
@@ -55,21 +65,21 @@ class ListStudents extends ListRecords
         
         return [
             'all' => Tab::make('All Students')
-                ->badge($counts['total']),
+                ->badge($counts['total'] ?? 0),
             
             'active' => Tab::make('Active')
                 ->modifyQueryUsing(fn ($query) => $query->where('status', 'ACTIVE'))
-                ->badge($counts['ACTIVE'])
+                ->badge($counts['ACTIVE'] ?? 0)
                 ->badgeColor('success'),
             
             'inactive' => Tab::make('Inactive')
                 ->modifyQueryUsing(fn ($query) => $query->where('status', 'INACTIVE'))
-                ->badge($counts['INACTIVE'])
+                ->badge($counts['INACTIVE'] ?? 0)
                 ->badgeColor('gray'),
             
             'dropped' => Tab::make('Dropped')
                 ->modifyQueryUsing(fn ($query) => $query->where('status', 'DROPPED'))
-                ->badge($counts['DROPPED'])
+                ->badge($counts['DROPPED'] ?? 0)
                 ->badgeColor('danger'),
         ];
     }

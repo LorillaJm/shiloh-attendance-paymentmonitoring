@@ -30,14 +30,16 @@ class AttendanceRecordResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        // Show to both admin and users
-        return true;
+        // Only show to SUPERADMIN and ADMIN
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public static function canViewAny(): bool
     {
-        // Both admin and users can view attendance records
-        return true;
+        // Only SUPERADMIN and ADMIN can view attendance records in admin panel
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public static function form(Form $form): Form
@@ -93,6 +95,7 @@ class AttendanceRecordResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['student', 'encodedBy']))
             ->columns([
                 Tables\Columns\TextColumn::make('attendance_date')
                     ->label('Date')
@@ -209,6 +212,8 @@ class AttendanceRecordResource extends Resource
                     ->icon('heroicon-o-pencil-square')
                     ->url(route('filament.admin.pages.daily-attendance-encoder')),
             ])
+            ->defaultPaginationPageOption(25)
+            ->paginationPageOptions([10, 25, 50, 100])
             ->striped()
             ->poll('30s');
     }

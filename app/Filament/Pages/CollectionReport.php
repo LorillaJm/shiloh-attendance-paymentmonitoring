@@ -34,14 +34,16 @@ class CollectionReport extends Page implements HasTable, HasForms
 
     public static function shouldRegisterNavigation(): bool
     {
-        // Only show to admins (financial data)
-        return auth()->user()?->isAdmin() ?? false;
+        // Only show to SUPERADMIN and ADMIN (financial data)
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public static function canAccess(): bool
     {
-        // Only admins can access financial reports
-        return auth()->user()?->isAdmin() ?? false;
+        // Only SUPERADMIN and ADMIN can access financial reports
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public ?array $data = [];

@@ -11,6 +11,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 
 class PaymentTransactionResource extends Resource
 {
@@ -59,6 +60,7 @@ class PaymentTransactionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['enrollment.student', 'enrollment.package', 'processedBy']))
             ->columns([
                 Tables\Columns\TextColumn::make('transaction_date')->date()->sortable(),
                 Tables\Columns\TextColumn::make('enrollment.student.full_name')->searchable(),
@@ -89,7 +91,9 @@ class PaymentTransactionResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('transaction_date', 'desc');
+            ->defaultSort('transaction_date', 'desc')
+            ->defaultPaginationPageOption(25)
+            ->paginationPageOptions([10, 25, 50, 100]);
     }
 
     public static function getPages(): array
@@ -103,6 +107,7 @@ class PaymentTransactionResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return Auth::user()->isAdmin();
+        $user = Auth::user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 }

@@ -1,0 +1,1 @@
+@vite(["resources/css/apple-dashboard.css", "resources/css/dark-mode-improvements.css"])

@@ -3,10 +3,12 @@ import defaultTheme from 'tailwindcss/defaultTheme'
 
 export default {
     presets: [preset],
+    darkMode: 'class',
     content: [
         './app/Filament/**/*.php',
         './resources/views/filament/**/*.blade.php',
         './vendor/filament/**/*.blade.php',
+        './resources/views/livewire/**/*.blade.php',
     ],
     theme: {
         extend: {

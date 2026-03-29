@@ -27,25 +27,39 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(false)  // Disable Filament login
+            ->loginRouteSlug('login')  // Redirect to our custom login
             ->colors([
                 'primary' => [
-                    50 => '239, 246, 255',
-                    100 => '219, 234, 254',
-                    200 => '191, 219, 254',
-                    300 => '147, 197, 253',
-                    400 => '96, 165, 250',
-                    500 => '59, 130, 246',
-                    600 => '37, 99, 235',
-                    700 => '29, 78, 216',
-                    800 => '30, 64, 175',
-                    900 => '30, 58, 138',
-                    950 => '23, 37, 84',
+                    50 => '240, 249, 255',
+                    100 => '224, 242, 254',
+                    200 => '186, 230, 253',
+                    300 => '125, 211, 252',
+                    400 => '56, 189, 248',
+                    500 => '14, 165, 233',
+                    600 => '2, 132, 199',
+                    700 => '3, 105, 161',
+                    800 => '7, 89, 133',
+                    900 => '12, 74, 110',
+                    950 => '8, 47, 73',
+                ],
+                'gray' => [
+                    50 => '249, 250, 251',
+                    100 => '243, 244, 246',
+                    200 => '229, 231, 235',
+                    300 => '209, 213, 219',
+                    400 => '156, 163, 175',
+                    500 => '107, 114, 128',
+                    600 => '75, 85, 99',
+                    700 => '55, 65, 81',
+                    800 => '31, 41, 55',
+                    900 => '17, 24, 39',
+                    950 => '3, 7, 18',
                 ],
             ])
             ->font('Inter')
             ->darkMode(true)
-            ->brandName('Shiloh')
+            ->brandName('Shiloh Learning Center')
             ->brandLogoHeight('2rem')
             ->favicon(asset('favicon.ico'))
             ->sidebarCollapsibleOnDesktop()
@@ -72,6 +86,11 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->authGuard('web')
+            ->loginRouteSlug('login')
+            ->middleware([
+                \App\Http\Middleware\RedirectAfterLogin::class,
+            ], isPersistent: true)
             ->navigationGroups([
                 'Overview',
                 'User Management',
@@ -83,6 +102,29 @@ class AdminPanelProvider extends PanelProvider
                 'Reports',
                 'System',
             ])
-            ->globalSearchKeyBindings(['command+k', 'ctrl+k']);
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
+            ->breadcrumbs(true)
+            ->renderHook(
+                'panels::user-menu.before',
+                fn () => \Blade::render('@livewire(\'theme-toggle\')')
+            )
+            ->renderHook(
+                'panels::head.start',
+                fn () => '<script>
+                    const theme = "' . (auth()->check() ? (auth()->user()->theme ?? 'light') : 'light') . '";
+                    document.documentElement.dataset.theme = theme;
+                    if (theme === "dark") {
+                        document.documentElement.classList.add("dark");
+                    }
+                </script>'
+            )
+            ->renderHook(
+                'panels::styles.before',
+                fn () => \Blade::render('@vite(["resources/css/apple-dashboard.css", "resources/css/dark-mode-improvements.css"])')
+            )
+            ->renderHook(
+                'panels::scripts.after',
+                fn () => \Blade::render('@vite(["resources/js/apple-dashboard.js", "resources/js/theme-toggle.js"])')
+            );
     }
 }

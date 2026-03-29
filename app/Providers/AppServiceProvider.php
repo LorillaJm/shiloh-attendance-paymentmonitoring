@@ -14,7 +14,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Register custom login response for unified login
+        $this->app->singleton(
+            \Filament\Http\Responses\Auth\Contracts\LoginResponse::class,
+            \App\Http\Responses\LoginResponse::class
+        );
+
+        // Register custom logout response
+        $this->app->singleton(
+            \Filament\Http\Responses\Auth\Contracts\LogoutResponse::class,
+            \App\Http\Responses\LogoutResponse::class
+        );
     }
 
     /**
@@ -36,5 +46,13 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Student::observe(\App\Observers\StudentObserver::class);
         \App\Models\PaymentSchedule::observe(\App\Observers\PaymentScheduleObserver::class);
         \App\Models\AttendanceRecord::observe(\App\Observers\AttendanceRecordObserver::class);
+
+        // Share theme with all views
+        view()->composer('*', function ($view) {
+            if (auth()->check()) {
+                $theme = auth()->user()->theme ?? 'light';
+                $view->with('userTheme', $theme);
+            }
+        });
     }
 }

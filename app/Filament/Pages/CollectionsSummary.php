@@ -9,6 +9,7 @@ use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class CollectionsSummary extends Page implements HasTable
 {
@@ -26,14 +27,16 @@ class CollectionsSummary extends Page implements HasTable
 
     public static function shouldRegisterNavigation(): bool
     {
-        // Only show to admins (financial data)
-        return auth()->user()?->isAdmin() ?? false;
+        // Only show to SUPERADMIN and ADMIN (financial data)
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public static function canAccess(): bool
     {
-        // Only admins can access financial summaries
-        return auth()->user()?->isAdmin() ?? false;
+        // Only SUPERADMIN and ADMIN can access financial summaries
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public function getHeading(): string

@@ -46,6 +46,15 @@ class StudentLedger extends Page implements HasForms
                         Forms\Components\Select::make('student_id')
                             ->label('Student')
                             ->searchable()
+                            ->options(function () {
+                                return \App\Models\Student::query()
+                                    ->orderBy('student_no')
+                                    ->limit(100)
+                                    ->get()
+                                    ->mapWithKeys(fn ($student) => [
+                                        $student->id => "{$student->student_no} - {$student->full_name}"
+                                    ]);
+                            })
                             ->getSearchResultsUsing(fn (string $search): array => 
                                 \App\Models\Student::where('student_no', 'like', "%{$search}%")
                                     ->orWhere('first_name', 'like', "%{$search}%")
@@ -61,8 +70,9 @@ class StudentLedger extends Page implements HasForms
                                 \App\Models\Student::find($value)?->student_no . ' - ' . \App\Models\Student::find($value)?->full_name
                             )
                             ->required()
-                            ->reactive()
-                            ->afterStateUpdated(fn () => $this->loadStudent()),
+                            ->live()
+                            ->afterStateUpdated(fn () => $this->loadStudent())
+                            ->placeholder('Select a student'),
                     ]),
             ])
             ->statePath('data');

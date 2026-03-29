@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Database\Eloquent\Builder;
 
 class GuardianResource extends Resource
 {
@@ -56,7 +57,15 @@ class GuardianResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('id')
                                     ->label('Student')
-                                    ->relationship('students', 'first_name')
+                                    ->options(function () {
+                                        return \App\Models\Student::query()
+                                            ->orderBy('first_name')
+                                            ->orderBy('last_name')
+                                            ->get()
+                                            ->mapWithKeys(function ($student) {
+                                                return [$student->id => $student->full_name];
+                                            });
+                                    })
                                     ->searchable()
                                     ->preload()
                                     ->required(),
@@ -72,6 +81,7 @@ class GuardianResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['user', 'students']))
             ->columns([
                 Tables\Columns\TextColumn::make('full_name')->label('Name')->searchable(['first_name', 'last_name']),
                 Tables\Columns\TextColumn::make('contact_number')->searchable(),
@@ -89,7 +99,9 @@ class GuardianResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultPaginationPageOption(25)
+            ->paginationPageOptions([10, 25, 50, 100]);
     }
 
     public static function getPages(): array
@@ -103,6 +115,7 @@ class GuardianResource extends Resource
 
     public static function canViewAny(): bool
     {
-        return auth()->user()->isAdmin();
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 }

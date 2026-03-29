@@ -15,6 +15,17 @@
     --radius-md: 0.75rem;
     --radius-lg: 1rem;
     --radius-xl: 1.5rem;
+    
+    /* Apple-style shadows */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Transition timings */
+    --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* Typography - Clean and Minimal */
@@ -27,11 +38,23 @@
 /* Card Enhancements */
 .fi-section {
     @apply shadow-soft-lg border-0 rounded-2xl;
-    transition: all 0.2s ease-in-out;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
 }
 
 .fi-section:hover {
     @apply shadow-soft-xl;
+    transform: translateY(-2px);
+}
+
+/* Widget Cards */
+.fi-wi-stats-overview-stat {
+    @apply rounded-2xl;
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+}
+
+.fi-wi-stats-overview-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
 }
 
 /* Table Styling */
@@ -49,12 +72,27 @@
 
 /* Button Refinements */
 .fi-btn {
-    @apply rounded-xl font-medium transition-all duration-200;
-    @apply shadow-soft hover:shadow-soft-lg;
+    @apply rounded-xl font-medium;
+    transition: all var(--transition-base);
+    @apply shadow-soft;
+}
+
+.fi-btn:hover {
+    @apply shadow-soft-lg;
+    transform: translateY(-1px);
+}
+
+.fi-btn:active {
+    transform: translateY(0);
+    @apply shadow-soft;
 }
 
 .fi-btn-primary {
     @apply bg-gradient-to-b from-primary-500 to-primary-600;
+}
+
+.fi-btn-primary:hover {
+    @apply from-primary-400 to-primary-500;
 }
 
 /* Form Fields */
@@ -62,8 +100,14 @@
 .fi-select,
 .fi-textarea {
     @apply rounded-xl border-gray-200 dark:border-gray-700;
-    @apply focus:ring-2 focus:ring-primary-500/20;
-    @apply transition-all duration-200;
+    transition: all var(--transition-base);
+}
+
+.fi-input:focus,
+.fi-select:focus,
+.fi-textarea:focus {
+    @apply ring-2 ring-primary-500/20 border-primary-400;
+    transform: translateY(-1px);
 }
 
 /* Badge Styling */
@@ -74,30 +118,119 @@
 
 /* Sidebar Navigation */
 .fi-sidebar-nav-item {
-    @apply rounded-xl transition-all duration-200;
-    @apply hover:bg-gray-100 dark:hover:bg-gray-800;
+    @apply rounded-xl;
+    transition: all var(--transition-base);
+}
+
+.fi-sidebar-nav-item:hover {
+    @apply bg-gray-100 dark:bg-gray-800;
+    transform: translateX(4px);
 }
 
 .fi-sidebar-nav-item-active {
     @apply bg-primary-50 dark:bg-primary-900/20;
     @apply text-primary-600 dark:text-primary-400;
     @apply shadow-soft;
+    transform: translateX(4px);
 }
 
 /* Stats Cards */
 .stat-card {
     @apply bg-white dark:bg-gray-900 rounded-2xl p-6;
     @apply shadow-soft-lg border border-gray-100 dark:border-gray-800;
-    @apply transition-all duration-200 hover:shadow-soft-xl;
+    transition: all var(--transition-base);
+}
+
+.stat-card:hover {
+    @apply shadow-soft-xl;
+    transform: translateY(-4px);
+}
+
+/* Fix oversized icons in stat cards */
+.fi-wi-stats-overview-stat-icon {
+    @apply w-5 h-5 !important;
+}
+
+.fi-wi-stats-overview-stat .fi-icon {
+    @apply w-5 h-5 !important;
+}
+
+/* Fix description icon size */
+.fi-wi-stats-overview-stat-description-icon {
+    @apply w-4 h-4 !important;
+}
+
+/* Hide all stat card icons completely for cleaner look */
+.fi-wi-stats-overview-stat-icon,
+.fi-wi-stats-overview-stat-description-icon,
+.fi-wi-stats-overview-stat .fi-icon {
+    @apply hidden !important;
 }
 
 .stat-value {
     @apply text-4xl font-bold tracking-tight;
+    @apply bg-gradient-to-br from-gray-900 to-gray-700;
+    @apply dark:from-gray-100 dark:to-gray-300;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .stat-label {
     @apply text-sm font-medium text-gray-600 dark:text-gray-400;
     @apply mt-2;
+}
+
+/* Card Groups */
+.card-group {
+    @apply grid gap-4;
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+}
+
+.card-group-tight {
+    @apply gap-3;
+}
+
+/* Info Cards */
+.info-card {
+    @apply bg-white dark:bg-gray-900 rounded-xl p-5;
+    @apply border border-gray-200 dark:border-gray-800;
+    @apply shadow-soft;
+    transition: all var(--transition-base);
+}
+
+.info-card:hover {
+    @apply border-primary-300 dark:border-primary-700;
+    @apply shadow-soft-lg;
+}
+
+.info-card-header {
+    @apply flex items-center justify-between mb-4;
+    @apply pb-3 border-b border-gray-100 dark:border-gray-800;
+}
+
+.info-card-title {
+    @apply text-lg font-semibold text-gray-900 dark:text-gray-100;
+}
+
+.info-card-body {
+    @apply space-y-3;
+}
+
+/* Metric Cards */
+.metric-card {
+    @apply relative overflow-hidden;
+    @apply bg-gradient-to-br from-white to-gray-50;
+    @apply dark:from-gray-900 dark:to-gray-800;
+    @apply rounded-2xl p-6 shadow-soft-lg;
+    @apply border border-gray-100 dark:border-gray-800;
+}
+
+.metric-card::before {
+    content: '';
+    @apply absolute top-0 right-0 w-32 h-32;
+    @apply bg-gradient-to-br from-primary-500/10 to-transparent;
+    @apply rounded-full blur-2xl;
 }
 
 /* Status Indicators */
@@ -119,12 +252,118 @@
     .fi-ta-cell {
         @apply py-3 px-2;
     }
+    
+    /* Stack cards vertically on mobile */
+    .fi-wi-stats-overview {
+        @apply grid-cols-1;
+    }
+    
+    /* Adjust sidebar for mobile */
+    .fi-sidebar {
+        @apply w-full;
+    }
+    
+    /* Touch-friendly buttons */
+    .fi-btn {
+        @apply min-h-[44px] min-w-[44px];
+    }
+    
+    /* Larger form inputs for mobile */
+    .fi-input,
+    .fi-select,
+    .fi-textarea {
+        @apply text-base min-h-[44px];
+    }
+}
+
+/* Tablet Responsive */
+@media (min-width: 768px) and (max-width: 1024px) {
+    .fi-wi-stats-overview {
+        @apply grid-cols-2;
+    }
+    
+    .fi-section {
+        @apply p-4;
+    }
+}
+
+/* Desktop Optimizations */
+@media (min-width: 1024px) {
+    .fi-wi-stats-overview {
+        @apply grid-cols-4;
+    }
+    
+    /* Hover effects only on desktop */
+    .fi-ta-row:hover {
+        @apply bg-gray-50 dark:bg-gray-800/50;
+        transform: scale(1.01);
+    }
+}
+
+/* Large Desktop */
+@media (min-width: 1536px) {
+    .fi-main {
+        @apply max-w-screen-2xl mx-auto;
+    }
 }
 
 /* Smooth Transitions */
 * {
     @apply transition-colors duration-150;
 }
+
+/* Page Transitions */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.fi-main {
+    animation: fadeIn var(--transition-slow) ease-out;
+}
+
+.fi-section {
+    animation: scaleIn var(--transition-base) ease-out;
+}
+
+.fi-ta-row {
+    animation: slideIn var(--transition-fast) ease-out;
+}
+
+/* Stagger animation for table rows */
+.fi-ta-row:nth-child(1) { animation-delay: 0ms; }
+.fi-ta-row:nth-child(2) { animation-delay: 30ms; }
+.fi-ta-row:nth-child(3) { animation-delay: 60ms; }
+.fi-ta-row:nth-child(4) { animation-delay: 90ms; }
+.fi-ta-row:nth-child(5) { animation-delay: 120ms; }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
@@ -148,8 +387,201 @@
     @apply animate-pulse;
 }
 
+/* Loading Spinner */
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Skeleton Loading */
+.skeleton {
+    @apply bg-gray-200 dark:bg-gray-700 rounded;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    @apply fixed inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm;
+    @apply flex items-center justify-center z-50;
+    animation: fadeIn var(--transition-fast) ease-out;
+}
+
+.loading-spinner {
+    @apply w-12 h-12 border-4 border-primary-200 border-t-primary-600 rounded-full;
+    animation: spin 1s linear infinite;
+}
+
 /* Focus States - Apple-like */
 *:focus-visible {
     @apply outline-none ring-2 ring-primary-500/50 ring-offset-2;
     @apply ring-offset-white dark:ring-offset-gray-900;
+}
+
+/* Breadcrumbs */
+.fi-breadcrumbs {
+    @apply flex items-center space-x-2 text-sm;
+    @apply text-gray-600 dark:text-gray-400;
+}
+
+.fi-breadcrumb-item {
+    @apply flex items-center;
+    transition: color var(--transition-fast);
+}
+
+.fi-breadcrumb-item:hover {
+    @apply text-primary-600 dark:text-primary-400;
+}
+
+.fi-breadcrumb-separator {
+    @apply mx-2 text-gray-400;
+}
+
+/* Navigation Groups */
+.fi-sidebar-nav-group {
+    @apply mb-4;
+}
+
+.fi-sidebar-nav-group-label {
+    @apply text-xs font-semibold uppercase tracking-wider;
+    @apply text-gray-500 dark:text-gray-400;
+    @apply px-3 py-2;
+}
+
+/* Active Navigation Indicator */
+.fi-sidebar-nav-item-active::before {
+    content: '';
+    @apply absolute left-0 top-1/2 -translate-y-1/2;
+    @apply w-1 h-8 bg-primary-600 rounded-r-full;
+}
+
+/* Back Button */
+.back-button {
+    @apply inline-flex items-center gap-2;
+    @apply text-sm font-medium text-gray-600 dark:text-gray-400;
+    @apply hover:text-primary-600 dark:hover:text-primary-400;
+    transition: all var(--transition-base);
+}
+
+.back-button:hover {
+    transform: translateX(-4px);
+}
+
+/* Navigation Badge */
+.nav-badge {
+    @apply inline-flex items-center justify-center;
+    @apply min-w-[20px] h-5 px-1.5 rounded-full;
+    @apply text-xs font-semibold;
+    @apply bg-primary-100 text-primary-700;
+    @apply dark:bg-primary-900/30 dark:text-primary-400;
+}
+
+/* Progressive Disclosure */
+.collapsible-section {
+    @apply overflow-hidden;
+    transition: max-height var(--transition-slow) ease-in-out;
+}
+
+.collapsible-section.collapsed {
+    @apply max-h-0;
+}
+
+.collapsible-section.expanded {
+    @apply max-h-screen;
+}
+
+.collapsible-trigger {
+    @apply flex items-center justify-between w-full;
+    @apply px-4 py-3 rounded-lg;
+    @apply bg-gray-50 dark:bg-gray-800;
+    @apply hover:bg-gray-100 dark:hover:bg-gray-700;
+    transition: all var(--transition-base);
+}
+
+.collapsible-trigger:hover {
+    transform: translateX(2px);
+}
+
+.collapsible-icon {
+    @apply transition-transform duration-300;
+}
+
+.collapsible-icon.expanded {
+    transform: rotate(180deg);
+}
+
+/* Quick Actions */
+.quick-actions {
+    @apply grid gap-3;
+    @apply grid-cols-2 sm:grid-cols-3 lg:grid-cols-4;
+}
+
+.quick-action-btn {
+    @apply flex flex-col items-center justify-center;
+    @apply p-4 rounded-xl;
+    @apply bg-white dark:bg-gray-900;
+    @apply border border-gray-200 dark:border-gray-800;
+    @apply shadow-soft hover:shadow-soft-lg;
+    @apply text-center;
+    transition: all var(--transition-base);
+}
+
+.quick-action-btn:hover {
+    @apply border-primary-300 dark:border-primary-700;
+    transform: translateY(-2px);
+}
+
+.quick-action-icon {
+    @apply w-5 h-5 mb-2;
+    @apply text-primary-600 dark:text-primary-400;
+}
+
+.quick-action-label {
+    @apply text-sm font-medium;
+    @apply text-gray-700 dark:text-gray-300;
+}
+
+/* Minimal Dashboard Layout */
+.dashboard-minimal {
+    @apply space-y-6;
+}
+
+.dashboard-section {
+    @apply bg-white dark:bg-gray-900 rounded-2xl p-6;
+    @apply border border-gray-100 dark:border-gray-800;
+    @apply shadow-soft;
+}
+
+.dashboard-section-header {
+    @apply flex items-center justify-between mb-4;
+}
+
+.dashboard-section-title {
+    @apply text-lg font-semibold text-gray-900 dark:text-gray-100;
+}
+
+.dashboard-section-action {
+    @apply text-sm font-medium text-primary-600 dark:text-primary-400;
+    @apply hover:text-primary-700 dark:hover:text-primary-300;
+    transition: color var(--transition-fast);
+}
+
+/* Critical Metrics Only */
+.critical-metric {
+    @apply relative;
+}
+
+.critical-metric-badge {
+    @apply absolute -top-1 -right-1;
+    @apply w-3 h-3 bg-red-500 rounded-full;
+    @apply animate-pulse;
 }

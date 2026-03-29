@@ -15,7 +15,7 @@ class StudentPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Both ADMIN and USER can view students
+        // All authenticated users can view students (with scope applied)
         return true;
     }
 
@@ -24,7 +24,12 @@ class StudentPolicy
      */
     public function view(User $user, Student $student): bool
     {
-        // Both ADMIN and USER can view students
+        // Parents can only view their own children
+        if ($user->isParent()) {
+            return $user->guardian && $user->guardian->students->contains($student->id);
+        }
+        
+        // Admins and users can view all students
         return true;
     }
 
@@ -33,8 +38,8 @@ class StudentPolicy
      */
     public function create(User $user): bool
     {
-        // Both ADMIN and USER can create students
-        return true;
+        // Only ADMIN can create students
+        return $user->isAdmin();
     }
 
     /**
@@ -42,8 +47,8 @@ class StudentPolicy
      */
     public function update(User $user, Student $student): bool
     {
-        // Both ADMIN and USER can update students
-        return true;
+        // Only ADMIN can update students
+        return $user->isAdmin();
     }
 
     /**

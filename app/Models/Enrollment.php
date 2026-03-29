@@ -20,6 +20,8 @@ class Enrollment extends Model
         'downpayment_amount',
         'remaining_balance',
         'status',
+        'total_sessions',
+        'sessions_used',
     ];
 
     protected function casts(): array
@@ -30,6 +32,8 @@ class Enrollment extends Model
             'downpayment_percent' => 'decimal:2',
             'downpayment_amount' => 'decimal:2',
             'remaining_balance' => 'decimal:2',
+            'total_sessions' => 'integer',
+            'sessions_used' => 'integer',
         ];
     }
 
@@ -99,5 +103,58 @@ class Enrollment extends Model
         return $this->paymentSchedules()
             ->where('status', 'OVERDUE')
             ->count();
+    }
+
+    /**
+     * Get remaining sessions count.
+     */
+    public function getSessionsRemainingAttribute(): int
+    {
+        return max(0, $this->total_sessions - $this->sessions_used);
+    }
+
+    /**
+     * Get session usage percentage.
+     */
+    public function getSessionUsagePercentageAttribute(): float
+    {
+        if ($this->total_sessions == 0) {
+            return 0;
+        }
+        return ($this->sessions_used / $this->total_sessions) * 100;
+    }
+
+    /**
+     * Check if student has remaining sessions.
+     */
+    public function hasRemainingSessions(): bool
+    {
+        return $this->sessions_remaining > 0;
+    }
+
+    /**
+     * Increment sessions used (when student attends).
+     */
+    public function incrementSessionsUsed(): bool
+    {
+        if ($this->sessions_used >= $this->total_sessions) {
+            return false; // No more sessions available
+        }
+
+        $this->increment('sessions_used');
+        return true;
+    }
+
+    /**
+     * Decrement sessions used (when attendance is removed).
+     */
+    public function decrementSessionsUsed(): bool
+    {
+        if ($this->sessions_used <= 0) {
+            return false;
+        }
+
+        $this->decrement('sessions_used');
+        return true;
     }
 }

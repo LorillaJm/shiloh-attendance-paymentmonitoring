@@ -79,33 +79,27 @@ class StatsOverviewWidget extends BaseWidget
             $statCards = [
                 Stat::make('Active Students', number_format($stats['total_students']))
                     ->description('Currently enrolled')
-                    ->descriptionIcon('heroicon-o-user-group')
                     ->color('primary')
                     ->chart([7, 8, 9, 10, 11, 12, $stats['total_students']]),
 
                 Stat::make('Fully Paid', number_format($stats['fully_paid']))
                     ->description('No balance remaining')
-                    ->descriptionIcon('heroicon-o-check-circle')
                     ->color('success'),
 
                 Stat::make('With Balance', number_format($stats['with_balance']))
                     ->description('Has remaining payments')
-                    ->descriptionIcon('heroicon-o-banknotes')
                     ->color('warning'),
 
                 Stat::make('Due Next 15th', number_format($stats['due_next_15th']))
                     ->description($stats['next_15th_date'])
-                    ->descriptionIcon('heroicon-o-clock')
                     ->color('info'),
 
                 Stat::make('Overdue Payments', number_format($stats['overdue']))
                     ->description('Past due date - needs attention')
-                    ->descriptionIcon('heroicon-o-exclamation-triangle')
                     ->color('danger'),
 
                 Stat::make('Collected Today', '₱' . number_format($stats['collected_today'], 2))
                     ->description('Today\'s collections')
-                    ->descriptionIcon('heroicon-o-currency-dollar')
                     ->color('success'),
             ];
 

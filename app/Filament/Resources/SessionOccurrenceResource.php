@@ -35,9 +35,10 @@ class SessionOccurrenceResource extends Resource
                     ->relationship('sessionType', 'name')
                     ->required(),
                 Forms\Components\Select::make('teacher_id')
-                    ->label('Teacher')
-                    ->options(User::where('role', UserRole::TEACHER->value)->pluck('name', 'id'))
-                    ->searchable(),
+                    ->label('Assigned Staff')
+                    ->options(User::where('role', UserRole::ADMIN->value)->pluck('name', 'id'))
+                    ->searchable()
+                    ->helperText('Optional: Assign a staff member to this session'),
                 Forms\Components\DatePicker::make('session_date')->required()->default(now()),
                 Forms\Components\TimePicker::make('start_time')->required(),
                 Forms\Components\TimePicker::make('end_time')->required(),
@@ -60,6 +61,7 @@ class SessionOccurrenceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn (Builder $query) => $query->with(['student', 'sessionType', 'teacher', 'attendanceRecord']))
             ->columns([
                 Tables\Columns\TextColumn::make('session_date')->date()->sortable(),
                 Tables\Columns\TextColumn::make('student.student_no')->searchable(),
@@ -101,19 +103,15 @@ class SessionOccurrenceResource extends Resource
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('session_date', 'desc');
+            ->defaultSort('session_date', 'desc')
+            ->defaultPaginationPageOption(25)
+            ->paginationPageOptions([10, 25, 50, 100]);
     }
 
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        $user = auth()->user();
-
-        // Teachers only see their assigned sessions
-        if ($user->isTeacher()) {
-            $query->where('teacher_id', $user->id);
-        }
-
+        // All admins see all sessions
         return $query;
     }
 
@@ -128,7 +126,8 @@ class SessionOccurrenceResource extends Resource
 
     public static function canViewAny(): bool
     {
+        // Only SUPERADMIN and ADMIN can view session occurrences
         $user = auth()->user();
-        return $user->isAdmin() || $user->isTeacher();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 }

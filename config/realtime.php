@@ -35,5 +35,5 @@ return [
     'enabled' => env('REALTIME_POLLING_ENABLED', true),
 
     // Role-based polling (which roles can see real-time updates)
-    'allowed_roles' => ['ADMIN', 'USER'],
+    'allowed_roles' => ['ADMIN'],
 ];

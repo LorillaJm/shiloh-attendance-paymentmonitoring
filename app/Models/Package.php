@@ -60,4 +60,13 @@ class Package extends Model
     {
         return $this->hasMany(Enrollment::class);
     }
+
+    /**
+     * Get the programs included in this package.
+     */
+    public function programs()
+    {
+        return $this->belongsToMany(Program::class, 'package_program')
+            ->withTimestamps();
+    }
 }

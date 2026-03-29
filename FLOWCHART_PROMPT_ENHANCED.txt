@@ -1,0 +1,193 @@
+# ENHANCED SYSTEM FLOWCHART PROMPT
+# Shiloh Attendance and Payment Monitoring System
+
+You are a senior system architect. Generate a complete SYSTEM FLOWCHART for the Laravel-based "Shiloh Attendance and Payment Monitoring System".
+
+## SYSTEM CONTEXT
+- Laravel 11.48.0 + Filament 3.x + PostgreSQL (Supabase)
+- Roles: Admin (full access), Parent (read-only for own children)
+- Students are records only (not login users)
+
+## CORE MODULES (16 Total)
+1. Authentication & Authorization
+2. Student Management
+3. Guardian/Parent Management  
+4. Package Management (therapy packages with pricing)
+5. Enrollment Management (student enrollment in packages)
+6. Payment Schedule Management (installment tracking)
+7. Payment Transaction Management (payment ledger)
+8. Attendance Monitoring
+9. Session Type Management
+10. Session Schedule Management (recurring schedules)
+11. Session Occurrence Tracking (actual sessions)
+12. Dashboard Analytics (with caching)
+13. Notification System
+14. Reports & Exports (8 report types)
+15. Cache Management (auto-invalidation)
+16. Backup Management
+
+## KEY FLOWS TO INCLUDE
+
+### 1. AUTHENTICATION FLOW
+Start → Credentials → Validate format → Query user → Verify password → Check role
+→ If ADMIN: Admin Dashboard
+→ If PARENT: Parent Portal (with scope filtering)
+
+### 2. ENROLLMENT PROCESS (CRITICAL - MISSING IN ORIGINAL)
+Admin creates enrollment → Select student + package → Calculate fees
+→ BEGIN TRANSACTION
+→ INSERT enrollment (total_fee, downpayment_amount, remaining_balance)
+→ GENERATE payment schedules (for each installment month)
+→ INSERT payment_schedules (due_date, amount_due, status='UNPAID')
+→ If downpayment paid: INSERT payment_transaction + UPDATE schedule
+→ COMMIT TRANSACTION
+→ Clear cache → Success
+
+### 3. PAYMENT PROCESSING (ENHANCED)
+Admin records payment → Select enrollment + schedule → Enter amount + method
+→ Validate (amount > 0, ≤ amount_due, enrollment active)
+→ BEGIN TRANSACTION
+→ INSERT payment_transaction (type='PAYMENT', amount, payment_date, method)
+→ UPDATE payment_schedule (amount_paid, status='PAID' if fully paid)
+→ UPDATE enrollment (remaining_balance -= amount)
+→ If fully paid: UPDATE enrollment status='COMPLETED'
+→ COMMIT TRANSACTION
+→ Clear payment cache → Trigger notification → Success
+
+### 4. ATTENDANCE RECORDING (DAILY ENCODER)
+Admin opens encoder → Select date → Load active students
+→ For each student: Enter status + session type + time in/out
+→ Validate all records
+→ BEGIN TRANSACTION
+→ For each: INSERT/UPDATE attendance_record
+→ If PRESENT: CREATE/UPDATE session_occurrence
+→ COMMIT TRANSACTION
+→ Clear cache → Notify parents → Success
+
+### 5. GUARDIAN LINKING (MISSING IN ORIGINAL)
+Admin creates guardian → Enter info + email
+→ Decision: Existing user? 
+  → Yes: Link to user
+  → No: CREATE user (role='PARENT', hashed password)
+→ SELECT students to link
+→ BEGIN TRANSACTION
+→ INSERT guardian
+→ INSERT guardian_student pivot (with is_primary flag)
+→ COMMIT TRANSACTION
+→ Send welcome email → Success
+
+### 6. PARENT PORTAL ACCESS (WITH SCOPE)
+Parent logs in → Verify role='PARENT' → Query guardian by user_id
+→ Load linked students (via guardian_student pivot)
+→ Apply ParentStudentScope globally (filter all queries by guardian's students)
+→ Load dashboard (students, payments, attendance - filtered)
+→ Display read-only views
+
+### 7. OVERDUE DETECTION (SCHEDULED TASK)
+Daily at midnight → Query payment_schedules (status='UNPAID', due_date < today)
+→ For each: UPDATE status='OVERDUE'
+→ CREATE notification (type='OVERDUE_PAYMENT')
+→ Queue email job
+→ Clear cache → Log completion
+
+### 8. PACKAGE MANAGEMENT (MISSING IN ORIGINAL)
+Admin creates package → Enter name, total_fee, downpayment_percent, installment_months
+→ Calculate: downpayment_amount, monthly_installment
+→ INSERT package → Success
+
+### 9. SESSION SCHEDULE MANAGEMENT (MISSING IN ORIGINAL)
+Admin creates schedule → Select student + session type + day + time
+→ Validate (no conflicts, end > start)
+→ INSERT student_schedule
+→ Generate session_occurrences for next 30 days
+→ For each matching day: INSERT session_occurrence (status='SCHEDULED')
+→ Success
+
+### 10. REPORT GENERATION
+Admin selects report type:
+- Student Ledger: Query transactions + schedules → Calculate running balance
+- Due & Overdue: Query payment_schedules with filters → Aggregate totals
+- Collection Report: Query payment_transactions → Group by method/day/student
+- Attendance Reports: Query attendance_records → Calculate rates/trends
+→ Display report → Export (Excel/PDF)
+
+### 11. CACHE MANAGEMENT (AUTO-INVALIDATION)
+Data modification (INSERT/UPDATE/DELETE)
+→ Trigger Observer (Student/Payment/Attendance)
+→ Determine affected caches
+→ Cache::forget(keys)
+→ Next query will refresh cache
+
+### 12. NOTIFICATION SYSTEM
+Event occurs (payment, attendance, overdue)
+→ Determine recipients (admin, parent)
+→ INSERT notification (type, user_id, message, data)
+→ If real-time: Broadcast via Livewire
+→ If email: Queue email job
+→ End
+
+### 13. DATABASE INTERACTION PATTERN
+User action → HTTP Request → Route → Controller
+→ Validate request → If invalid: Return 422 errors
+→ Call Service/Model → Apply business logic
+→ Check cache → If hit: Return cached
+→ Query database (Eloquent ORM)
+→ Store in cache → Return response
+→ UI updates (Livewire) → End
+
+### 14. TRANSACTION PATTERN
+Service method → DB::beginTransaction()
+→ Execute queries (INSERT, UPDATE, DELETE)
+→ If all successful: DB::commit() → Return success
+→ If error: DB::rollback() → Return error
+
+### 15. BACKUP MANAGEMENT (MISSING IN ORIGINAL)
+Admin clicks backup → Select action:
+- Create: Export DB + files → Compress ZIP → Store
+- Download: Stream file
+- Restore: Upload → Extract → Restore DB + files → Clear cache
+
+### 16. DASHBOARD WITH CACHING
+Admin loads dashboard → Check cache (5-min TTL)
+→ If hit: Return cached stats
+→ If miss: Query DB → Calculate:
+  - Active students, fully paid, with balance
+  - Due payments (next 15 days), overdue
+  - Collections today, 7-day trend
+→ Store in cache → Display with refresh button
+
+## CRITICAL BUSINESS RULES
+1. Students must be ACTIVE to enroll
+2. Enrollments auto-generate payment schedules
+3. Payment schedules become OVERDUE if unpaid past due_date
+4. Parents see only their linked children (global scope)
+5. Attendance can create session occurrences
+6. All payments logged in payment_transactions (ledger)
+7. Cache auto-invalidates on data changes
+8. Notifications triggered on key events
+
+## DATABASE TABLES
+users, students, guardians, guardian_student (pivot)
+packages, enrollments
+payment_schedules, payment_transactions
+attendance_records
+session_types, student_schedules, session_occurrences
+notifications, activity_log, sessions, cache
+
+## OUTPUT FORMAT
+Generate flowchart in Mermaid format with:
+- Clear node labels
+- Decision diamonds (Yes/No branches)
+- Color coding:
+  * Blue: User actions
+  * Green: Success operations
+  * Red: Error handling
+  * Yellow: Validation
+  * Purple: Database operations
+  * Orange: Cache operations
+  * Gray: Background processes
+- Transaction boundaries marked
+- Cache operations highlighted
+- Notification triggers shown
+
+Include all 16 flows above with complete logic paths.

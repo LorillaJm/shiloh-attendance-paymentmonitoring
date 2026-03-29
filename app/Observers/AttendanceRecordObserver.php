@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\AttendanceRecord;
+use App\Models\Enrollment;
 
 class AttendanceRecordObserver
 {
@@ -12,6 +13,11 @@ class AttendanceRecordObserver
     public function created(AttendanceRecord $attendanceRecord): void
     {
         \App\Services\DashboardCacheService::clearAttendanceCaches();
+        
+        // Increment session count if status is PRESENT
+        if ($attendanceRecord->status === 'PRESENT') {
+            $this->incrementSessionCount($attendanceRecord);
+        }
     }
 
     /**
@@ -20,6 +26,22 @@ class AttendanceRecordObserver
     public function updated(AttendanceRecord $attendanceRecord): void
     {
         \App\Services\DashboardCacheService::clearAttendanceCaches();
+        
+        // Check if status changed
+        if ($attendanceRecord->wasChanged('status')) {
+            $oldStatus = $attendanceRecord->getOriginal('status');
+            $newStatus = $attendanceRecord->status;
+            
+            // If changed from PRESENT to something else, decrement
+            if ($oldStatus === 'PRESENT' && $newStatus !== 'PRESENT') {
+                $this->decrementSessionCount($attendanceRecord);
+            }
+            
+            // If changed to PRESENT from something else, increment
+            if ($oldStatus !== 'PRESENT' && $newStatus === 'PRESENT') {
+                $this->incrementSessionCount($attendanceRecord);
+            }
+        }
     }
 
     /**
@@ -28,6 +50,11 @@ class AttendanceRecordObserver
     public function deleted(AttendanceRecord $attendanceRecord): void
     {
         \App\Services\DashboardCacheService::clearAttendanceCaches();
+        
+        // Decrement session count if status was PRESENT
+        if ($attendanceRecord->status === 'PRESENT') {
+            $this->decrementSessionCount($attendanceRecord);
+        }
     }
 
     /**
@@ -35,7 +62,10 @@ class AttendanceRecordObserver
      */
     public function restored(AttendanceRecord $attendanceRecord): void
     {
-        //
+        // Increment session count if status is PRESENT
+        if ($attendanceRecord->status === 'PRESENT') {
+            $this->incrementSessionCount($attendanceRecord);
+        }
     }
 
     /**
@@ -43,6 +73,37 @@ class AttendanceRecordObserver
      */
     public function forceDeleted(AttendanceRecord $attendanceRecord): void
     {
-        //
+        // Decrement session count if status was PRESENT
+        if ($attendanceRecord->status === 'PRESENT') {
+            $this->decrementSessionCount($attendanceRecord);
+        }
+    }
+
+    /**
+     * Increment session count for the student's active enrollment.
+     */
+    protected function incrementSessionCount(AttendanceRecord $attendanceRecord): void
+    {
+        $enrollment = Enrollment::where('student_id', $attendanceRecord->student_id)
+            ->where('status', 'ACTIVE')
+            ->first();
+            
+        if ($enrollment && $enrollment->total_sessions > 0) {
+            $enrollment->incrementSessionsUsed();
+        }
+    }
+
+    /**
+     * Decrement session count for the student's active enrollment.
+     */
+    protected function decrementSessionCount(AttendanceRecord $attendanceRecord): void
+    {
+        $enrollment = Enrollment::where('student_id', $attendanceRecord->student_id)
+            ->where('status', 'ACTIVE')
+            ->first();
+            
+        if ($enrollment) {
+            $enrollment->decrementSessionsUsed();
+        }
     }
 }
