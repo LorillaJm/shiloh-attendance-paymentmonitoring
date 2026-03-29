@@ -1,1 +1,0 @@
-@livewire('theme-toggle')

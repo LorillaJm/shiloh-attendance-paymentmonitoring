@@ -44,7 +44,7 @@ class ParentPanelProvider extends PanelProvider
             ])
             ->font('Inter')
             ->darkMode(true)
-            ->brandName('Shiloh Learning Center - Parent Portal')
+            ->brandName('Parent Portal')
             ->brandLogoHeight('2rem')
             ->favicon(asset('favicon.ico'))
             ->sidebarCollapsibleOnDesktop()
@@ -79,26 +79,23 @@ class ParentPanelProvider extends PanelProvider
             ->authGuard('web')
             ->loginRouteSlug('../admin/login')  // Redirect to unified login
             ->renderHook(
-                'panels::user-menu.before',
-                fn () => \Blade::render('@livewire(\'theme-toggle\')')
-            )
-            ->renderHook(
-                'panels::head.start',
-                fn () => '<script>
-                    const theme = "' . (auth()->check() ? (auth()->user()->theme ?? 'light') : 'light') . '";
-                    document.documentElement.dataset.theme = theme;
-                    if (theme === "dark") {
-                        document.documentElement.classList.add("dark");
+                'panels::topbar.start',
+                fn () => '<div class="flex items-center justify-center flex-1 py-1">
+                    <span class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                        Shiloh Learning Center
+                    </span>
+                </div>
+                <style>
+                    /* Hide the X button (close sidebar button) */
+                    .fi-topbar-close-sidebar-btn {
+                        display: none !important;
                     }
-                </script>'
-            )
-            ->renderHook(
-                'panels::styles.before',
-                fn () => \Blade::render('@vite(["resources/css/apple-dashboard.css", "resources/css/dark-mode-improvements.css"])')
-            )
-            ->renderHook(
-                'panels::scripts.after',
-                fn () => \Blade::render('@vite(["resources/js/apple-dashboard.js", "resources/js/theme-toggle.js"])')
+                    
+                    /* Hide the hamburger button (open sidebar button) on mobile */
+                    .fi-topbar-open-sidebar-btn {
+                        display: none !important;
+                    }
+                </style>'
             );
     }
 }

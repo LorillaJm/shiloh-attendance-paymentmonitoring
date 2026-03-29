@@ -1,1 +1,0 @@
-<?php echo app('Illuminate\Foundation\Vite')(["resources/css/apple-dashboard.css", "resources/css/dark-mode-improvements.css"]); ?><?php /**PATH C:\Users\pc1\Downloads\Attendance-Payment\storage\framework\views/170490aeabb1314804cd0b8c548bffaf.blade.php ENDPATH**/ ?>

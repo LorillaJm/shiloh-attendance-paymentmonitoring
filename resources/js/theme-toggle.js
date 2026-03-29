@@ -1,32 +1,27 @@
-// Theme Toggle System for Parent Portal
-// Modern SaaS Dashboard Theme Switcher
+// Modern Theme Toggle System
+// Smooth transitions and animations
 
 (function () {
     'use strict';
 
-    // Theme Manager
     const ThemeManager = {
-        STORAGE_KEY: 'parent-portal-theme',
+        STORAGE_KEY: 'shiloh-theme',
         THEMES: {
             LIGHT: 'light',
             DARK: 'dark'
         },
 
-        // Initialize theme system
         init() {
             this.loadTheme();
-            this.setupToggle();
+            this.setupTransitions();
             this.watchSystemPreference();
+            this.listenToLivewireEvents();
         },
 
-        // Get current theme
         getCurrentTheme() {
             const stored = localStorage.getItem(this.STORAGE_KEY);
-            if (stored) {
-                return stored;
-            }
+            if (stored) return stored;
 
-            // Check system preference
             if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
                 return this.THEMES.DARK;
             }
@@ -34,12 +29,16 @@
             return this.THEMES.LIGHT;
         },
 
-        // Set theme
-        setTheme(theme) {
+        setTheme(theme, animate = true) {
             const html = document.documentElement;
-
-            // Add transition class before changing theme
-            html.style.transition = 'background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            
+            if (animate) {
+                // Add transition class
+                html.classList.add('theme-transitioning');
+                
+                // Create ripple effect
+                this.createRippleEffect();
+            }
 
             if (theme === this.THEMES.DARK) {
                 html.setAttribute('data-theme', 'dark');
@@ -50,76 +49,112 @@
             }
 
             localStorage.setItem(this.STORAGE_KEY, theme);
-            this.updateToggleButton(theme);
+
+            if (animate) {
+                setTimeout(() => {
+                    html.classList.remove('theme-transitioning');
+                }, 600);
+            }
         },
 
-        // Toggle theme
-        toggleTheme() {
-            const current = this.getCurrentTheme();
-            const next = current === this.THEMES.LIGHT ? this.THEMES.DARK : this.THEMES.LIGHT;
-            this.setTheme(next);
+        createRippleEffect() {
+            const ripple = document.createElement('div');
+            ripple.className = 'theme-ripple';
+            document.body.appendChild(ripple);
+
+            setTimeout(() => ripple.remove(), 1000);
         },
 
-        // Load theme on page load
+        setupTransitions() {
+            // Add smooth transition styles
+            const style = document.createElement('style');
+            style.textContent = `
+                .theme-transitioning,
+                .theme-transitioning * {
+                    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                                color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                                border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                }
+
+                .theme-ripple {
+                    position: fixed;
+                    top: 50%;
+                    right: 2rem;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    background: radial-gradient(circle, rgba(59, 130, 246, 0.4) 0%, transparent 70%);
+                    transform: translate(-50%, -50%) scale(0);
+                    animation: theme-ripple 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+                    pointer-events: none;
+                    z-index: 9999;
+                }
+
+                @keyframes theme-ripple {
+                    0% {
+                        transform: translate(-50%, -50%) scale(0);
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translate(-50%, -50%) scale(100);
+                        opacity: 0;
+                    }
+                }
+
+                /* Smooth page load */
+                html.loading * {
+                    transition: none !important;
+                }
+            `;
+            document.head.appendChild(style);
+        },
+
         loadTheme() {
             const theme = this.getCurrentTheme();
-            this.setTheme(theme);
+            this.setTheme(theme, false);
         },
 
-        // Setup toggle button
-        setupToggle() {
-            const toggleBtn = document.getElementById('theme-toggle');
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => this.toggleTheme());
-            }
-        },
-
-        // Update toggle button icon
-        updateToggleButton(theme) {
-            const toggleBtn = document.getElementById('theme-toggle');
-            if (!toggleBtn) return;
-
-            const sunIcon = toggleBtn.querySelector('.sun-icon');
-            const moonIcon = toggleBtn.querySelector('.moon-icon');
-
-            if (theme === this.THEMES.DARK) {
-                if (sunIcon) sunIcon.style.display = 'block';
-                if (moonIcon) moonIcon.style.display = 'none';
-            } else {
-                if (sunIcon) sunIcon.style.display = 'none';
-                if (moonIcon) moonIcon.style.display = 'block';
-            }
-        },
-
-        // Watch for system preference changes
         watchSystemPreference() {
             if (window.matchMedia) {
                 const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
                 mediaQuery.addEventListener('change', (e) => {
-                    // Only auto-switch if user hasn't set a preference
                     if (!localStorage.getItem(this.STORAGE_KEY)) {
                         this.setTheme(e.matches ? this.THEMES.DARK : this.THEMES.LIGHT);
                     }
                 });
             }
+        },
+
+        listenToLivewireEvents() {
+            document.addEventListener('livewire:init', () => {
+                Livewire.on('theme-changed', (event) => {
+                    this.setTheme(event.theme);
+                });
+            });
         }
     };
 
-    // Initialize when DOM is ready
+    // Initialize
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => ThemeManager.init());
+        document.documentElement.classList.add('loading');
+        document.addEventListener('DOMContentLoaded', () => {
+            ThemeManager.init();
+            setTimeout(() => {
+                document.documentElement.classList.remove('loading');
+            }, 100);
+        });
     } else {
         ThemeManager.init();
     }
 
-    // Expose to window for manual control
     window.ThemeManager = ThemeManager;
 
 })();
 
-// Smooth scroll behavior
+// Enhanced UI animations
 document.addEventListener('DOMContentLoaded', function () {
-    // Add smooth scroll to all anchor links
+    // Smooth scroll
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -133,8 +168,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Add loading animation to cards
-    const cards = document.querySelectorAll('.card, .stat-card');
+    // Staggered card animations
+    const cards = document.querySelectorAll('.fi-wi-stats-overview-stat, .fi-section');
     cards.forEach((card, index) => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(20px)';
@@ -145,68 +180,4 @@ document.addEventListener('DOMContentLoaded', function () {
             card.style.transform = 'translateY(0)';
         }, index * 50);
     });
-
-    // Add ripple effect to buttons
-    document.querySelectorAll('.btn').forEach(button => {
-        button.addEventListener('click', function (e) {
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            ripple.classList.add('ripple');
-
-            this.appendChild(ripple);
-
-            setTimeout(() => ripple.remove(), 600);
-        });
-    });
-});
-
-// Add ripple CSS
-const style = document.createElement('style');
-style.textContent = `
-    .btn {
-        position: relative;
-        overflow: hidden;
-    }
-
-    .ripple {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.6);
-        transform: scale(0);
-        animation: ripple-animation 0.6s ease-out;
-        pointer-events: none;
-    }
-
-    @keyframes ripple-animation {
-        to {
-            transform: scale(4);
-            opacity: 0;
-        }
-    }
-
-    /* Smooth transitions for theme switching */
-    * {
-        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-    }
-
-    /* Prevent transition on page load */
-    .no-transition * {
-        transition: none !important;
-    }
-`;
-document.head.appendChild(style);
-
-// Prevent flash of unstyled content
-document.documentElement.classList.add('no-transition');
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        document.documentElement.classList.remove('no-transition');
-    }, 100);
 });

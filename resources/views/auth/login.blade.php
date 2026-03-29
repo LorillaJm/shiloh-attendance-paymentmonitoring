@@ -97,14 +97,12 @@
                         </div>
                         <div class="relative flex justify-center text-sm">
                             <span class="px-2 bg-white text-gray-500">
-                                All users login here
+                                login here
                             </span>
                         </div>
                     </div>
 
                     <div class="mt-6 text-center text-xs text-gray-500">
-                        <p>Admins, Staff, and Parents use this same login page.</p>
-                        <p class="mt-1">You'll be automatically directed to your dashboard.</p>
                     </div>
                 </div>
             </div>

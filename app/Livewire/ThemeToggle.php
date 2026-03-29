@@ -25,8 +25,22 @@ class ThemeToggle extends Component
         $this->theme = $this->theme === 'light' ? 'dark' : 'light';
         ThemeService::setUserTheme($this->theme);
         
-        // Dispatch event to update the UI
-        $this->dispatch('theme-changed', theme: $this->theme);
+        // Update theme immediately with JavaScript
+        $this->js("
+            const theme = '{$this->theme}';
+            document.documentElement.dataset.theme = theme;
+            
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            
+            localStorage.setItem('shiloh-theme', theme);
+            
+            // Trigger a custom event for any listeners
+            window.dispatchEvent(new CustomEvent('theme-changed', { detail: { theme } }));
+        ");
     }
 
     /**
