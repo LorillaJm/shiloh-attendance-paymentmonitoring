@@ -56,15 +56,13 @@ class AttendanceRecordResource extends Resource
                             ->getOptionLabelFromRecordUsing(fn ($record) => 
                                 "{$record->student->student_no} - {$record->sessionType->name} - {$record->session_date->format('M d, Y')}"
                             )
-                            ->searchable()
-                            ->preload(),
+                            ->searchable(),
 
                         Forms\Components\Select::make('student_id')
                             ->relationship('student', 'first_name')
                             ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->student_no} - {$record->full_name}")
                             ->searchable(['student_no', 'first_name', 'last_name'])
                             ->required()
-                            ->preload()
                             ->columnSpanFull(),
 
                         Forms\Components\DatePicker::make('attendance_date')
@@ -188,8 +186,7 @@ class AttendanceRecordResource extends Resource
                 Tables\Filters\SelectFilter::make('student')
                     ->relationship('student', 'first_name')
                     ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->student_no} - {$record->full_name}")
-                    ->searchable()
-                    ->preload(),
+                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()
@@ -214,8 +211,8 @@ class AttendanceRecordResource extends Resource
             ])
             ->defaultPaginationPageOption(25)
             ->paginationPageOptions([10, 25, 50, 100])
-            ->striped()
-            ->poll('30s');
+            ->deferLoading()
+            ->striped();
     }
 
     public static function getRelations(): array

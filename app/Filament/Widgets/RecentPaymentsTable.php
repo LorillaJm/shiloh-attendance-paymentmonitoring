@@ -16,7 +16,7 @@ class RecentPaymentsTable extends BaseWidget
     
     protected int | string | array $columnSpan = 'full';
     
-    protected static ?string $pollingInterval = '15s';
+    protected static ?string $pollingInterval = null;
 
     public function table(Table $table): Table
     {

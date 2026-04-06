@@ -53,19 +53,27 @@ class EnrollmentResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('student_id')
                             ->label('Student')
-                            ->options(function () {
-                                return \App\Models\Student::query()
-                                    ->where('status', 'ACTIVE')
-                                    ->orderBy('student_no')
-                                    ->get()
-                                    ->mapWithKeys(function ($student) {
-                                        return [$student->id => "{$student->student_no} - {$student->full_name}"];
-                                    });
-                            })
                             ->searchable()
                             ->required()
-                            ->preload()
-                            ->placeholder('Select a student')
+                            ->getSearchResultsUsing(function (string $search): array {
+                                return \App\Models\Student::query()
+                                    ->where('status', 'ACTIVE')
+                                    ->where(function ($q) use ($search) {
+                                        $q->where('student_no', 'like', "%{$search}%")
+                                            ->orWhere('first_name', 'like', "%{$search}%")
+                                            ->orWhere('last_name', 'like', "%{$search}%");
+                                    })
+                                    ->orderBy('student_no')
+                                    ->limit(50)
+                                    ->get()
+                                    ->mapWithKeys(fn ($s) => [$s->id => "{$s->student_no} - {$s->full_name}"])
+                                    ->toArray();
+                            })
+                            ->getOptionLabelUsing(function ($value): ?string {
+                                $student = \App\Models\Student::find($value);
+                                return $student ? "{$student->student_no} - {$student->full_name}" : null;
+                            })
+                            ->placeholder('Type to search students...')
                             ->columnSpanFull(),
 
                         Forms\Components\Select::make('package_id')
@@ -96,8 +104,7 @@ class EnrollmentResource extends Resource
                                     $set('downpayment_amount', null);
                                     $set('remaining_balance', null);
                                 }
-                            })
-                            ->preload(),
+                            }),
 
                         Forms\Components\DatePicker::make('enrollment_date')
                             ->label('Registration Date')
@@ -310,8 +317,8 @@ class EnrollmentResource extends Resource
             ->defaultPaginationPageOption(25)
             ->defaultPaginationPageOption(25)
             ->paginationPageOptions([10, 25, 50, 100])
-            ->striped()
-            ->poll('30s');
+            ->deferLoading()
+            ->striped();
     }
 
     public static function getRelations(): array

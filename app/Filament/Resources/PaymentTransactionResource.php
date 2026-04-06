@@ -27,11 +27,25 @@ class PaymentTransactionResource extends Resource
             ->schema([
                 Forms\Components\Select::make('enrollment_id')
                     ->label('Enrollment')
-                    ->options(Enrollment::with('student', 'package')->get()->mapWithKeys(function ($enrollment) {
-                        return [$enrollment->id => "{$enrollment->student->full_name} - {$enrollment->package->name}"];
-                    }))
                     ->searchable()
-                    ->required(),
+                    ->required()
+                    ->getSearchResultsUsing(function (string $search): array {
+                        return Enrollment::query()
+                            ->with(['student', 'package'])
+                            ->whereHas('student', function ($q) use ($search) {
+                                $q->where('first_name', 'like', "%{$search}%")
+                                    ->orWhere('last_name', 'like', "%{$search}%")
+                                    ->orWhere('student_no', 'like', "%{$search}%");
+                            })
+                            ->limit(50)
+                            ->get()
+                            ->mapWithKeys(fn ($e) => [$e->id => "{$e->student->full_name} - {$e->package->name}"])
+                            ->toArray();
+                    })
+                    ->getOptionLabelUsing(function ($value): ?string {
+                        $enrollment = Enrollment::with(['student', 'package'])->find($value);
+                        return $enrollment ? "{$enrollment->student->full_name} - {$enrollment->package->name}" : null;
+                    }),
                 Forms\Components\TextInput::make('amount')
                     ->numeric()
                     ->prefix('₱')
@@ -93,7 +107,8 @@ class PaymentTransactionResource extends Resource
             ])
             ->defaultSort('transaction_date', 'desc')
             ->defaultPaginationPageOption(25)
-            ->paginationPageOptions([10, 25, 50, 100]);
+            ->paginationPageOptions([10, 25, 50, 100])
+            ->deferLoading();
     }
 
     public static function getPages(): array

@@ -26,21 +26,8 @@ class OptimizedStatsOverviewWidget extends BaseWidget
                     $today = now('Asia/Manila')->format('Y-m-d');
                     $thisMonth = now('Asia/Manila');
                     
-                    // Check if required tables exist
-                    if (!DB::getSchemaBuilder()->hasTable('students') ||
-                        !DB::getSchemaBuilder()->hasTable('payment_schedules') ||
-                        !DB::getSchemaBuilder()->hasTable('enrollments')) {
-                        \Log::warning('OptimizedStatsOverviewWidget: Required tables not found');
-                        return [
-                            'total_students' => 0,
-                            'active_students' => 0,
-                            'due_today' => 0,
-                            'overdue' => 0,
-                            'collected_today' => 0,
-                            'collected_this_month' => 0,
-                            'outstanding_balance' => 0,
-                        ];
-                    }
+                    // hasTable() checks removed - each check costs ~200ms round-trip to Supabase
+                    // Tables are guaranteed to exist after migration
                     
                     // Single optimized query - all KPIs in one shot
                     $kpis = DB::selectOne("

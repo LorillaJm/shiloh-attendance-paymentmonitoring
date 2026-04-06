@@ -104,18 +104,16 @@ class DailyAttendanceEncoder extends Page implements HasForms
             });
         }
 
-        $this->students = $query->orderBy('student_no')->limit(100)->get();
-
-        // Notify if there are more students
-        $totalCount = Student::query()
-            ->when($this->data['status_filter'] === 'ACTIVE', fn($q) => $q->where('status', 'ACTIVE'))
-            ->count();
-            
-        if ($totalCount > 100) {
+        // Use limit+1 trick to detect if more records exist without a separate COUNT query
+        $this->students = $query->orderBy('student_no')->limit(101)->get();
+        $hasMore = $this->students->count() > 100;
+        
+        if ($hasMore) {
+            $this->students = $this->students->take(100);
             \Filament\Notifications\Notification::make()
                 ->info()
                 ->title('Showing First 100 Students')
-                ->body("Total: {$totalCount} students. Use search to find specific students.")
+                ->body('Use search to find specific students.')
                 ->send();
         }
 

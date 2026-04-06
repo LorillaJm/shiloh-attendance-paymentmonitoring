@@ -93,8 +93,7 @@ class MyChildrenSessions extends Page implements HasTable
                     }),
             ])
             ->defaultSort('session_date', 'desc')
-            ->paginated([10, 25, 50])
-            ->poll('30s');
+            ->paginated([10, 25, 50]);
     }
 
     protected function getTableQuery(): Builder

@@ -16,7 +16,7 @@ class OverdueTable extends BaseWidget
     
     protected int | string | array $columnSpan = 'full';
     
-    protected static ?string $pollingInterval = '20s';
+    protected static ?string $pollingInterval = null;
 
     public function table(Table $table): Table
     {

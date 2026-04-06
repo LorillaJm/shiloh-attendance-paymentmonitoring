@@ -119,7 +119,6 @@ class DueOverdueReport extends Page implements HasTable, HasForms
             ])
             ->defaultSort('due_date')
             ->defaultPaginationPageOption(25)
-            ->poll($pollInterval)
             ->heading($this->getReportHeading())
             ->description($this->getReportDescription());
     }

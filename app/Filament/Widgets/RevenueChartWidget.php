@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class RevenueChartWidget extends ChartWidget
@@ -17,18 +18,27 @@ class RevenueChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        // Get last 7 days of revenue data
-        $data = collect(range(6, 0))->map(function ($daysAgo) {
-            $date = now()->subDays($daysAgo)->format('Y-m-d');
-            
-            $revenue = DB::table('payment_schedules')
+        // Single query for all 7 days instead of 7 separate queries
+        // Saves ~1.2 seconds (6 × 200ms round-trips to Supabase)
+        $startDate = now()->subDays(6)->format('Y-m-d');
+        $endDate = now()->format('Y-m-d');
+        
+        $revenues = Cache::remember('revenue_chart_7d', 300, function () use ($startDate, $endDate) {
+            return DB::table('payment_schedules')
+                ->select(DB::raw("DATE(paid_at) as pay_date"), DB::raw("COALESCE(SUM(amount_due), 0) as total"))
                 ->where('status', 'PAID')
-                ->whereDate('paid_at', $date)
-                ->sum('amount_due');
-            
+                ->whereBetween(DB::raw('DATE(paid_at)'), [$startDate, $endDate])
+                ->groupBy(DB::raw('DATE(paid_at)'))
+                ->pluck('total', 'pay_date')
+                ->toArray();
+        });
+
+        $data = collect(range(6, 0))->map(function ($daysAgo) use ($revenues) {
+            $date = now()->subDays($daysAgo);
+            $key = $date->format('Y-m-d');
             return [
-                'date' => now()->subDays($daysAgo)->format('M d'),
-                'revenue' => $revenue,
+                'date' => $date->format('M d'),
+                'revenue' => (float) ($revenues[$key] ?? 0),
             ];
         });
 

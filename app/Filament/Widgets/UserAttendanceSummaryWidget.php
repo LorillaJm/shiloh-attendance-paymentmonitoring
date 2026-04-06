@@ -12,7 +12,7 @@ class UserAttendanceSummaryWidget extends BaseWidget
 {
     protected static ?int $sort = 1;
     
-    protected static ?string $pollingInterval = '30s';
+    protected static ?string $pollingInterval = null;
     
     // Enable lazy loading
     protected static bool $isLazy = true;

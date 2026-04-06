@@ -15,7 +15,7 @@ class UserRecentAttendanceWidget extends BaseWidget
     
     protected static ?string $heading = 'Recent Attendance (Last 7 Days)';
     
-    protected static ?string $pollingInterval = '30s';
+    protected static ?string $pollingInterval = null;
     
     // Enable lazy loading
     protected static bool $isLazy = true;

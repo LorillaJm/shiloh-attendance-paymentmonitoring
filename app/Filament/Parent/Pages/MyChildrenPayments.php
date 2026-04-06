@@ -97,8 +97,7 @@ class MyChildrenPayments extends Page implements HasTable
                     }),
             ])
             ->defaultSort('transaction_date', 'desc')
-            ->paginated([10, 25, 50])
-            ->poll('30s');
+            ->paginated([10, 25, 50]);
     }
 
     protected function getTableQuery(): Builder

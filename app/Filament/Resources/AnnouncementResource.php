@@ -108,7 +108,12 @@ class AnnouncementResource extends Resource
 
                 Tables\Columns\TextColumn::make('targetUser.name')
                     ->label('Target User')
-                    ->placeholder('-'),
+                    ->placeholder(fn ($record) => match($record->target_audience) {
+                        'all' => 'All Users',
+                        'parents' => 'All Parents',
+                        'admins' => 'All Admins',
+                        default => '-',
+                    }),
 
                 Tables\Columns\IconColumn::make('is_published')
                     ->boolean()

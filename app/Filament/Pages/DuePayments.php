@@ -94,7 +94,6 @@ class DuePayments extends Page implements HasTable
             ])
             ->heading('Due on Next 15th: ' . $next15th->format('F d, Y'))
             ->description('All unpaid installments due on the upcoming 15th of the month (next month)')
-            ->poll($pollInterval)
             ->defaultPaginationPageOption(25);
     }
 

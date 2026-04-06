@@ -12,6 +12,22 @@ class ViewEnrollment extends ViewRecord
 {
     protected static string $resource = EnrollmentResource::class;
 
+    protected function resolveRecord(int | string $key): \Illuminate\Database\Eloquent\Model
+    {
+        // Eager load relationships and aggregate counts in a single query
+        // instead of 6+ separate queries (~200ms each to Supabase)
+        return \App\Models\Enrollment::query()
+            ->with(['student', 'package'])
+            ->withSum(['paymentTransactions as total_paid' => fn ($q) => $q->where('type', 'PAYMENT')], 'amount')
+            ->withCount([
+                'paymentSchedules as paid_count' => fn ($q) => $q->where('status', 'PAID'),
+                'paymentSchedules as unpaid_count' => fn ($q) => $q->where('status', 'UNPAID'),
+                'paymentSchedules as overdue_count' => fn ($q) => $q->where('status', 'OVERDUE'),
+                'paymentSchedules as total_schedules_count',
+            ])
+            ->findOrFail($key);
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -69,7 +85,7 @@ class ViewEnrollment extends ViewRecord
                     ->schema([
                         Infolists\Components\TextEntry::make('paid_count')
                             ->label('Paid Installments')
-                            ->suffix(fn ($record) => ' / ' . $record->paymentSchedules()->count())
+                            ->suffix(fn ($record) => ' / ' . ($record->total_schedules_count ?? 0))
                             ->color('success'),
                         Infolists\Components\TextEntry::make('unpaid_count')
                             ->label('Unpaid')

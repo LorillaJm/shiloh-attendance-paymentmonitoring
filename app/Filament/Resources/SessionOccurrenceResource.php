@@ -28,7 +28,6 @@ class SessionOccurrenceResource extends Resource
                 Forms\Components\Select::make('student_id')
                     ->relationship('student', 'first_name')
                     ->searchable()
-                    ->preload()
                     ->required()
                     ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->student_no} - {$record->full_name}"),
                 Forms\Components\Select::make('session_type_id')

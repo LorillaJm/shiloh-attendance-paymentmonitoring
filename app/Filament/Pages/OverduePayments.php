@@ -98,7 +98,6 @@ class OverduePayments extends Page implements HasTable
             ])
             ->heading('Overdue Payments')
             ->description('All unpaid installments past their due date')
-            ->poll($pollInterval)
             ->defaultPaginationPageOption(25);
     }
 

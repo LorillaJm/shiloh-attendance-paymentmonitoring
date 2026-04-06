@@ -31,7 +31,6 @@ class GuardianResource extends Resource
                             ->label('User Account')
                             ->relationship('user', 'name')
                             ->searchable()
-                            ->preload()
                             ->createOptionForm([
                                 Forms\Components\TextInput::make('name')->required(),
                                 Forms\Components\TextInput::make('email')->email()->required()->unique('users', 'email'),
@@ -67,7 +66,6 @@ class GuardianResource extends Resource
                                             });
                                     })
                                     ->searchable()
-                                    ->preload()
                                     ->required(),
                                 Forms\Components\Toggle::make('is_primary')
                                     ->label('Primary Guardian')

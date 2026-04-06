@@ -13,7 +13,7 @@ class CollectionsTrendChart extends ChartWidget
     
     protected static ?int $sort = 2;
     
-    protected static ?string $pollingInterval = '30s';
+    protected static ?string $pollingInterval = null;
     
     protected static ?string $maxHeight = '300px';
 

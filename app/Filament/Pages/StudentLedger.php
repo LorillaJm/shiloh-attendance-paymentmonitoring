@@ -66,9 +66,10 @@ class StudentLedger extends Page implements HasForms
                                     ])
                                     ->toArray()
                             )
-                            ->getOptionLabelUsing(fn ($value): ?string => 
-                                \App\Models\Student::find($value)?->student_no . ' - ' . \App\Models\Student::find($value)?->full_name
-                            )
+                            ->getOptionLabelUsing(function ($value): ?string {
+                                $student = \App\Models\Student::find($value);
+                                return $student ? "{$student->student_no} - {$student->full_name}" : null;
+                            })
                             ->required()
                             ->live()
                             ->afterStateUpdated(fn () => $this->loadStudent())
