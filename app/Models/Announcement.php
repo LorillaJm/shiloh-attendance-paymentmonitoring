@@ -16,11 +16,13 @@ class Announcement extends Model
         'target_user_id',
         'created_by',
         'is_published',
+        'send_guardian_email',
         'published_at',
     ];
 
     protected $casts = [
         'is_published' => 'boolean',
+        'send_guardian_email' => 'boolean',
         'published_at' => 'datetime',
     ];
 

@@ -67,6 +67,8 @@ class StudentResource extends Resource
                                 'regex' => 'First name must contain only letters, spaces, hyphens, apostrophes, and periods.',
                             ])
                             ->placeholder('Juan')
+                            ->extraInputAttributes(['style' => 'text-transform: uppercase'])
+                            ->dehydrateStateUsing(fn ($state) => $state ? mb_strtoupper($state) : $state)
                             ->autofocus(),
                         
                         Forms\Components\TextInput::make('middle_name')
@@ -76,7 +78,9 @@ class StudentResource extends Resource
                             ->validationMessages([
                                 'regex' => 'Middle name must contain only letters, spaces, hyphens, apostrophes, and periods.',
                             ])
-                            ->placeholder('Santos'),
+                            ->placeholder('Santos')
+                            ->extraInputAttributes(['style' => 'text-transform: uppercase'])
+                            ->dehydrateStateUsing(fn ($state) => $state ? mb_strtoupper($state) : $state),
                         
                         Forms\Components\TextInput::make('last_name')
                             ->required()
@@ -86,7 +90,27 @@ class StudentResource extends Resource
                             ->validationMessages([
                                 'regex' => 'Last name must contain only letters, spaces, hyphens, apostrophes, and periods.',
                             ])
-                            ->placeholder('Dela Cruz'),
+                            ->placeholder('Dela Cruz')
+                            ->extraInputAttributes(['style' => 'text-transform: uppercase'])
+                            ->dehydrateStateUsing(fn ($state) => $state ? mb_strtoupper($state) : $state)
+                            ->rules([
+                                fn (Forms\Get $get, ?Student $record): \Closure => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
+                                    $firstName = $get('first_name');
+                                    $birthdate = $get('birthdate');
+                                    if (!$firstName || !$value || !$birthdate) return;
+
+                                    $exists = Student::query()
+                                        ->whereRaw('UPPER(first_name) = ?', [mb_strtoupper($firstName)])
+                                        ->whereRaw('UPPER(last_name) = ?', [mb_strtoupper($value)])
+                                        ->where('birthdate', $birthdate)
+                                        ->when($record, fn ($q) => $q->where('id', '!=', $record->id))
+                                        ->exists();
+
+                                    if ($exists) {
+                                        $fail('A student with the same name and birthdate already exists.');
+                                    }
+                                },
+                            ]),
                         
                         Forms\Components\DatePicker::make('birthdate')
                             ->native(true)
@@ -121,6 +145,8 @@ class StudentResource extends Resource
                             ->maxLength(65535)
                             ->placeholder('Complete address')
                             ->helperText('Minimum 10 characters')
+                            ->extraInputAttributes(['style' => 'text-transform: uppercase'])
+                            ->dehydrateStateUsing(fn ($state) => $state ? mb_strtoupper($state) : $state)
                             ->columnSpanFull(),
                         
                         Forms\Components\TextInput::make('guardian_name')
@@ -132,7 +158,9 @@ class StudentResource extends Resource
                             ->validationMessages([
                                 'regex' => 'Guardian name must contain only letters, spaces, hyphens, apostrophes, and periods.',
                             ])
-                            ->placeholder('Parent/Guardian full name'),
+                            ->placeholder('Parent/Guardian full name')
+                            ->extraInputAttributes(['style' => 'text-transform: uppercase'])
+                            ->dehydrateStateUsing(fn ($state) => $state ? mb_strtoupper($state) : $state),
                         
                         Forms\Components\TextInput::make('guardian_contact')
                             ->label('Guardian Contact')

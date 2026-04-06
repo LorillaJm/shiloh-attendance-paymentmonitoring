@@ -18,22 +18,23 @@ class RevenueChartWidget extends ChartWidget
 
     protected function getData(): array
     {
-        // Single query for all 7 days instead of 7 separate queries
-        // Saves ~1.2 seconds (6 × 200ms round-trips to Supabase)
-        $startDate = now()->subDays(6)->format('Y-m-d');
+        // Use payment_transactions for actual revenue (not payment_schedules)
+        // Show last 30 days for a meaningful overview
+        $days = 29;
+        $startDate = now()->subDays($days)->format('Y-m-d');
         $endDate = now()->format('Y-m-d');
         
-        $revenues = Cache::remember('revenue_chart_7d', 300, function () use ($startDate, $endDate) {
-            return DB::table('payment_schedules')
-                ->select(DB::raw("DATE(paid_at) as pay_date"), DB::raw("COALESCE(SUM(amount_due), 0) as total"))
-                ->where('status', 'PAID')
-                ->whereBetween(DB::raw('DATE(paid_at)'), [$startDate, $endDate])
-                ->groupBy(DB::raw('DATE(paid_at)'))
+        $revenues = Cache::remember('revenue_chart_30d', 300, function () use ($startDate, $endDate) {
+            return DB::table('payment_transactions')
+                ->select(DB::raw("DATE(created_at) as pay_date"), DB::raw("COALESCE(SUM(amount), 0) as total"))
+                ->where('type', 'PAYMENT')
+                ->whereBetween(DB::raw('DATE(created_at)'), [$startDate, $endDate])
+                ->groupBy(DB::raw('DATE(created_at)'))
                 ->pluck('total', 'pay_date')
                 ->toArray();
         });
 
-        $data = collect(range(6, 0))->map(function ($daysAgo) use ($revenues) {
+        $data = collect(range($days, 0))->map(function ($daysAgo) use ($revenues) {
             $date = now()->subDays($daysAgo);
             $key = $date->format('Y-m-d');
             return [

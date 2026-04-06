@@ -41,13 +41,23 @@ class GuardianResource extends Resource
                     ]),
                 Forms\Components\Section::make('Guardian Information')
                     ->schema([
-                        Forms\Components\TextInput::make('first_name')->required(),
-                        Forms\Components\TextInput::make('last_name')->required(),
-                        Forms\Components\TextInput::make('middle_name'),
+                        Forms\Components\TextInput::make('first_name')->required()
+                            ->extraInputAttributes(['style' => 'text-transform: uppercase'])
+                            ->dehydrateStateUsing(fn ($state) => $state ? mb_strtoupper($state) : $state),
+                        Forms\Components\TextInput::make('last_name')->required()
+                            ->extraInputAttributes(['style' => 'text-transform: uppercase'])
+                            ->dehydrateStateUsing(fn ($state) => $state ? mb_strtoupper($state) : $state),
+                        Forms\Components\TextInput::make('middle_name')
+                            ->extraInputAttributes(['style' => 'text-transform: uppercase'])
+                            ->dehydrateStateUsing(fn ($state) => $state ? mb_strtoupper($state) : $state),
                         Forms\Components\TextInput::make('contact_number')->required()->tel(),
                         Forms\Components\TextInput::make('email')->email(),
-                        Forms\Components\Textarea::make('address')->rows(2),
-                        Forms\Components\TextInput::make('relationship')->placeholder('Mother, Father, Guardian, etc.'),
+                        Forms\Components\Textarea::make('address')->rows(2)
+                            ->extraInputAttributes(['style' => 'text-transform: uppercase'])
+                            ->dehydrateStateUsing(fn ($state) => $state ? mb_strtoupper($state) : $state),
+                        Forms\Components\TextInput::make('relationship')->placeholder('Mother, Father, Guardian, etc.')
+                            ->extraInputAttributes(['style' => 'text-transform: uppercase'])
+                            ->dehydrateStateUsing(fn ($state) => $state ? mb_strtoupper($state) : $state),
                     ])->columns(2),
                 Forms\Components\Section::make('Students')
                     ->schema([

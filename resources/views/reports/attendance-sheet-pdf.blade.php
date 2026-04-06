@@ -26,6 +26,11 @@
         .status-absent { background: #fee2e2; color: #991b1b; }
         .status-late { background: #fef3c7; color: #92400e; }
         .status-excused { background: #dbeafe; color: #1e40af; }
+        .signature-section { margin-top: 60px; page-break-inside: avoid; }
+        .signature-table { width: 100%; border-collapse: collapse; }
+        .signature-cell { width: 33.33%; text-align: center; padding: 0 20px; vertical-align: bottom; }
+        .signature-line { border-bottom: 1px solid #333; margin-bottom: 5px; height: 40px; }
+        .signature-label { font-size: 11px; font-weight: bold; color: #333; margin-top: 5px; }
         .footer { margin-top: 30px; text-align: center; font-size: 10px; color: #666; border-top: 1px solid #e5e7eb; padding-top: 10px; }
     </style>
 </head>
@@ -90,6 +95,25 @@
             @endforeach
         </tbody>
     </table>
+
+    <div class="signature-section">
+        <table class="signature-table">
+            <tr>
+                <td class="signature-cell">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Assigned Teacher / Faculty</div>
+                </td>
+                <td class="signature-cell">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Prepared by</div>
+                </td>
+                <td class="signature-cell">
+                    <div class="signature-line"></div>
+                    <div class="signature-label">Checked by</div>
+                </td>
+            </tr>
+        </table>
+    </div>
 
     <div class="footer">
         <p>This is a computer-generated report from Shiloh Attendance and Payment System</p>

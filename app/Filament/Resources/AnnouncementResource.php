@@ -25,6 +25,17 @@ class AnnouncementResource extends Resource
 
     protected static ?int $navigationSort = 20;
 
+    public static function getNavigationBadge(): ?string
+    {
+        $count = Announcement::where('is_published', false)->count();
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -74,6 +85,12 @@ class AnnouncementResource extends Resource
                             ->label('Publish Immediately')
                             ->helperText('When enabled, notification will be sent immediately to target users')
                             ->default(false),
+
+                        Forms\Components\Toggle::make('send_guardian_email')
+                            ->label('Send Direct Email to Guardians')
+                            ->helperText('Also send a direct email to guardian email addresses (from Guardian records, not portal accounts)')
+                            ->default(false)
+                            ->visible(fn (Forms\Get $get) => in_array($get('target_audience'), ['all', 'parents'])),
                     ]),
             ]);
     }
@@ -214,5 +231,40 @@ class AnnouncementResource extends Resource
         }
 
         Notification::send($users, new AnnouncementNotification($announcement));
+
+        // Send direct email to guardian email addresses if enabled
+        if ($announcement->send_guardian_email && in_array($announcement->target_audience, ['all', 'parents'])) {
+            static::sendGuardianEmails($announcement);
+        }
+    }
+
+    public static function sendGuardianEmails(Announcement $announcement): void
+    {
+        $guardians = \App\Models\Guardian::whereNotNull('email')
+            ->where('email', '!=', '')
+            ->get();
+
+        foreach ($guardians as $guardian) {
+            try {
+                \Illuminate\Support\Facades\Mail::send([], [], function ($message) use ($announcement, $guardian) {
+                    $message->to($guardian->email, $guardian->full_name)
+                        ->subject($announcement->title . ' - Shiloh Learning Center')
+                        ->html(
+                            '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">' .
+                            '<h2 style="color: #2563eb;">' . e($announcement->title) . '</h2>' .
+                            '<p style="color: #333; line-height: 1.6;">' . nl2br(e($announcement->message)) . '</p>' .
+                            '<hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">' .
+                            '<p style="color: #666; font-size: 12px;">This email was sent from Shiloh Learning and Development Center.</p>' .
+                            '</div>'
+                        );
+                });
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning('Failed to send guardian email', [
+                    'guardian_id' => $guardian->id,
+                    'email' => $guardian->email,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
     }
 }

@@ -86,6 +86,23 @@ class EnrollmentResource extends Resource
                             ->required()
                             ->live()
                             ->placeholder('Select a program')
+                            ->rules([
+                                fn (Forms\Get $get, ?Enrollment $record): \Closure => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
+                                    $studentId = $get('student_id');
+                                    if (!$studentId || !$value) return;
+
+                                    $exists = Enrollment::query()
+                                        ->where('student_id', $studentId)
+                                        ->where('package_id', $value)
+                                        ->where('status', 'ACTIVE')
+                                        ->when($record, fn ($q) => $q->where('id', '!=', $record->id))
+                                        ->exists();
+
+                                    if ($exists) {
+                                        $fail('This student already has an active registration for this program.');
+                                    }
+                                },
+                            ])
                             ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) {
                                 if ($state) {
                                     $package = \App\Models\Package::find($state);

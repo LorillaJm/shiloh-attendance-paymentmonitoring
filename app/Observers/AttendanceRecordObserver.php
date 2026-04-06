@@ -12,7 +12,7 @@ class AttendanceRecordObserver
      */
     public function created(AttendanceRecord $attendanceRecord): void
     {
-        \App\Services\DashboardCacheService::clearAttendanceCaches();
+        \App\Services\DashboardCacheService::clearAttendanceSummary();
         
         // Increment session count if status is PRESENT
         if ($attendanceRecord->status === 'PRESENT') {
@@ -25,7 +25,7 @@ class AttendanceRecordObserver
      */
     public function updated(AttendanceRecord $attendanceRecord): void
     {
-        \App\Services\DashboardCacheService::clearAttendanceCaches();
+        \App\Services\DashboardCacheService::clearAttendanceSummary();
         
         // Check if status changed
         if ($attendanceRecord->wasChanged('status')) {
@@ -49,7 +49,7 @@ class AttendanceRecordObserver
      */
     public function deleted(AttendanceRecord $attendanceRecord): void
     {
-        \App\Services\DashboardCacheService::clearAttendanceCaches();
+        \App\Services\DashboardCacheService::clearAttendanceSummary();
         
         // Decrement session count if status was PRESENT
         if ($attendanceRecord->status === 'PRESENT') {

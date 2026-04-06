@@ -93,14 +93,16 @@ class AdminPanelProvider extends PanelProvider
             ], isPersistent: true)
             ->navigationGroups([
                 'Overview',
+                'Master Data',
+                'Enrollment Management',
                 'User Management',
                 'Session Management',
-                'Enrollment Management',
-                'Payment Management',
                 'Attendance Management',
-                'Master Data',
+                'Payment Management',
                 'Reports',
                 'System',
+                'Administration',
+                'Payment Monitoring',
             ])
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->breadcrumbs(true)

@@ -1,11 +1,64 @@
 <x-filament-panels::page>
     @php
         $notifications = $this->getNotifications();
+        $announcementCount = $notifications['announcements']->count();
         $overdueCount = $notifications['overdue_payments']->count();
         $upcomingCount = $notifications['upcoming_payments']->count();
         $lowSessionsCount = $notifications['low_sessions']->count();
-        $totalAlerts = $overdueCount + $upcomingCount + $lowSessionsCount;
+        $totalAlerts = $announcementCount + $overdueCount + $upcomingCount + $lowSessionsCount;
     @endphp
+
+    {{-- Announcements Section (always shown if there are any) --}}
+    @if($announcementCount > 0)
+        <div class="mb-6">
+            <div class="flex items-center justify-between mb-3">
+                <h3 class="text-base font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                    <svg class="h-5 w-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path>
+                    </svg>
+                    Announcements
+                    <span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-bold rounded-full bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-400">
+                        {{ $announcementCount }} new
+                    </span>
+                </h3>
+                <button wire:click="markAllAsRead" class="text-xs font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors">
+                    Mark all as read
+                </button>
+            </div>
+            <div class="space-y-3">
+                @foreach($notifications['announcements'] as $notification)
+                    <div class="rounded-lg border-l-4 border-primary-500 bg-primary-50 dark:bg-primary-900/20 p-4 relative">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-2">
+                                    <span class="inline-flex h-2 w-2 rounded-full bg-red-500"></span>
+                                    <h4 class="text-sm font-semibold text-gray-900 dark:text-white">
+                                        {{ $notification->data['title'] ?? 'Announcement' }}
+                                    </h4>
+                                </div>
+                                <p class="mt-1 text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                                    {{ $notification->data['message'] ?? '' }}
+                                </p>
+                                <div class="mt-2 flex items-center gap-3">
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">
+                                        From: {{ $notification->data['created_by'] ?? 'Admin' }}
+                                    </span>
+                                    <span class="text-xs text-gray-400 dark:text-gray-500">
+                                        {{ $notification->created_at->diffForHumans() }}
+                                    </span>
+                                </div>
+                            </div>
+                            <button wire:click="markAsRead('{{ $notification->id }}')" class="ml-3 flex-shrink-0 text-xs font-medium text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400 transition-colors" title="Mark as read">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    @endif
 
     @if($totalAlerts === 0)
         <div class="rounded-lg bg-white p-12 text-center shadow-sm dark:bg-gray-800">
@@ -17,7 +70,7 @@
             <h3 class="mt-4 text-lg font-semibold text-gray-900 dark:text-white">All Clear!</h3>
             <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">You have no pending notifications or reminders.</p>
         </div>
-    @else
+    @elseif($overdueCount + $upcomingCount + $lowSessionsCount > 0)
         <div class="space-y-4">
             {{-- Overdue Payments --}}
             @if($overdueCount > 0)

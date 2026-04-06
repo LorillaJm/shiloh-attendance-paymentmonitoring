@@ -16,6 +16,20 @@ class Notifications extends Page
     protected static ?string $title = 'Notifications & Reminders';
     protected static ?int $navigationSort = 6;
 
+    public static function getNavigationBadge(): ?string
+    {
+        $user = Auth::user();
+        if (!$user) return null;
+
+        $count = $user->unreadNotifications()->count();
+        return $count > 0 ? (string) $count : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'danger';
+    }
+
     public function getNotifications()
     {
         $guardian = Auth::user()->guardian;

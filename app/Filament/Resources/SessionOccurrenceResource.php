@@ -34,10 +34,10 @@ class SessionOccurrenceResource extends Resource
                     ->relationship('sessionType', 'name')
                     ->required(),
                 Forms\Components\Select::make('teacher_id')
-                    ->label('Assigned Staff')
-                    ->options(User::where('role', UserRole::ADMIN->value)->pluck('name', 'id'))
+                    ->label('Assigned Teacher / Faculty')
+                    ->options(User::whereIn('role', [UserRole::ADMIN->value, UserRole::SUPERADMIN->value])->pluck('name', 'id'))
                     ->searchable()
-                    ->helperText('Optional: Assign a staff member to this session'),
+                    ->helperText('Optional: Assign a teacher or faculty member to this session'),
                 Forms\Components\DatePicker::make('session_date')->required()->default(now()),
                 Forms\Components\TimePicker::make('start_time')->required(),
                 Forms\Components\TimePicker::make('end_time')->required(),
@@ -66,7 +66,8 @@ class SessionOccurrenceResource extends Resource
                 Tables\Columns\TextColumn::make('student.student_no')->searchable(),
                 Tables\Columns\TextColumn::make('student.full_name')->searchable(),
                 Tables\Columns\TextColumn::make('sessionType.name'),
-                Tables\Columns\TextColumn::make('teacher.name'),
+                Tables\Columns\TextColumn::make('teacher.name')
+                    ->label('Assigned Teacher / Faculty'),
                 Tables\Columns\TextColumn::make('start_time')->time('H:i'),
                 Tables\Columns\TextColumn::make('status')->badge()->color(fn (string $state): string => match ($state) {
                     'SCHEDULED' => 'gray',
