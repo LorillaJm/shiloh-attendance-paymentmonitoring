@@ -32,11 +32,18 @@ class Notifications extends Page
 
     public function getNotifications()
     {
+        // Get database notifications (announcements) - works even without guardian
+        $announcements = Auth::user()->notifications()
+            ->whereNull('read_at')
+            ->latest()
+            ->take(10)
+            ->get();
+
         $guardian = Auth::user()->guardian;
         
         if (!$guardian) {
             return [
-                'announcements' => collect(),
+                'announcements' => $announcements,
                 'overdue_payments' => collect(),
                 'upcoming_payments' => collect(),
                 'low_sessions' => collect(),
@@ -44,13 +51,6 @@ class Notifications extends Page
         }
 
         $studentIds = $guardian->students->pluck('id');
-
-        // Get database notifications (announcements from admin)
-        $announcements = Auth::user()->notifications()
-            ->whereNull('read_at')
-            ->latest()
-            ->take(10)
-            ->get();
 
         // Cache for 5 minutes
         $paymentNotifications = Cache::remember("parent_notifications_{$guardian->id}", 300, function () use ($studentIds) {
