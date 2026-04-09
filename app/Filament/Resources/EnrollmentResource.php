@@ -83,9 +83,12 @@ class EnrollmentResource extends Resource
                                     ->orderBy('name')
                                     ->pluck('name', 'id');
                             })
+                            ->searchable()
                             ->required()
                             ->live()
+                            ->preload()
                             ->placeholder('Select a program')
+<<<<<<< Updated upstream
                             ->rules([
                                 fn (Forms\Get $get, ?Enrollment $record): \Closure => function (string $attribute, $value, \Closure $fail) use ($get, $record) {
                                     $studentId = $get('student_id');
@@ -103,6 +106,9 @@ class EnrollmentResource extends Resource
                                     }
                                 },
                             ])
+=======
+                            ->helperText('If no programs appear, please create a package first in Master Data > Packages')
+>>>>>>> Stashed changes
                             ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) {
                                 if ($state) {
                                     $package = \App\Models\Package::find($state);
