@@ -8,6 +8,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
+use Filament\Forms;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -124,6 +125,41 @@ class CollectionsSummary extends Page implements HasTable
                 Tables\Filters\Filter::make('paid_today')
                     ->label('Paid Today')
                     ->query(fn (Builder $query) => $query->whereDate('paid_at', now()->format('Y-m-d'))),
+                
+                Tables\Filters\Filter::make('date_range')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')
+                            ->label('From Date')
+                            ->default(now()->startOfMonth())
+                            ->native(false),
+                        Forms\Components\DatePicker::make('to')
+                            ->label('To Date')
+                            ->default(now()->endOfMonth())
+                            ->native(false),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('paid_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['to'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('paid_at', '<=', $date),
+                            );
+                    })
+                    ->indicateUsing(function (array $data): array {
+                        $indicators = [];
+                        if ($data['from'] ?? null) {
+                            $indicators[] = Tables\Filters\Indicator::make('From ' . \Carbon\Carbon::parse($data['from'])->format('M d, Y'))
+                                ->removeField('from');
+                        }
+                        if ($data['to'] ?? null) {
+                            $indicators[] = Tables\Filters\Indicator::make('To ' . \Carbon\Carbon::parse($data['to'])->format('M d, Y'))
+                                ->removeField('to');
+                        }
+                        return $indicators;
+                    }),
             ])
             ->actions([
                 Tables\Actions\Action::make('view_enrollment')
