@@ -4,10 +4,12 @@ namespace App\Notifications;
 
 use App\Models\PaymentSchedule;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class PaymentReminderNotification extends Notification
+class PaymentReminderNotification extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
@@ -18,7 +20,7 @@ class PaymentReminderNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['database', 'broadcast'];
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -45,5 +47,36 @@ class PaymentReminderNotification extends Notification
             ->line('Note: Payments are non-refundable as per the package terms.')
             ->action('View Payment Details', url('/admin'))
             ->line('Thank you for your continued trust in Shiloh Learning and Development Center.');
+    }
+
+    public function toDatabase(object $notifiable): array
+    {
+        $enrollment = $this->paymentSchedule->enrollment;
+        $student = $enrollment->student;
+        
+        return [
+            'payment_schedule_id' => $this->paymentSchedule->id,
+            'student_name' => $student->full_name,
+            'package_name' => $enrollment->package->name,
+            'amount_due' => $this->paymentSchedule->amount_due,
+            'due_date' => $this->paymentSchedule->due_date->format('Y-m-d'),
+            'reminder_type' => $this->reminderType,
+        ];
+    }
+
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        $enrollment = $this->paymentSchedule->enrollment;
+        $student = $enrollment->student;
+        
+        return new BroadcastMessage([
+            'payment_schedule_id' => $this->paymentSchedule->id,
+            'student_name' => $student->full_name,
+            'package_name' => $enrollment->package->name,
+            'amount_due' => $this->paymentSchedule->amount_due,
+            'due_date' => $this->paymentSchedule->due_date->format('F d, Y'),
+            'reminder_type' => $this->reminderType,
+            'created_at' => now()->toISOString(),
+        ]);
     }
 }

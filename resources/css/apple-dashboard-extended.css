@@ -1,10 +1,10 @@
 /* ============================================
-   APPLE DASHBOARD - EXTENDED COMPONENTS
+   PREMIUM DARK DASHBOARD - EXTENDED COMPONENTS
    Additional premium UI elements
    ============================================ */
 
 /* ============================================
-   1. APPLE-STYLE BUTTONS
+   1. PREMIUM BUTTONS
    ============================================ */
 
 .apple-button {
@@ -14,18 +14,17 @@
     padding: 12px 24px;
     font-size: 0.9375rem;
     font-weight: 500;
-    border-radius: var(--radius-full);
-    background: var(--apple-blue);
-    color: var(--apple-white);
+    border-radius: var(--radius-full, 9999px);
+    background: linear-gradient(135deg, #14b8a6, #0d9488);
+    color: #ffffff;
     border: none;
     cursor: pointer;
-    transition: all var(--transition-base);
-    box-shadow: var(--shadow-sm);
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(94, 234, 212, 0.15);
 }
 
 .apple-button:hover {
-    background: var(--apple-blue-hover);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 6px 24px rgba(94, 234, 212, 0.25);
     transform: translateY(-1px);
 }
 
@@ -35,51 +34,55 @@
 
 .apple-button-secondary {
     background: transparent;
-    color: var(--apple-blue);
-    border: 1px solid var(--apple-blue);
+    color: #5eead4;
+    border: 1px solid rgba(94, 234, 212, 0.3);
 }
 
 .apple-button-secondary:hover {
-    background: rgba(0, 113, 227, 0.1);
+    background: rgba(94, 234, 212, 0.08);
+    border-color: rgba(94, 234, 212, 0.5);
 }
 
 /* ============================================
-   2. APPLE-STYLE NAVIGATION
+   2. NAVIGATION
    ============================================ */
 
 .apple-nav {
     display: flex;
-    gap: var(--space-lg);
+    gap: 1.5rem;
     align-items: center;
-    padding: var(--space-sm) 0;
+    padding: 0.5rem 0;
 }
 
 .apple-nav-item {
     font-size: 0.875rem;
     font-weight: 500;
-    color: var(--apple-gray-600);
+    color: #6b7280;
     text-decoration: none;
-    padding: var(--space-xs) var(--space-sm);
-    border-radius: var(--radius-md);
-    transition: all var(--transition-fast);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
 }
 
 .apple-nav-item:hover {
-    color: var(--apple-gray-800);
-    background: rgba(0, 0, 0, 0.05);
+    color: #1f2937;
+    background: rgba(0, 0, 0, 0.04);
 }
 
+.dark .apple-nav-item { color: #8b9ab5; }
+.dark .apple-nav-item:hover { color: #f0f4f8; background: rgba(255, 255, 255, 0.06); }
+
 .apple-nav-item.active {
-    color: var(--apple-blue);
-    background: rgba(0, 113, 227, 0.1);
+    color: #5eead4;
+    background: rgba(94, 234, 212, 0.1);
 }
 
 /* ============================================
-   3. APPLE-STYLE SECTIONS
+   3. SECTIONS
    ============================================ */
 
 .apple-section {
-    padding: var(--space-3xl) var(--space-lg);
+    padding: 3rem 1.5rem;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -89,20 +92,21 @@
     font-size: clamp(2rem, 5vw, 3.5rem);
     font-weight: 700;
     letter-spacing: -0.03em;
-    margin-bottom: var(--space-md);
-    background: var(--gradient-text);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    margin-bottom: 1rem;
+    color: #1f2937;
 }
+
+.dark .apple-section-title { color: #f0f4f8; }
 
 .apple-section-subtitle {
     font-size: clamp(1rem, 2vw, 1.5rem);
-    color: var(--apple-gray-500);
+    color: #6b7280;
     max-width: 800px;
-    margin: 0 auto var(--space-xl);
+    margin: 0 auto 2rem;
     line-height: 1.5;
 }
+
+.dark .apple-section-subtitle { color: #8b9ab5; }
 
 /* ============================================
    4. FEATURE GRID
@@ -111,50 +115,64 @@
 .apple-feature-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--space-xl);
-    margin-top: var(--space-2xl);
+    gap: 2rem;
+    margin-top: 3rem;
 }
 
 .apple-feature-card {
-    background: var(--gradient-card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: var(--radius-2xl);
-    padding: var(--space-xl);
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 1rem;
+    padding: 2rem;
     text-align: center;
-    transition: all var(--transition-base);
+    transition: all 0.25s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 .apple-feature-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-xl);
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dark .apple-feature-card {
+    background: #111820;
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.dark .apple-feature-card:hover {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(94, 234, 212, 0.06);
 }
 
 .apple-feature-icon {
     width: 64px;
     height: 64px;
-    margin: 0 auto var(--space-md);
-    background: var(--gradient-accent);
-    border-radius: var(--radius-lg);
+    margin: 0 auto 1rem;
+    background: linear-gradient(135deg, rgba(94, 234, 212, 0.15), rgba(94, 234, 212, 0.05));
+    border-radius: 0.75rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--apple-white);
+    color: #5eead4;
 }
 
 .apple-feature-title {
     font-size: 1.5rem;
     font-weight: 600;
-    margin-bottom: var(--space-sm);
-    color: var(--apple-gray-800);
+    margin-bottom: 0.5rem;
+    color: #1f2937;
 }
+
+.dark .apple-feature-title { color: #f0f4f8; }
 
 .apple-feature-description {
     font-size: 1rem;
-    color: var(--apple-gray-500);
+    color: #6b7280;
     line-height: 1.6;
 }
+
+.dark .apple-feature-description { color: #8b9ab5; }
 
 /* ============================================
    5. PROGRESS INDICATORS
@@ -163,17 +181,17 @@
 .apple-progress-bar {
     width: 100%;
     height: 4px;
-    background: var(--apple-gray-200);
-    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 9999px;
     overflow: hidden;
     position: relative;
 }
 
 .apple-progress-fill {
     height: 100%;
-    background: var(--gradient-accent);
-    border-radius: var(--radius-full);
-    transition: width var(--transition-slow);
+    background: linear-gradient(90deg, #14b8a6, #5eead4);
+    border-radius: 9999px;
+    transition: width 0.4s ease;
 }
 
 .apple-progress-ring {
@@ -182,25 +200,14 @@
     position: relative;
 }
 
-.apple-progress-ring svg {
-    transform: rotate(-90deg);
-}
-
-.apple-progress-ring circle {
-    fill: none;
-    stroke-width: 8;
-    stroke-linecap: round;
-}
-
-.apple-progress-ring .background {
-    stroke: var(--apple-gray-200);
-}
-
+.apple-progress-ring svg { transform: rotate(-90deg); }
+.apple-progress-ring circle { fill: none; stroke-width: 8; stroke-linecap: round; }
+.apple-progress-ring .background { stroke: rgba(255, 255, 255, 0.06); }
 .apple-progress-ring .progress {
-    stroke: var(--apple-blue);
+    stroke: #5eead4;
     stroke-dasharray: 339.292;
     stroke-dashoffset: 339.292;
-    transition: stroke-dashoffset var(--transition-slow);
+    transition: stroke-dashoffset 0.4s ease;
 }
 
 /* ============================================
@@ -213,39 +220,21 @@
     padding: 4px 12px;
     font-size: 0.75rem;
     font-weight: 600;
-    border-radius: var(--radius-full);
+    border-radius: 9999px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
-.apple-badge.primary {
-    background: rgba(0, 113, 227, 0.1);
-    color: var(--apple-blue);
-}
-
-.apple-badge.success {
-    background: rgba(48, 209, 88, 0.1);
-    color: var(--apple-green);
-}
-
-.apple-badge.warning {
-    background: rgba(255, 149, 0, 0.1);
-    color: var(--apple-orange);
-}
-
-.apple-badge.danger {
-    background: rgba(255, 59, 48, 0.1);
-    color: var(--apple-red);
-}
+.apple-badge.primary { background: rgba(94, 234, 212, 0.12); color: #5eead4; }
+.apple-badge.success { background: rgba(52, 211, 153, 0.12); color: #34d399; }
+.apple-badge.warning { background: rgba(251, 191, 36, 0.12); color: #fbbf24; }
+.apple-badge.danger { background: rgba(248, 113, 113, 0.12); color: #f87171; }
 
 /* ============================================
    7. TOOLTIPS
    ============================================ */
 
-.apple-tooltip {
-    position: relative;
-    display: inline-block;
-}
+.apple-tooltip { position: relative; display: inline-block; }
 
 .apple-tooltip::after {
     content: attr(data-tooltip);
@@ -254,14 +243,15 @@
     left: 50%;
     transform: translateX(-50%) translateY(-8px);
     padding: 8px 12px;
-    background: var(--apple-gray-800);
-    color: var(--apple-white);
+    background: #1a2332;
+    color: #f0f4f8;
     font-size: 0.75rem;
-    border-radius: var(--radius-md);
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     white-space: nowrap;
     opacity: 0;
     pointer-events: none;
-    transition: all var(--transition-fast);
+    transition: all 0.15s ease;
 }
 
 .apple-tooltip:hover::after {
@@ -275,44 +265,28 @@
 
 .apple-divider {
     height: 1px;
-    background: linear-gradient(
-        90deg,
-        transparent 0%,
-        var(--apple-gray-200) 50%,
-        transparent 100%
-    );
-    margin: var(--space-xl) 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.06) 50%, transparent 100%);
+    margin: 2rem 0;
 }
 
 /* ============================================
    9. SPOTLIGHT EFFECT
    ============================================ */
 
-.apple-spotlight {
-    position: relative;
-    overflow: hidden;
-}
+.apple-spotlight { position: relative; overflow: hidden; }
 
 .apple-spotlight::before {
     content: '';
     position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(
-        circle,
-        rgba(0, 113, 227, 0.1) 0%,
-        transparent 70%
-    );
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(94, 234, 212, 0.06) 0%, transparent 70%);
     opacity: 0;
-    transition: opacity var(--transition-slow);
+    transition: opacity 0.4s ease;
     pointer-events: none;
 }
 
-.apple-spotlight:hover::before {
-    opacity: 1;
-}
+.apple-spotlight:hover::before { opacity: 1; }
 
 /* ============================================
    10. SCROLL INDICATORS
@@ -320,11 +294,9 @@
 
 .apple-scroll-indicator {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--gradient-accent);
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #14b8a6, #5eead4);
     transform-origin: left;
     transform: scaleX(0);
     z-index: 9999;
@@ -335,32 +307,25 @@
    ============================================ */
 
 .apple-skeleton {
-    background: linear-gradient(
-        90deg,
-        var(--apple-gray-100) 25%,
-        var(--apple-gray-50) 50%,
-        var(--apple-gray-100) 75%
-    );
+    background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
     background-size: 200% 100%;
     animation: shimmer 1.5s infinite;
-    border-radius: var(--radius-md);
+    border-radius: 0.5rem;
 }
 
-.apple-skeleton-text {
-    height: 1em;
-    margin-bottom: 0.5em;
+.dark .apple-skeleton {
+    background: linear-gradient(90deg, #1a2332 25%, #243040 50%, #1a2332 75%);
+    background-size: 200% 100%;
 }
 
-.apple-skeleton-title {
-    height: 2em;
-    width: 60%;
-    margin-bottom: 1em;
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
 }
 
-.apple-skeleton-card {
-    height: 200px;
-    border-radius: var(--radius-xl);
-}
+.apple-skeleton-text { height: 1em; margin-bottom: 0.5em; }
+.apple-skeleton-title { height: 2em; width: 60%; margin-bottom: 1em; }
+.apple-skeleton-card { height: 200px; border-radius: 1rem; }
 
 /* ============================================
    12. NOTIFICATION BADGES
@@ -368,20 +333,18 @@
 
 .apple-notification-badge {
     position: absolute;
-    top: -4px;
-    right: -4px;
-    min-width: 20px;
-    height: 20px;
+    top: -4px; right: -4px;
+    min-width: 20px; height: 20px;
     padding: 0 6px;
-    background: var(--apple-red);
-    color: var(--apple-white);
+    background: #f87171;
+    color: #ffffff;
     font-size: 0.625rem;
     font-weight: 600;
-    border-radius: var(--radius-full);
+    border-radius: 9999px;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(255, 59, 48, 0.3);
+    box-shadow: 0 2px 4px rgba(248, 113, 113, 0.3);
 }
 
 /* ============================================
@@ -389,19 +352,9 @@
    ============================================ */
 
 @media (max-width: 768px) {
-    .apple-section {
-        padding: var(--space-xl) var(--space-md);
-    }
-    
-    .apple-feature-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-lg);
-    }
-    
-    .apple-nav {
-        flex-direction: column;
-        gap: var(--space-sm);
-    }
+    .apple-section { padding: 2rem 1rem; }
+    .apple-feature-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+    .apple-nav { flex-direction: column; gap: 0.5rem; }
 }
 
 /* ============================================
@@ -409,14 +362,10 @@
    ============================================ */
 
 @media print {
-    .apple-stat-card,
-    .apple-feature-card {
+    .apple-stat-card, .apple-feature-card {
         break-inside: avoid;
         box-shadow: none;
-        border: 1px solid var(--apple-gray-200);
+        border: 1px solid #ccc;
     }
-    
-    .apple-hero-header {
-        page-break-after: avoid;
-    }
+    .apple-hero-header { page-break-after: avoid; }
 }

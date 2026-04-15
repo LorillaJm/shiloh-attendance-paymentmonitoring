@@ -1,520 +1,334 @@
 /* ============================================
-   APPLE-INSPIRED PREMIUM DASHBOARD
-   Modern, Minimal, Futuristic Design System
+   DARK FINTECH DESIGN SYSTEM
+   Premium Trading Dashboard — Teal Accent
    ============================================ */
 
 /* ============================================
-   1. CSS VARIABLES & DESIGN TOKENS
+   1. CSS VARIABLES — LIGHT MODE
    ============================================ */
 :root {
-    /* Apple Color Palette */
-    --apple-white: #ffffff;
-    --apple-gray-50: #f5f5f7;
-    --apple-gray-100: #e8e8ed;
-    --apple-gray-200: #d2d2d7;
-    --apple-gray-300: #b0b0b5;
-    --apple-gray-400: #86868b;
-    --apple-gray-500: #6e6e73;
-    --apple-gray-600: #515154;
-    --apple-gray-700: #424245;
-    --apple-gray-800: #1d1d1f;
-    --apple-black: #000000;
-    
-    /* Accent Colors */
-    --apple-blue: #0071e3;
-    --apple-blue-hover: #0077ed;
-    --apple-green: #30d158;
-    --apple-orange: #ff9500;
-    --apple-red: #ff3b30;
-    --apple-purple: #bf5af2;
-    
-    /* Gradients */
-    --gradient-bg: linear-gradient(180deg, #f5f5f7 0%, #ffffff 100%);
-    --gradient-card: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
-    --gradient-text: linear-gradient(90deg, #1d1d1f 0%, #515154 100%);
-    --gradient-accent: linear-gradient(135deg, #0071e3 0%, #0077ed 100%);
-    
-    /* Shadows */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
-    --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.1);
-    --shadow-glow: 0 0 20px rgba(0, 113, 227, 0.15);
-    
-    /* Spacing */
-    --space-xs: 0.5rem;
-    --space-sm: 1rem;
-    --space-md: 1.5rem;
-    --space-lg: 2rem;
-    --space-xl: 3rem;
-    --space-2xl: 4rem;
-    --space-3xl: 6rem;
-    
-    /* Border Radius */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
-    --radius-2xl: 24px;
-    --radius-full: 9999px;
-    
-    /* Typography */
-    --font-system: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', 'Inter', system-ui, sans-serif;
-    --font-mono: 'SF Mono', 'Monaco', 'Courier New', monospace;
-    
-    /* Transitions */
-    --transition-fast: 0.2s ease-in-out;
-    --transition-base: 0.3s ease-in-out;
-    --transition-slow: 0.6s ease-in-out;
-    --transition-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+    --ft-bg-page: #f8fafc;
+    --ft-bg-sidebar: #ffffff;
+    --ft-bg-topbar: #ffffff;
+    --ft-bg-card: #ffffff;
+    --ft-bg-card-hover: #f1f5f9;
+    --ft-bg-input: #f8fafc;
 
-/* Dark Mode Variables */
-.dark {
-    --apple-white: #1d1d1f;
-    --apple-gray-50: #2c2c2e;
-    --apple-gray-100: #3a3a3c;
-    --apple-gray-800: #f5f5f7;
-    --gradient-bg: linear-gradient(180deg, #1d1d1f 0%, #000000 100%);
-    --gradient-card: linear-gradient(135deg, rgba(44,44,46,0.9) 0%, rgba(44,44,46,0.7) 100%);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --ft-border: rgba(0, 0, 0, 0.08);
+    --ft-border-hover: rgba(13, 148, 136, 0.35);
+
+    --ft-text-primary: #0f172a;
+    --ft-text-secondary: #64748b;
+    --ft-text-muted: #94a3b8;
+
+    --ft-accent: #0d9488;
+    --ft-accent-light: rgba(13, 148, 136, 0.1);
+    --ft-accent-glow: 0 0 20px rgba(13, 148, 136, 0.15);
+
+    --ft-success: #16a34a;
+    --ft-warning: #ca8a04;
+    --ft-danger: #dc2626;
+
+    --ft-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+    --ft-shadow-card-hover: 0 10px 25px rgba(0, 0, 0, 0.08);
+
+    --ft-radius: 16px;
+    --ft-radius-sm: 10px;
+    --ft-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================
-   2. BASE STYLES & RESET
+   2. CSS VARIABLES — DARK MODE
+   ============================================ */
+.dark {
+    --ft-bg-page: #080b10;
+    --ft-bg-sidebar: #0c1018;
+    --ft-bg-topbar: #0c1018;
+    --ft-bg-card: #111820;
+    --ft-bg-card-hover: #161f2b;
+    --ft-bg-input: #151d28;
+
+    --ft-border: rgba(255, 255, 255, 0.06);
+    --ft-border-hover: rgba(94, 234, 212, 0.2);
+
+    --ft-text-primary: #f0f4f8;
+    --ft-text-secondary: #8b9ab5;
+    --ft-text-muted: #5a6a82;
+
+    --ft-accent: #5eead4;
+    --ft-accent-light: rgba(94, 234, 212, 0.08);
+    --ft-accent-glow: 0 0 24px rgba(94, 234, 212, 0.12);
+
+    --ft-success: #22c55e;
+    --ft-warning: #eab308;
+    --ft-danger: #ef4444;
+
+    --ft-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --ft-shadow-card-hover: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(94, 234, 212, 0.06);
+}
+
+/* ============================================
+   3. BASE & RESET
    ============================================ */
 * {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-body {
-    font-family: var(--font-system);
-    background: var(--gradient-bg);
-    background-attachment: fixed;
-    color: var(--apple-gray-800);
-    line-height: 1.6;
+/* ============================================
+   4. FILAMENT OVERRIDES — PAGE
+   ============================================ */
+.fi-body,
+body.fi-body {
+    background-color: var(--ft-bg-page) !important;
+}
+
+.fi-main {
+    background-color: var(--ft-bg-page) !important;
 }
 
 /* ============================================
-   3. LAYOUT STRUCTURE
+   5. FILAMENT OVERRIDES — SIDEBAR
    ============================================ */
-
-/* Main Dashboard Container */
-.apple-dashboard-container {
-    min-height: 100vh;
-    padding: var(--space-lg);
-    max-width: 1600px;
-    margin: 0 auto;
+.fi-sidebar {
+    background-color: var(--ft-bg-sidebar) !important;
+    border-right: 1px solid var(--ft-border) !important;
 }
 
-/* Hero Header Section */
-.apple-hero-header {
-    text-align: center;
-    padding: var(--space-3xl) var(--space-lg);
-    margin-bottom: var(--space-2xl);
-    animation: fadeInDown 0.8s ease-out;
+.fi-sidebar-header {
+    background-color: var(--ft-bg-sidebar) !important;
+    border-bottom: 1px solid var(--ft-border) !important;
 }
 
-.apple-hero-title {
-    font-size: clamp(2.5rem, 6vw, 4rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    background: var(--gradient-text);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: var(--space-md);
-    line-height: 1.1;
+.fi-sidebar-nav {
+    background-color: var(--ft-bg-sidebar) !important;
 }
 
-.apple-hero-subtitle {
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    color: var(--apple-gray-500);
-    font-weight: 400;
-    max-width: 600px;
-    margin: 0 auto;
+/* Active sidebar item — teal highlight */
+.fi-sidebar-item.fi-active {
+    background-color: var(--ft-accent-light) !important;
+    color: var(--ft-accent) !important;
 }
 
-/* ============================================
-   4. STAT CARDS - APPLE STYLE
-   ============================================ */
-
-/* Stats Grid Container */
-.apple-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: var(--space-lg);
-    margin-bottom: var(--space-2xl);
+.fi-sidebar-item.fi-active .fi-sidebar-item-label {
+    color: var(--ft-accent) !important;
+    font-weight: 600 !important;
 }
 
-/* Individual Stat Card */
-.apple-stat-card {
-    position: relative;
-    background: var(--gradient-card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: var(--radius-xl);
-    padding: var(--space-lg);
-    box-shadow: var(--shadow-md);
-    transition: all var(--transition-base);
-    overflow: hidden;
-    min-height: 180px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+.fi-sidebar-item.fi-active .fi-sidebar-item-icon {
+    color: var(--ft-accent) !important;
 }
 
-.apple-stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--gradient-accent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform var(--transition-slow);
+/* Sidebar hover */
+.fi-sidebar-item:hover {
+    background-color: var(--ft-accent-light) !important;
 }
 
-.apple-stat-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: var(--shadow-xl), var(--shadow-glow);
+/* Sidebar group labels */
+.fi-sidebar-group-label {
+    color: var(--ft-text-muted) !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.08em !important;
 }
 
-.apple-stat-card:hover::before {
-    transform: scaleX(1);
-}
-
-/* Card Header */
-.apple-stat-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: var(--space-md);
-}
-
-.apple-stat-label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--apple-gray-500);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.apple-stat-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-md);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 113, 227, 0.1);
-    color: var(--apple-blue);
-    transition: all var(--transition-base);
-}
-
-.apple-stat-card:hover .apple-stat-icon {
-    transform: rotate(10deg) scale(1.1);
-}
-
-/* Card Value */
-.apple-stat-value {
-    font-size: clamp(2rem, 4vw, 3rem);
-    font-weight: 700;
-    color: var(--apple-gray-800);
-    line-height: 1.1;
-    margin-bottom: var(--space-xs);
-    letter-spacing: -0.02em;
-}
-
-/* Card Description */
-.apple-stat-description {
-    font-size: 0.875rem;
-    color: var(--apple-gray-500);
-    font-weight: 400;
-}
-
-/* Card Chart/Progress */
-.apple-stat-chart {
-    margin-top: var(--space-sm);
-    height: 40px;
-    opacity: 0.6;
-    transition: opacity var(--transition-base);
-}
-
-.apple-stat-card:hover .apple-stat-chart {
-    opacity: 1;
-}
-
-/* Color Variants */
-.apple-stat-card.primary .apple-stat-icon {
-    background: rgba(0, 113, 227, 0.1);
-    color: var(--apple-blue);
-}
-
-.apple-stat-card.success .apple-stat-icon {
-    background: rgba(48, 209, 88, 0.1);
-    color: var(--apple-green);
-}
-
-.apple-stat-card.warning .apple-stat-icon {
-    background: rgba(255, 149, 0, 0.1);
-    color: var(--apple-orange);
-}
-
-.apple-stat-card.danger .apple-stat-icon {
-    background: rgba(255, 59, 48, 0.1);
-    color: var(--apple-red);
-}
-
-/* ============================================
-   5. GLASSMORPHISM EFFECTS
-   ============================================ */
-
-.glass-panel {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-md);
-}
-
-.glass-navbar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    padding: var(--space-sm) var(--space-lg);
-}
-
-/* ============================================
-   6. ANIMATIONS
-   ============================================ */
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
+/* Mobile sidebar — solid background */
+@media (max-width: 1023px) {
+    .fi-sidebar,
+    .fi-sidebar-nav,
+    .fi-sidebar-header {
+        background-color: var(--ft-bg-sidebar) !important;
+        z-index: 40 !important;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes fadeInDown {
-    from {
-        opacity: 0;
-        transform: translateY(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes scaleIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-@keyframes shimmer {
-    0% {
-        background-position: -1000px 0;
-    }
-    100% {
-        background-position: 1000px 0;
-    }
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-}
-
-/* Apply animations */
-.animate-fade-in-up {
-    animation: fadeInUp 0.6s ease-out forwards;
-}
-
-.animate-scale-in {
-    animation: scaleIn 0.4s ease-out forwards;
-}
-
-.animate-float {
-    animation: float 3s ease-in-out infinite;
-}
-
-/* Staggered animation delays */
-.apple-stat-card:nth-child(1) { animation-delay: 0.1s; }
-.apple-stat-card:nth-child(2) { animation-delay: 0.2s; }
-.apple-stat-card:nth-child(3) { animation-delay: 0.3s; }
-.apple-stat-card:nth-child(4) { animation-delay: 0.4s; }
-.apple-stat-card:nth-child(5) { animation-delay: 0.5s; }
-.apple-stat-card:nth-child(6) { animation-delay: 0.6s; }
-.apple-stat-card:nth-child(7) { animation-delay: 0.7s; }
-
-/* ============================================
-   7. LOADING SHIMMER EFFECT
-   ============================================ */
-
-.shimmer-loading {
-    background: linear-gradient(
-        90deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.4) 50%,
-        rgba(255, 255, 255, 0) 100%
-    );
-    background-size: 1000px 100%;
-    animation: shimmer 2s infinite;
-}
-
-/* ============================================
-   8. RESPONSIVE DESIGN
-   ============================================ */
-
-@media (max-width: 768px) {
-    .apple-dashboard-container {
-        padding: var(--space-md);
-    }
-    
-    .apple-hero-header {
-        padding: var(--space-xl) var(--space-sm);
-        margin-bottom: var(--space-lg);
-    }
-    
-    .apple-stats-grid {
-        grid-template-columns: 1fr;
-        gap: var(--space-md);
-    }
-    
-    .apple-stat-card {
-        min-height: 140px;
-        padding: var(--space-md);
-    }
-    
-    .apple-stat-value {
-        font-size: 2rem;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .apple-stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 1025px) {
-    .apple-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    .fi-sidebar-close-overlay {
+        z-index: 30 !important;
+        background-color: rgba(0, 0, 0, 0.6) !important;
     }
 }
 
 /* ============================================
-   9. UTILITY CLASSES
+   6. FILAMENT OVERRIDES — TOPBAR
    ============================================ */
-
-.text-gradient {
-    background: var(--gradient-text);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.smooth-transition {
-    transition: all var(--transition-base);
-}
-
-.hover-lift:hover {
-    transform: translateY(-2px);
-}
-
-.hover-glow:hover {
-    box-shadow: var(--shadow-glow);
+.fi-topbar,
+.fi-topbar nav,
+.fi-topbar > nav {
+    background-color: var(--ft-bg-topbar) !important;
+    border-bottom: 1px solid var(--ft-border) !important;
+    box-shadow: none !important;
 }
 
 /* ============================================
-   10. FILAMENT OVERRIDES
+   7. STAT CARDS — THE HERO
    ============================================ */
-
-/* Override Filament stat cards with Apple style */
 .fi-wi-stats-overview {
     background: transparent !important;
     border: none !important;
     box-shadow: none !important;
 }
 
-.fi-wi-stats-overview .fi-wi-stats-overview-stat {
-    background: var(--gradient-card) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.3) !important;
-    border-radius: var(--radius-xl) !important;
-    box-shadow: var(--shadow-md) !important;
-    transition: all var(--transition-base) !important;
-    min-height: 180px !important;
+.fi-wi-stats-overview-stats-ctn {
+    display: grid !important;
+    gap: 1rem !important;
+    width: 100% !important;
 }
 
-.fi-wi-stats-overview .fi-wi-stats-overview-stat:hover {
-    transform: translateY(-4px) scale(1.02) !important;
-    box-shadow: var(--shadow-xl), var(--shadow-glow) !important;
+.fi-wi-stats-overview-stat {
+    background-color: var(--ft-bg-card) !important;
+    border: 1px solid var(--ft-border) !important;
+    border-radius: var(--ft-radius) !important;
+    box-shadow: var(--ft-shadow-card) !important;
+    transition: all var(--ft-transition) !important;
+    min-height: 0 !important;
+    padding: 1.25rem !important;
+}
+
+.fi-wi-stats-overview-stat:hover {
+    background-color: var(--ft-bg-card-hover) !important;
+    border-color: var(--ft-border-hover) !important;
+    box-shadow: var(--ft-shadow-card-hover) !important;
+    transform: translateY(-3px) !important;
 }
 
 .fi-wi-stats-overview-stat-value {
-    font-size: clamp(2rem, 4vw, 2.5rem) !important;
-    font-weight: 700 !important;
-    color: var(--apple-gray-800) !important;
+    font-size: clamp(1.5rem, 3vw, 2rem) !important;
+    font-weight: 800 !important;
+    color: var(--ft-text-primary) !important;
     letter-spacing: -0.02em !important;
+    line-height: 1.2 !important;
 }
 
 .fi-wi-stats-overview-stat-label {
-    font-size: 0.875rem !important;
-    font-weight: 500 !important;
-    color: var(--apple-gray-500) !important;
+    font-size: 0.7rem !important;
+    font-weight: 600 !important;
+    color: var(--ft-text-secondary) !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.05em !important;
+    letter-spacing: 0.06em !important;
+    order: -1 !important;
+    margin-bottom: 0.5rem !important;
 }
 
 .fi-wi-stats-overview-stat-description {
-    font-size: 0.875rem !important;
-    color: var(--apple-gray-500) !important;
+    font-size: 0.75rem !important;
+    color: var(--ft-text-muted) !important;
+    margin-top: 0.25rem !important;
 }
 
-/* Page background */
+/* Stat card grid breakpoints */
+@media (min-width: 640px) {
+    .fi-wi-stats-overview-stats-ctn {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+@media (min-width: 768px) {
+    .fi-wi-stats-overview-stats-ctn {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+@media (min-width: 1024px) {
+    .fi-wi-stats-overview-stats-ctn {
+        grid-template-columns: repeat(4, 1fr) !important;
+    }
+}
+
+/* ============================================
+   8. SECTIONS & CARDS
+   ============================================ */
+.fi-section {
+    background-color: var(--ft-bg-card) !important;
+    border: 1px solid var(--ft-border) !important;
+    border-radius: var(--ft-radius) !important;
+    box-shadow: var(--ft-shadow-card) !important;
+    transition: all var(--ft-transition) !important;
+}
+
+.fi-section:hover {
+    border-color: var(--ft-border-hover) !important;
+}
+
+/* ============================================
+   9. CHART WIDGET
+   ============================================ */
+.fi-wi-chart {
+    background-color: var(--ft-bg-card) !important;
+    border: 1px solid var(--ft-border) !important;
+    border-radius: var(--ft-radius) !important;
+    box-shadow: var(--ft-shadow-card) !important;
+    padding: 1.5rem !important;
+    margin-top: 1.5rem !important;
+    transition: all var(--ft-transition) !important;
+}
+
+.fi-wi-chart:hover {
+    border-color: var(--ft-border-hover) !important;
+}
+
+/* ============================================
+   10. TABLES
+   ============================================ */
+.fi-ta-table {
+    background-color: var(--ft-bg-card) !important;
+}
+
+.dark .fi-ta-row:hover {
+    background-color: var(--ft-bg-card-hover) !important;
+}
+
+/* ============================================
+   11. FORMS
+   ============================================ */
+.dark input,
+.dark textarea,
+.dark select,
+.dark .fi-input,
+.dark .fi-select {
+    background-color: var(--ft-bg-input) !important;
+    border-color: var(--ft-border) !important;
+}
+
+.dark input:focus,
+.dark textarea:focus,
+.dark select:focus {
+    border-color: var(--ft-accent) !important;
+    box-shadow: 0 0 0 2px rgba(94, 234, 212, 0.15) !important;
+}
+
+/* ============================================
+   12. ANIMATIONS
+   ============================================ */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+}
+
 .fi-main {
-    background: var(--gradient-bg) !important;
+    animation: fadeInUp 0.4s ease-out;
 }
 
-/* Sidebar styling */
-.fi-sidebar {
-    background: rgba(255, 255, 255, 0.8) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border-right: 1px solid rgba(0, 0, 0, 0.05) !important;
-}
+/* ============================================
+   13. SCROLLBAR
+   ============================================ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--ft-text-muted); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--ft-text-secondary); }
 
-/* Topbar styling */
-.fi-topbar {
-    background: rgba(255, 255, 255, 0.8) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+/* ============================================
+   14. RESPONSIVE — MOBILE
+   ============================================ */
+@media (max-width: 640px) {
+    .fi-wi-stats-overview-stat {
+        padding: 1rem !important;
+    }
+    .fi-wi-stats-overview-stat-value {
+        font-size: 1.35rem !important;
+    }
+    .fi-wi-chart {
+        padding: 1rem !important;
+    }
 }

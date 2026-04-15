@@ -22,3 +22,6 @@ yarn-error.log
 # Documentation files (keep local only)
 *.md
 !README.md
+
+# Database backups (local only)
+/data backup

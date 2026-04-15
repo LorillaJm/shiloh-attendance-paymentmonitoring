@@ -45,12 +45,14 @@ class ParentPanelProvider extends PanelProvider
             ->font('Inter')
             ->darkMode(true)
             ->brandName('Parent Portal')
-            ->brandLogoHeight('2rem')
-            ->favicon(asset('favicon.ico'))
+            ->brandLogo(asset('images/logo.png'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('images/logo.png'))
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('16rem')
             ->maxContentWidth('full')
             ->topNavigation(false)
+            ->databaseNotifications()
             ->pages([
                 \App\Filament\Parent\Pages\ParentDashboard::class,
                 \App\Filament\Parent\Pages\MyChild::class,
@@ -80,7 +82,8 @@ class ParentPanelProvider extends PanelProvider
             ->loginRouteSlug('../admin/login')  // Redirect to unified login
             ->renderHook(
                 'panels::topbar.start',
-                fn () => '<div class="flex items-center justify-center flex-1 py-1">
+                fn () => '<div class="flex items-center justify-center flex-1 gap-2.5 py-1">
+                    <img src="' . asset('images/logo.png') . '" alt="Shiloh Logo" class="h-9 w-9 object-cover rounded-full bg-white shadow-sm p-0.5" />
                     <span class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
                         Shiloh Learning Center
                     </span>

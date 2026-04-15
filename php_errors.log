@@ -1,0 +1,23 @@
+[14-Apr-2026 06:50:02 UTC] PHP Fatal error:  Uncaught Error: Class "Log" not found in C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\bootstrap\app.php:81
+Stack trace:
+#0 [internal function]: {closure}(Object(Error))
+#1 C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\vendor\laravel\framework\src\Illuminate\Foundation\Exceptions\ReportableHandler.php(45): call_user_func(Object(Closure), Object(Error))
+#2 C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\vendor\laravel\framework\src\Illuminate\Foundation\Exceptions\Handler.php(364): Illuminate\Foundation\Exceptions\ReportableHandler->__invoke(Object(Error))
+#3 C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\vendor\laravel\framework\src\Illuminate\Foundation\Exceptions\Handler.php(343): Illuminate\Foundation\Exceptions\Handler->reportThrowable(Object(Error))
+#4 C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\vendor\laravel\framework\src\Illuminate\Foundation\Bootstrap\HandleExceptions.php(186): Illuminate\Foundation\Exceptions\Handler->report(Object(Error))
+#5 C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\vendor\laravel\framework\src\Illuminate\Foundation\Bootstrap\HandleExceptions.php(258): Illuminate\Foundation\Bootstrap\HandleExceptions->handleException(Object(Error))
+#6 [internal function]: Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}(Object(Error))
+#7 {main}
+  thrown in C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\bootstrap\app.php on line 81
+[14-Apr-2026 06:50:02 UTC] PHP Fatal error:  Uncaught Error: Class "Log" not found in C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\bootstrap\app.php:81
+Stack trace:
+#0 [internal function]: {closure}(Object(Symfony\Component\ErrorHandler\Error\FatalError))
+#1 C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\vendor\laravel\framework\src\Illuminate\Foundation\Exceptions\ReportableHandler.php(45): call_user_func(Object(Closure), Object(Symfony\Component\ErrorHandler\Error\FatalError))
+#2 C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\vendor\laravel\framework\src\Illuminate\Foundation\Exceptions\Handler.php(364): Illuminate\Foundation\Exceptions\ReportableHandler->__invoke(Object(Symfony\Component\ErrorHandler\Error\FatalError))
+#3 C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\vendor\laravel\framework\src\Illuminate\Foundation\Exceptions\Handler.php(343): Illuminate\Foundation\Exceptions\Handler->reportThrowable(Object(Symfony\Component\ErrorHandler\Error\FatalError))
+#4 C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\vendor\laravel\framework\src\Illuminate\Foundation\Bootstrap\HandleExceptions.php(186): Illuminate\Foundation\Exceptions\Handler->report(Object(Symfony\Component\ErrorHandler\Error\FatalError))
+#5 C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\vendor\laravel\framework\src\Illuminate\Foundation\Bootstrap\HandleExceptions.php(234): Illuminate\Foundation\Bootstrap\HandleExceptions->handleException(Object(Symfony\Component\ErrorHandler\Error\FatalError))
+#6 C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\vendor\laravel\framework\src\Illuminate\Foundation\Bootstrap\HandleExceptions.php(258): Illuminate\Foundation\Bootstrap\HandleExceptions->handleShutdown()
+#7 [internal function]: Illuminate\Foundation\Bootstrap\HandleExceptions->Illuminate\Foundation\Bootstrap\{closure}()
+#8 {main}
+  thrown in C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\bootstrap\app.php on line 81

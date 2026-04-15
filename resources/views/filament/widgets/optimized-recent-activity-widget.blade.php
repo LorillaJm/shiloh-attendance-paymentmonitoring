@@ -25,40 +25,40 @@
         </x-slot>
 
         <div class="overflow-x-auto">
-            <table class="w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <table class="w-full" style="border-collapse: separate; border-spacing: 0;">
                 <thead>
-                    <tr class="bg-gray-50 dark:bg-gray-800">
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                    <tr class="bg-gray-50 dark:bg-[#0f1520]">
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-[#5b6a82]">
                             Date
                         </th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-[#5b6a82]">
                             Student
                         </th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-[#5b6a82]">
                             Package
                         </th>
-                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-[#5b6a82]">
                             Payment #
                         </th>
-                        <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        <th class="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-[#5b6a82]">
                             Amount
                         </th>
-                        <th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                        <th class="px-4 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-[#5b6a82]">
                             Method
                         </th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+                <tbody>
                     @forelse($this->getRecentPayments() as $payment)
-                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-                            <td class="whitespace-nowrap px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
+                        <tr class="border-b border-gray-100 dark:border-white/[0.04] transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-[#1a2332]">
+                            <td class="whitespace-nowrap px-4 py-3 text-sm text-gray-600 dark:text-[#c8d3e0]">
                                 {{ \Carbon\Carbon::parse($payment->paid_at)->format('M d, h:i A') }}
                             </td>
                             <td class="px-4 py-3 text-sm">
-                                <div class="font-medium text-gray-900 dark:text-gray-100">
+                                <div class="font-medium text-gray-900 dark:text-[#f0f4f8]">
                                     {{ $payment->student_no }}
                                 </div>
-                                <div class="text-gray-500 dark:text-gray-400">
+                                <div class="text-gray-500 dark:text-[#8b9ab5]" style="font-size: 0.8125rem;">
                                     {{ $payment->student_name }}
                                 </div>
                             </td>
@@ -67,7 +67,7 @@
                                     {{ $payment->package_name }}
                                 </span>
                             </td>
-                            <td class="whitespace-nowrap px-4 py-3 text-sm text-gray-900 dark:text-gray-100">
+                            <td class="whitespace-nowrap px-4 py-3 text-sm text-gray-600 dark:text-[#c8d3e0]">
                                 {{ $payment->installment_no == 0 ? 'Down Payment' : 'Payment #' . $payment->installment_no }}
                             </td>
                             <td class="whitespace-nowrap px-4 py-3 text-right text-sm font-semibold text-success-600 dark:text-success-400">
@@ -84,7 +84,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-500 dark:text-gray-400">
+                            <td colspan="6" class="px-4 py-8 text-center text-sm text-gray-400 dark:text-[#5b6a82]">
                                 No recent payments in the last 7 days
                             </td>
                         </tr>

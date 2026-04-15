@@ -5,9 +5,11 @@
     <title>Due/Overdue Report</title>
     <style>
         body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; }
-        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; }
-        .header h1 { margin: 0; font-size: 24px; color: #2563eb; }
-        .header h2 { margin: 5px 0; font-size: 18px; color: #333; }
+        .report-header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; }
+        .report-header h1 { margin: 0; font-size: 20px; color: #2563eb; }
+        .report-header h2 { margin: 5px 0; font-size: 16px; color: #333; }
+        .report-header p { margin: 3px 0; color: #666; font-size: 11px; }
+        .report-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 8px; }
         .summary { background: #fef2f2; padding: 15px; margin-bottom: 20px; border-radius: 5px; border-left: 4px solid #ef4444; }
         .summary-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .summary-item { padding: 10px; background: white; border-radius: 3px; }
@@ -23,11 +25,9 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Shiloh Attendance and Payment System</h1>
-        <h2>{{ ucfirst($reportType) }} Payments Report</h2>
-        <p>Generated: {{ now()->format('F d, Y h:i A') }}</p>
-    </div>
+    @include('reports.partials.header', [
+        'reportTitle' => ucfirst($reportType) . ' Payments Report',
+    ])
 
     <div class="summary">
         <div class="summary-grid">

@@ -1,6 +1,6 @@
-@import '/vendor/filament/filament/resources/css/theme.css';
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
 
-@config 'tailwind.config.js';
+@config '../../../../tailwind.config.js';
 
 /* Apple-like Design System */
 :root {
@@ -46,16 +46,7 @@
     transform: translateY(-2px);
 }
 
-/* Widget Cards */
-.fi-wi-stats-overview-stat {
-    @apply rounded-2xl;
-    transition: transform var(--transition-base), box-shadow var(--transition-base);
-}
-
-.fi-wi-stats-overview-stat:hover {
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-xl);
-}
+/* Widget Cards — see apple-dashboard.css for fintech overrides */
 
 /* Table Styling */
 .fi-ta-table {
@@ -146,26 +137,7 @@
     transform: translateY(-4px);
 }
 
-/* Fix oversized icons in stat cards */
-.fi-wi-stats-overview-stat-icon {
-    @apply w-5 h-5 !important;
-}
-
-.fi-wi-stats-overview-stat .fi-icon {
-    @apply w-5 h-5 !important;
-}
-
-/* Fix description icon size */
-.fi-wi-stats-overview-stat-description-icon {
-    @apply w-4 h-4 !important;
-}
-
-/* Hide all stat card icons completely for cleaner look */
-.fi-wi-stats-overview-stat-icon,
-.fi-wi-stats-overview-stat-description-icon,
-.fi-wi-stats-overview-stat .fi-icon {
-    @apply hidden !important;
-}
+/* Stat card icons — let Filament handle these */
 
 .stat-value {
     @apply text-4xl font-bold tracking-tight;
@@ -307,10 +279,7 @@
     }
 }
 
-/* Smooth Transitions */
-* {
-    @apply transition-colors duration-150;
-}
+/* Smooth transitions handled by dark-mode-improvements.css */
 
 /* Page Transitions */
 @keyframes fadeIn {
@@ -346,9 +315,7 @@
     }
 }
 
-.fi-main {
-    animation: fadeIn var(--transition-slow) ease-out;
-}
+/* fi-main animation handled by apple-dashboard.css */
 
 .fi-section {
     animation: scaleIn var(--transition-base) ease-out;
@@ -585,3 +552,4 @@
     @apply w-3 h-3 bg-red-500 rounded-full;
     @apply animate-pulse;
 }
+

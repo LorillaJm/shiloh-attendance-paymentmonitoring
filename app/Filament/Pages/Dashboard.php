@@ -32,13 +32,7 @@ class Dashboard extends BaseDashboard
 
     public function getSubheading(): ?string
     {
-        $user = auth()->user();
-        
-        if ($user->isAdmin()) {
-            return 'Optimized performance dashboard - cached for speed';
-        }
-        
-        return 'Your personal dashboard';
+        return null;
     }
     
     public function getColumns(): int | string | array

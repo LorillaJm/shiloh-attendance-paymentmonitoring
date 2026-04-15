@@ -1,9 +1,9 @@
 /* ============================================
-   DARK MODE IMPROVEMENTS
-   Smooth transitions and better contrast
+   DARK MODE — Smooth Transitions & Extras
+   Colors handled by apple-dashboard.css (fintech design system)
    ============================================ */
 
-/* Smooth transitions for all theme-related properties */
+/* Smooth transitions for theme toggling */
 html,
 body,
 .fi-sidebar,
@@ -11,281 +11,68 @@ body,
 .fi-main,
 .fi-sidebar-nav,
 .fi-sidebar-item,
-[class*="fi-"],
-[class*="filament-"] {
+.fi-section,
+.fi-wi-stats-overview-stat,
+.fi-wi-chart,
+.fi-ta-row {
     transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                 box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Improved sidebar dark mode */
-.dark .fi-sidebar {
-    background-color: rgb(17, 24, 39) !important;
-    border-right-color: rgb(31, 41, 55) !important;
-}
+/* Color scheme hints — prevent flash on load */
+html.dark { color-scheme: dark; }
+html:not(.dark) { color-scheme: light; }
 
-.dark .fi-sidebar-nav {
-    background-color: rgb(17, 24, 39) !important;
-}
-
-.dark .fi-sidebar-item {
-    color: rgb(156, 163, 175) !important;
-}
-
-.dark .fi-sidebar-item:hover {
-    background-color: rgb(31, 41, 55) !important;
-    color: rgb(243, 244, 246) !important;
-}
-
-.dark .fi-sidebar-item.fi-active {
-    background-color: rgb(37, 99, 235) !important;
-    color: rgb(255, 255, 255) !important;
-}
-
-/* Improved topbar dark mode */
-.dark .fi-topbar {
-    background-color: rgb(17, 24, 39) !important;
-    border-bottom-color: rgb(31, 41, 55) !important;
-}
-
-/* Improved main content area dark mode */
-.dark .fi-main {
-    background-color: rgb(17, 24, 39) !important;
-}
-
-/* Improved card dark mode */
-.dark .fi-section,
-.dark .fi-card,
-.dark [class*="fi-ta-"],
-.dark [class*="fi-fo-"] {
-    background-color: rgb(17, 24, 39) !important;
-    border-color: rgb(55, 65, 81) !important;
-}
-
-/* Improved input dark mode */
-.dark input,
-.dark textarea,
-.dark select {
-    background-color: rgb(31, 41, 55) !important;
-    border-color: rgb(55, 65, 81) !important;
-    color: rgb(243, 244, 246) !important;
-}
-
-.dark input:focus,
-.dark textarea:focus,
-.dark select:focus {
-    border-color: rgb(59, 130, 246) !important;
-    ring-color: rgb(59, 130, 246) !important;
-}
-
-/* Improved table dark mode */
-.dark table {
-    background-color: rgb(17, 24, 39) !important;
-}
-
-.dark thead {
-    background-color: rgb(31, 41, 55) !important;
-    border-bottom-color: rgb(55, 65, 81) !important;
-}
-
-.dark tbody tr {
-    border-bottom-color: rgb(55, 65, 81) !important;
-}
-
-.dark tbody tr:hover {
-    background-color: rgb(31, 41, 55) !important;
-}
-
-/* Improved text colors in dark mode */
-.dark h1,
-.dark h2,
-.dark h3,
-.dark h4,
-.dark h5,
-.dark h6 {
-    color: rgb(243, 244, 246) !important;
-}
-
-/* Remove overly broad text color rules */
-.dark .text-gray-500 {
-    color: rgb(156, 163, 175) !important;
-}
-
-.dark .text-gray-600 {
-    color: rgb(156, 163, 175) !important;
-}
-
-.dark .text-gray-700 {
-    color: rgb(209, 213, 219) !important;
-}
-
-.dark .text-gray-900 {
-    color: rgb(243, 244, 246) !important;
-}
-
-/* Improved button dark mode */
-.dark button {
-    transition: all 0.2s ease !important;
-}
-
-.dark .fi-btn-primary {
-    background-color: rgb(37, 99, 235) !important;
-    color: rgb(255, 255, 255) !important;
-}
-
-.dark .fi-btn-primary:hover {
-    background-color: rgb(29, 78, 216) !important;
-}
-
-/* Improved modal dark mode */
-.dark .fi-modal {
-    background-color: rgb(17, 24, 39) !important;
-    border-color: rgb(55, 65, 81) !important;
-}
-
-/* Improved dropdown dark mode */
-.dark .fi-dropdown-list {
-    background-color: rgb(17, 24, 39) !important;
-    border-color: rgb(55, 65, 81) !important;
-}
-
-.dark .fi-dropdown-list-item:hover {
-    background-color: rgb(31, 41, 55) !important;
-}
-
-/* Improved badge dark mode */
-.dark .fi-badge {
-    background-color: rgb(31, 41, 55) !important;
-    color: rgb(209, 213, 219) !important;
-}
-
-/* Smooth transition for theme toggle */
-.theme-toggle-btn {
-    transition: transform 0.3s ease, opacity 0.3s ease !important;
-}
-
-.theme-toggle-btn:hover {
-    transform: scale(1.1);
-}
-
-/* Prevent flash of unstyled content */
-html.dark {
-    color-scheme: dark;
-}
-
-html:not(.dark) {
-    color-scheme: light;
-}
-
-/* Improved scrollbar dark mode */
-.dark ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-.dark ::-webkit-scrollbar-track {
-    background: rgb(17, 24, 39);
-}
-
-.dark ::-webkit-scrollbar-thumb {
-    background: rgb(55, 65, 81);
-    border-radius: 4px;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-    background: rgb(75, 85, 99);
-}
-
-/* Improved stat cards dark mode */
-.dark .fi-wi-stats-overview-stat {
-    background-color: rgb(17, 24, 39) !important;
-    border-color: rgb(55, 65, 81) !important;
-}
-
-.dark .fi-wi-stats-overview-stat-value {
-    color: rgb(243, 244, 246) !important;
-}
-
-.dark .fi-wi-stats-overview-stat-label {
-    color: rgb(156, 163, 175) !important;
-}
-
-.dark .fi-wi-stats-overview-stat-description {
-    color: rgb(156, 163, 175) !important;
-}
-
-/* Improved chart dark mode */
-.dark .fi-wi-chart {
-    background-color: rgb(17, 24, 39) !important;
-    border-color: rgb(55, 65, 81) !important;
-}
-
-/* Improved notification dark mode */
-.dark .fi-no {
-    background-color: rgb(17, 24, 39) !important;
-    border-color: rgb(55, 65, 81) !important;
-}
-
-/* Improved search input dark mode */
-.dark .fi-global-search-input {
-    background-color: rgb(31, 41, 55) !important;
-    border-color: rgb(55, 65, 81) !important;
-    color: rgb(243, 244, 246) !important;
-}
-
-/* Improved breadcrumb dark mode */
-.dark .fi-breadcrumbs {
-    color: rgb(156, 163, 175) !important;
-}
-
-.dark .fi-breadcrumbs a {
-    color: rgb(209, 213, 219) !important;
-}
-
-.dark .fi-breadcrumbs a:hover {
-    color: rgb(243, 244, 246) !important;
-}
-
-/* Fix Filament table text colors in dark mode */
-.dark .fi-ta-text,
-.dark .fi-ta-cell,
-.dark .fi-ta-header-cell {
-    color: rgb(209, 213, 219) !important;
-}
-
-/* Fix Filament form text colors in dark mode */
-.dark .fi-fo-field-wrp-label,
-.dark .fi-fo-field-wrp-hint,
-.dark .fi-fo-field-wrp-helper-text {
-    color: rgb(209, 213, 219) !important;
-}
-
-/* Fix Filament page heading in dark mode */
-.dark .fi-header-heading,
-.dark .fi-section-header-heading {
-    color: rgb(243, 244, 246) !important;
-}
-
-/* Fix Filament tabs in dark mode */
-.dark .fi-tabs-item {
-    color: rgb(156, 163, 175) !important;
-}
-
-.dark .fi-tabs-item[aria-selected="true"] {
-    color: rgb(243, 244, 246) !important;
-}
-
-/* Fix general text visibility - set default text color for dark mode */
+/* Dark mode text visibility */
 .dark body,
 .dark .fi-body,
 .dark .fi-main {
-    color: rgb(209, 213, 219) !important;
+    color: var(--ft-text-primary, #f0f4f8) !important;
 }
 
-/* Ensure all Filament text elements are visible */
-.dark .fi-ta-text-item,
-.dark .fi-ta-text-item-label,
-.dark [class*="fi-ta-text"] {
-    color: rgb(209, 213, 219) !important;
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: var(--ft-text-primary, #f0f4f8) !important;
+}
+
+.dark .fi-header-heading,
+.dark .fi-section-header-heading {
+    color: var(--ft-text-primary, #f0f4f8) !important;
+}
+
+/* Dark mode modals & dropdowns */
+.dark .fi-modal {
+    background-color: var(--ft-bg-card, #111820) !important;
+    border-color: var(--ft-border, rgba(255,255,255,0.06)) !important;
+}
+
+.dark .fi-dropdown-list {
+    background-color: var(--ft-bg-card, #111820) !important;
+    border-color: var(--ft-border, rgba(255,255,255,0.06)) !important;
+}
+
+.dark .fi-dropdown-list-item:hover {
+    background-color: var(--ft-bg-card-hover, #161f2b) !important;
+}
+
+/* Dark mode notifications */
+.dark .fi-no {
+    background-color: var(--ft-bg-card, #111820) !important;
+    border-color: var(--ft-border, rgba(255,255,255,0.06)) !important;
+}
+
+/* Dark mode search */
+.dark .fi-global-search-input {
+    background-color: var(--ft-bg-input, #151d28) !important;
+    border-color: var(--ft-border, rgba(255,255,255,0.06)) !important;
+    color: var(--ft-text-primary, #f0f4f8) !important;
+}
+
+/* Theme toggle button */
+.theme-toggle-btn {
+    transition: transform 0.3s ease, opacity 0.3s ease !important;
+}
+.theme-toggle-btn:hover {
+    transform: scale(1.1);
 }

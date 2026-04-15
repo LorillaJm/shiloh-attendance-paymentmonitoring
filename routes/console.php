@@ -18,3 +18,11 @@ Schedule::command('sessions:generate --days=30')->dailyAt('00:00');
 Schedule::command('dashboard:warm-cache')->dailyAt('05:00');
 Schedule::command('dashboard:warm-cache')->dailyAt('12:00');
 Schedule::command('dashboard:warm-cache')->dailyAt('18:00');
+
+// Monthly database backup — 1st of every month at 2:00 AM Manila time
+Schedule::command('backup:run')
+    ->monthlyOn(1, '02:00')
+    ->timezone('Asia/Manila')
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->appendOutputTo(storage_path('logs/backup.log'));

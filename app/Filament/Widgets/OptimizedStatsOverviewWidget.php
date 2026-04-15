@@ -9,27 +9,20 @@ use Illuminate\Support\Facades\DB;
 
 class OptimizedStatsOverviewWidget extends BaseWidget
 {
-    protected static ?int $sort = 0; // Changed to 0 to ensure it's first
+    protected static ?int $sort = 0;
     
-    // No auto-polling - user can manually refresh
     protected static ?string $pollingInterval = null;
     
-    // Make responsive - full width
     protected int | string | array $columnSpan = 'full';
 
     protected function getStats(): array
     {
         try {
-            // Cache for 3 minutes
             $stats = Cache::remember('dashboard_kpi_stats_v3', 180, function () {
                 try {
                     $today = now('Asia/Manila')->format('Y-m-d');
                     $thisMonth = now('Asia/Manila');
                     
-                    // hasTable() checks removed - each check costs ~200ms round-trip to Supabase
-                    // Tables are guaranteed to exist after migration
-                    
-                    // Single optimized query - all KPIs in one shot
                     $kpis = DB::selectOne("
                         SELECT 
                             (SELECT COUNT(*) FROM students WHERE status = 'ACTIVE') as total_students,
@@ -70,60 +63,36 @@ class OptimizedStatsOverviewWidget extends BaseWidget
                 Stat::make('Total Students', number_format($stats['total_students']))
                     ->description('Registered in system')
                     ->color('primary')
-                    ->chart([7, 3, 4, 5, 6, 3, 5, 3])
-                    ->extraAttributes([
-                        'class' => 'stat-card-uniform',
-                    ]),
+                    ->chart([7, 3, 4, 5, 6, 3, 5, 3]),
 
                 Stat::make('Active Students', number_format($stats['active_students']))
                     ->description('With active enrollment')
                     ->color('success')
-                    ->chart([3, 5, 6, 7, 8, 6, 7, 8])
-                    ->extraAttributes([
-                        'class' => 'stat-card-uniform',
-                    ]),
+                    ->chart([3, 5, 6, 7, 8, 6, 7, 8]),
 
                 Stat::make('Due Today', number_format($stats['due_today']))
                     ->description('Scheduled for today')
-                    ->color('warning')
-                    ->extraAttributes([
-                        'class' => 'stat-card-uniform',
-                    ]),
+                    ->color('warning'),
 
                 Stat::make('Overdue', number_format($stats['overdue']))
                     ->description('Needs attention')
-                    ->color('danger')
-                    ->extraAttributes([
-                        'class' => 'stat-card-uniform',
-                    ]),
+                    ->color('danger'),
 
                 Stat::make('Today', '₱' . number_format($stats['collected_today'], 2))
                     ->description('Collections received')
-                    ->color('success')
-                    ->extraAttributes([
-                        'class' => 'stat-card-uniform stat-card-currency',
-                    ]),
+                    ->color('success'),
 
                 Stat::make('This Month', '₱' . number_format($stats['collected_this_month'], 2))
                     ->description('Month to date')
-                    ->color('info')
-                    ->extraAttributes([
-                        'class' => 'stat-card-uniform stat-card-currency',
-                    ]),
+                    ->color('info'),
 
                 Stat::make('Outstanding', '₱' . number_format($stats['outstanding_balance'], 2))
                     ->description('Total receivables')
-                    ->color('gray')
-                    ->extraAttributes([
-                        'class' => 'stat-card-uniform stat-card-currency',
-                    ]),
+                    ->color('gray'),
             ];
             
         } catch (\Exception $e) {
             \Log::error('OptimizedStatsOverviewWidget error: ' . $e->getMessage());
-            \Log::error('OptimizedStatsOverviewWidget trace: ' . $e->getTraceAsString());
-            
-            // Return empty array instead of crashing
             return [];
         }
     }

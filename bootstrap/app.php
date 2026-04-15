@@ -75,14 +75,5 @@ return Application::configure(basePath: dirname(__DIR__))
             ], 404);
         });
 
-        // Log all exceptions for debugging
-        $exceptions->report(function (\Throwable $e) {
-            // Log exception details (Laravel does this by default, but we can customize)
-            \Log::error('Exception occurred', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-        });
+        // Laravel already logs all exceptions by default via the exception handler
     })->create();

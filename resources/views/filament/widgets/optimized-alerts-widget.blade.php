@@ -1,36 +1,26 @@
 <x-filament-widgets::widget>
     <x-filament::section>
         <x-slot name="heading">
-            Alerts & Quick Actions
+            Quick Links
         </x-slot>
 
-        <div class="grid gap-4 md:grid-cols-3">
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             @foreach($this->getAlerts() as $alert)
-                <a href="{{ $alert['url'] }}" 
-                   class="flex items-center gap-4 rounded-lg border p-4 transition hover:bg-gray-50 dark:hover:bg-gray-800"
-                   wire:navigate>
-                    <div class="flex-shrink-0">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-full {{ $alert['color'] === 'danger' ? 'bg-danger-100 dark:bg-danger-900' : ($alert['color'] === 'warning' ? 'bg-warning-100 dark:bg-warning-900' : 'bg-info-100 dark:bg-info-900') }}">
-                            <x-filament::icon 
-                                :icon="$alert['icon']" 
-                                class="h-6 w-6 {{ $alert['color'] === 'danger' ? 'text-danger-600 dark:text-danger-400' : ($alert['color'] === 'warning' ? 'text-warning-600 dark:text-warning-400' : 'text-info-600 dark:text-info-400') }}"
-                            />
-                        </div>
-                    </div>
-                    <div class="flex-1">
-                        <p class="text-sm font-medium text-gray-600 dark:text-gray-400">
-                            {{ $alert['title'] }}
-                        </p>
-                        <p class="text-2xl font-bold {{ $alert['color'] === 'danger' ? 'text-danger-600 dark:text-danger-400' : ($alert['color'] === 'warning' ? 'text-warning-600 dark:text-warning-400' : 'text-info-600 dark:text-info-400') }}">
-                            {{ number_format($alert['count']) }}
-                        </p>
-                    </div>
-                    <div class="flex-shrink-0">
-                        <x-filament::icon 
-                            icon="heroicon-o-chevron-right" 
-                            class="h-5 w-5 text-gray-400"
-                        />
-                    </div>
+                <a 
+                    href="{{ $alert['url'] }}" 
+                    wire:navigate
+                    class="flex flex-col items-center gap-2 rounded-xl p-3 text-center transition-all duration-200 border border-gray-200 dark:border-white/[0.04] hover:bg-gray-50 dark:hover:bg-[#1a2332] hover:border-gray-300 dark:hover:border-white/[0.08]"
+                >
+                    <x-filament::icon
+                        :icon="$alert['icon']"
+                        class="h-6 w-6 {{ $alert['color'] }}"
+                    />
+                    <span class="text-xs font-medium text-gray-500 dark:text-[#8b9ab5]">
+                        {{ $alert['label'] }}
+                    </span>
+                    <span class="text-lg font-bold {{ $alert['color'] }}">
+                        {{ $alert['count'] }}
+                    </span>
                 </a>
             @endforeach
         </div>

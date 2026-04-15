@@ -4,10 +4,12 @@ namespace App\Notifications;
 
 use App\Models\Announcement;
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AnnouncementNotification extends Notification
+class AnnouncementNotification extends Notification implements ShouldBroadcast
 {
     use Queueable;
 
@@ -17,7 +19,7 @@ class AnnouncementNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['database', 'mail'];
+        return ['database', 'broadcast'];
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -38,6 +40,17 @@ class AnnouncementNotification extends Notification
             'message' => $this->announcement->message,
             'created_by' => $this->announcement->creator->name,
         ];
+    }
+
+    public function toBroadcast(object $notifiable): BroadcastMessage
+    {
+        return new BroadcastMessage([
+            'announcement_id' => $this->announcement->id,
+            'title' => $this->announcement->title,
+            'message' => $this->announcement->message,
+            'created_by' => $this->announcement->creator->name,
+            'created_at' => now()->toISOString(),
+        ]);
     }
 
     public function toArray(object $notifiable): array

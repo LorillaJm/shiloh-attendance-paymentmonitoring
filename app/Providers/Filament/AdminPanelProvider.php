@@ -31,37 +31,38 @@ class AdminPanelProvider extends PanelProvider
             ->loginRouteSlug('login')  // Redirect to our custom login
             ->colors([
                 'primary' => [
-                    50 => '240, 249, 255',
-                    100 => '224, 242, 254',
-                    200 => '186, 230, 253',
-                    300 => '125, 211, 252',
-                    400 => '56, 189, 248',
-                    500 => '14, 165, 233',
-                    600 => '2, 132, 199',
-                    700 => '3, 105, 161',
-                    800 => '7, 89, 133',
-                    900 => '12, 74, 110',
-                    950 => '8, 47, 73',
+                    50 => '240, 253, 250',
+                    100 => '204, 251, 241',
+                    200 => '153, 246, 228',
+                    300 => '94, 234, 212',
+                    400 => '45, 212, 191',
+                    500 => '20, 184, 166',
+                    600 => '13, 148, 136',
+                    700 => '15, 118, 110',
+                    800 => '17, 94, 89',
+                    900 => '20, 78, 74',
+                    950 => '4, 47, 46',
                 ],
                 'gray' => [
-                    50 => '249, 250, 251',
-                    100 => '243, 244, 246',
-                    200 => '229, 231, 235',
-                    300 => '209, 213, 219',
-                    400 => '156, 163, 175',
-                    500 => '107, 114, 128',
-                    600 => '75, 85, 99',
-                    700 => '55, 65, 81',
-                    800 => '31, 41, 55',
-                    900 => '17, 24, 39',
-                    950 => '3, 7, 18',
+                    50 => '248, 250, 252',
+                    100 => '241, 245, 249',
+                    200 => '226, 232, 240',
+                    300 => '203, 213, 225',
+                    400 => '148, 163, 184',
+                    500 => '100, 116, 139',
+                    600 => '71, 85, 105',
+                    700 => '51, 65, 85',
+                    800 => '30, 41, 59',
+                    900 => '15, 23, 42',
+                    950 => '8, 12, 24',
                 ],
             ])
             ->font('Inter')
             ->darkMode(true)
-            ->brandName('Admin Panel')
-            ->brandLogoHeight('2rem')
-            ->favicon(asset('favicon.ico'))
+            ->brandName('Shiloh Learning Center')
+            ->brandLogo(asset('images/logo.png'))
+            ->brandLogoHeight('2.5rem')
+            ->favicon(asset('images/logo.png'))
             ->sidebarCollapsibleOnDesktop()
             ->sidebarWidth('16rem')
             ->maxContentWidth('full')
@@ -108,20 +109,18 @@ class AdminPanelProvider extends PanelProvider
             ->breadcrumbs(true)
             ->renderHook(
                 'panels::topbar.start',
-                fn () => '<div class="flex items-center justify-center flex-1 py-1">
-                    <span class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                fn () => '<div class="flex items-center justify-center flex-1 gap-2.5 py-1">
+                    <img src="' . asset('images/logo.png') . '" alt="Shiloh Logo" class="h-9 w-9 object-cover rounded-full bg-white shadow-sm p-0.5" />
+                    <span class="text-lg sm:text-xl md:text-2xl font-bold tracking-tight truncate
+                        text-gray-900 dark:text-gray-100">
                         Shiloh Learning Center
                     </span>
                 </div>
                 <style>
-                    /* Hide the X button (close sidebar button) */
-                    .fi-topbar-close-sidebar-btn {
-                        display: none !important;
-                    }
-                    
-                    /* Hide the hamburger button (open sidebar button) on mobile */
-                    .fi-topbar-open-sidebar-btn {
-                        display: none !important;
+                    /* Only hide sidebar buttons on desktop where collapse arrow works */
+                    @media (min-width: 1024px) {
+                        .fi-topbar-close-sidebar-btn { display: none !important; }
+                        .fi-topbar-open-sidebar-btn { display: none !important; }
                     }
                 </style>'
             )
