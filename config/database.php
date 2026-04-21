@@ -81,8 +81,8 @@ return [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 // Default fetch mode
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-                // Emulate prepares for better compatibility
-                PDO::ATTR_EMULATE_PREPARES => false,
+                // Emulate prepares required for Supabase PgBouncer (transaction mode)
+                PDO::ATTR_EMULATE_PREPARES => true,
             ]) : [],
             // Connection pool settings
             'pool' => [
