@@ -81,8 +81,11 @@ return [
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 // Default fetch mode
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ,
-                // Emulate prepares required for Supabase PgBouncer (transaction mode)
-                PDO::ATTR_EMULATE_PREPARES => true,
+                // Native prepares handle boolean types correctly
+                PDO::ATTR_EMULATE_PREPARES => false,
+                // Disable server-side prepared statements for PgBouncer compatibility
+                // This makes PDO send queries without PREPARE/EXECUTE protocol
+                \PDO::PGSQL_ATTR_DISABLE_PREPARES => true,
             ]) : [],
             // Connection pool settings
             'pool' => [
