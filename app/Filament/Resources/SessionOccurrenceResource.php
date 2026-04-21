@@ -75,10 +75,19 @@ class SessionOccurrenceResource extends Resource
                     'CANCELLED' => 'danger',
                     'NO_SHOW' => 'warning',
                 }),
-                Tables\Columns\IconColumn::make('attendanceRecord')
+                Tables\Columns\IconColumn::make('has_attendance')
                     ->label('Attendance')
                     ->boolean()
-                    ->getStateUsing(fn ($record) => $record->attendanceRecord !== null),
+                    ->getStateUsing(function ($record) {
+                        // Check FK relationship first, then fallback to student + date match
+                        if ($record->attendanceRecord) {
+                            return true;
+                        }
+                        return \App\Models\AttendanceRecord::where('student_id', $record->student_id)
+                            ->whereDate('attendance_date', $record->session_date)
+                            ->where('status', 'PRESENT')
+                            ->exists();
+                    }),
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status'),

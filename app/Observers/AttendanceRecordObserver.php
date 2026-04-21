@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\AttendanceRecord;
 use App\Models\Enrollment;
+use App\Models\SessionOccurrence;
 
 class AttendanceRecordObserver
 {
@@ -18,6 +19,9 @@ class AttendanceRecordObserver
         if ($attendanceRecord->status === 'PRESENT') {
             $this->incrementSessionCount($attendanceRecord);
         }
+
+        // Sync session occurrence status
+        $this->syncSessionOccurrenceStatus($attendanceRecord);
     }
 
     /**
@@ -41,6 +45,9 @@ class AttendanceRecordObserver
             if ($oldStatus !== 'PRESENT' && $newStatus === 'PRESENT') {
                 $this->incrementSessionCount($attendanceRecord);
             }
+
+            // Sync session occurrence status on status change
+            $this->syncSessionOccurrenceStatus($attendanceRecord);
         }
     }
 
@@ -55,6 +62,9 @@ class AttendanceRecordObserver
         if ($attendanceRecord->status === 'PRESENT') {
             $this->decrementSessionCount($attendanceRecord);
         }
+
+        // Revert session occurrence back to SCHEDULED when attendance is deleted
+        $this->revertSessionOccurrenceStatus($attendanceRecord);
     }
 
     /**
@@ -105,5 +115,61 @@ class AttendanceRecordObserver
         if ($enrollment) {
             $enrollment->decrementSessionsUsed();
         }
+    }
+
+    /**
+     * Sync the related session occurrence status based on attendance status.
+     * When PRESENT → mark session occurrence as COMPLETED.
+     * When not PRESENT → revert session occurrence to SCHEDULED (if it was auto-completed).
+     */
+    protected function syncSessionOccurrenceStatus(AttendanceRecord $attendanceRecord): void
+    {
+        $occurrences = SessionOccurrence::where('student_id', $attendanceRecord->student_id)
+            ->whereDate('session_date', $attendanceRecord->attendance_date)
+            ->get();
+
+        if ($occurrences->isEmpty()) {
+            return;
+        }
+
+        foreach ($occurrences as $occurrence) {
+            if ($attendanceRecord->status === 'PRESENT') {
+                // Only update if not already COMPLETED to avoid unnecessary writes
+                if ($occurrence->status !== 'COMPLETED') {
+                    $occurrence->update(['status' => 'COMPLETED']);
+                }
+
+                // Link the attendance record to this session occurrence if not already linked
+                if (! $attendanceRecord->session_occurrence_id) {
+                    $attendanceRecord->updateQuietly(['session_occurrence_id' => $occurrence->id]);
+                }
+            } else {
+                // Revert to SCHEDULED only if it was COMPLETED (avoid overwriting CANCELLED)
+                if ($occurrence->status === 'COMPLETED') {
+                    $occurrence->update(['status' => 'SCHEDULED']);
+                }
+            }
+        }
+    }
+
+    /**
+     * Revert session occurrence status when an attendance record is deleted.
+     */
+    protected function revertSessionOccurrenceStatus(AttendanceRecord $attendanceRecord): void
+    {
+        // If the record was linked to a specific session occurrence
+        if ($attendanceRecord->session_occurrence_id) {
+            $occurrence = SessionOccurrence::find($attendanceRecord->session_occurrence_id);
+            if ($occurrence && $occurrence->status === 'COMPLETED') {
+                $occurrence->update(['status' => 'SCHEDULED']);
+            }
+            return;
+        }
+
+        // Fallback: find by student + date
+        SessionOccurrence::where('student_id', $attendanceRecord->student_id)
+            ->whereDate('session_date', $attendanceRecord->attendance_date)
+            ->where('status', 'COMPLETED')
+            ->update(['status' => 'SCHEDULED']);
     }
 }

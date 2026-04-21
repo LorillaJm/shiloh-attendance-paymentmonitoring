@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Models\Student;
 use App\Models\AttendanceRecord;
+use App\Models\SessionOccurrence;
 use App\Services\ActivityLogger;
 use App\Events\AttendanceUpdated;
 use Filament\Pages\Page;
@@ -36,6 +37,7 @@ class DailyAttendanceEncoder extends Page implements HasForms
     public ?array $data = [];
     public $students = [];
     public $attendanceData = [];
+    public $sessionOccurrenceData = [];
 
     public function mount(): void
     {
@@ -119,13 +121,22 @@ class DailyAttendanceEncoder extends Page implements HasForms
 
         // Load existing attendance for the selected date
         $attendanceDate = $this->data['attendance_date'] ?? now()->format('Y-m-d');
+        $studentIds = $this->students->pluck('id');
+
         $existingAttendance = AttendanceRecord::where('attendance_date', $attendanceDate)
-            ->whereIn('student_id', $this->students->pluck('id'))
+            ->whereIn('student_id', $studentIds)
             ->get()
             ->keyBy('student_id');
 
+        // Load session occurrences for the selected date to show status in UI
+        $sessionOccurrences = SessionOccurrence::whereDate('session_date', $attendanceDate)
+            ->whereIn('student_id', $studentIds)
+            ->get()
+            ->groupBy('student_id');
+
         // Initialize attendance data
         $this->attendanceData = [];
+        $this->sessionOccurrenceData = [];
         foreach ($this->students as $student) {
             $existing = $existingAttendance->get($student->id);
             $this->attendanceData[$student->id] = [
@@ -134,6 +145,17 @@ class DailyAttendanceEncoder extends Page implements HasForms
                 'exists' => $existing !== null,
                 'record_id' => $existing?->id,
             ];
+
+            // Store session occurrence info for UI display
+            $occurrences = $sessionOccurrences->get($student->id);
+            if ($occurrences && $occurrences->isNotEmpty()) {
+                $occ = $occurrences->first();
+                $this->sessionOccurrenceData[$student->id] = [
+                    'id' => $occ->id,
+                    'status' => $occ->status,
+                    'session_type' => $occ->sessionType?->name ?? '-',
+                ];
+            }
         }
     }
 
@@ -192,13 +214,17 @@ class DailyAttendanceEncoder extends Page implements HasForms
                         $record->update($recordData);
                         $updatedCount++;
                         
-                        // Broadcast attendance update
-                        broadcast(new AttendanceUpdated(
-                            $record->id,
-                            $studentId,
-                            $attendanceDate,
-                            'updated'
-                        ))->toOthers();
+                        // Broadcast attendance update (non-critical)
+                        try {
+                            broadcast(new AttendanceUpdated(
+                                $record->id,
+                                $studentId,
+                                $attendanceDate,
+                                'updated'
+                            ))->toOthers();
+                        } catch (\Throwable $broadcastError) {
+                            // Silently ignore broadcast failures
+                        }
                         
                         // Log update if status changed
                         if ($oldStatus !== $data['status']) {
@@ -223,13 +249,17 @@ class DailyAttendanceEncoder extends Page implements HasForms
                         $record = AttendanceRecord::create($recordData);
                         $savedCount++;
                         
-                        // Broadcast attendance creation
-                        broadcast(new AttendanceUpdated(
-                            $record->id,
-                            $studentId,
-                            $attendanceDate,
-                            'created'
-                        ))->toOthers();
+                        // Broadcast attendance creation (non-critical)
+                        try {
+                            broadcast(new AttendanceUpdated(
+                                $record->id,
+                                $studentId,
+                                $attendanceDate,
+                                'created'
+                            ))->toOthers();
+                        } catch (\Throwable $broadcastError) {
+                            // Silently ignore broadcast failures
+                        }
                         
                         // Log creation
                         ActivityLogger::log(

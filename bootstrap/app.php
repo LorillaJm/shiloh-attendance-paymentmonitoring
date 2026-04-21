@@ -30,6 +30,9 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\TrustProxies::class,
         ]);
         
+        // Reconnect stale database connections (prevents 500s after idle)
+        $middleware->append(\App\Http\Middleware\ReconnectDatabase::class);
+        
         // Add security headers to all responses
         $middleware->append(\App\Http\Middleware\SecurityHeaders::class);
         
@@ -73,6 +76,42 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->view('errors.404', [
                 'exception' => $e,
             ], 404);
+        });
+
+        // Handle CSRF Token Mismatch / Session Expired (419)
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, \Illuminate\Http\Request $request) {
+            if ($request->expectsJson() || $request->header('X-Livewire')) {
+                return response()->json([
+                    'message' => 'Your session has expired. Please refresh the page.',
+                ], 419);
+            }
+
+            return response()->view('errors.419', [], 419);
+        });
+
+        // Handle database connection errors gracefully
+        $exceptions->render(function (\Illuminate\Database\QueryException $e, \Illuminate\Http\Request $request) {
+            $isConnectionError = in_array($e->getCode(), ['08006', '08001', '08004', '57P01', 'HY000', '2002']);
+            if ($isConnectionError) {
+                // Try to reconnect once
+                try {
+                    \Illuminate\Support\Facades\DB::reconnect();
+                } catch (\Throwable $reconnectError) {
+                    // Reconnect failed
+                }
+
+                if ($request->expectsJson() || $request->header('X-Livewire')) {
+                    return response()->json([
+                        'message' => 'A temporary database error occurred. Please try again.',
+                    ], 503);
+                }
+
+                return response()->view('errors.500', [
+                    'exception' => $e,
+                ], 503);
+            }
+
+            return null; // Let other query exceptions pass through
         });
 
         // Laravel already logs all exceptions by default via the exception handler

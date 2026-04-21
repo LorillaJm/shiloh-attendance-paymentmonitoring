@@ -82,15 +82,15 @@
             @foreach($records as $record)
             <tr>
                 <td>{{ $record->attendance_date->format('Y-m-d') }}</td>
-                <td>{{ $record->student->student_no }}</td>
-                <td>{{ $record->student->full_name }}</td>
+                <td>{{ $record->student?->student_no ?? '-' }}</td>
+                <td>{{ $record->student?->full_name ?? '-' }}</td>
                 <td>
                     <span class="status-badge status-{{ strtolower($record->status) }}">
                         {{ $record->status }}
                     </span>
                 </td>
                 <td>{{ $record->remarks ?? '-' }}</td>
-                <td>{{ $record->encodedBy->name }}</td>
+                <td>{{ $record->encodedBy?->name ?? '-' }}</td>
             </tr>
             @endforeach
         </tbody>

@@ -45,13 +45,16 @@
                                         Status
                                     </th>
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Session
+                                    </th>
+                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         Remarks
                                     </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                                 @foreach($students as $student)
-                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <tr class="hover:bg-gray-100/60 dark:hover:bg-gray-800/60">
                                         <td class="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                                             {{ $student->student_no }}
                                         </td>
@@ -60,35 +63,52 @@
                                         </td>
                                         <td class="px-4 py-3 whitespace-nowrap">
                                             <div class="flex gap-2">
+                                                @php
+                                                    $statusColors = [
+                                                        'PRESENT' => ['bg' => '#16a34a', 'border' => '#16a34a'],
+                                                        'ABSENT'  => ['bg' => '#dc2626', 'border' => '#dc2626'],
+                                                        'LATE'    => ['bg' => '#d97706', 'border' => '#d97706'],
+                                                        'EXCUSED' => ['bg' => '#2563eb', 'border' => '#2563eb'],
+                                                    ];
+                                                @endphp
                                                 @foreach(config('attendance.status_options') as $value => $label)
-                                                    <button
-                                                        type="button"
-                                                        wire:click="updateStatus({{ $student->id }}, '{{ $value }}')"
-                                                        class="px-3 py-1 text-xs font-medium rounded-md transition-colors
-                                                            @if($attendanceData[$student->id]['status'] === $value)
-                                                                @switch($value)
-                                                                    @case('PRESENT')
-                                                                        bg-green-600 text-white
-                                                                        @break
-                                                                    @case('ABSENT')
-                                                                        bg-red-600 text-white
-                                                                        @break
-                                                                    @case('LATE')
-                                                                        bg-yellow-600 text-white
-                                                                        @break
-                                                                    @case('EXCUSED')
-                                                                        bg-blue-600 text-white
-                                                                        @break
-                                                                @endswitch
-                                                            @else
-                                                                bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600
-                                                            @endif
-                                                        "
-                                                    >
-                                                        {{ $label }}
-                                                    </button>
+                                                    @php $isActive = $attendanceData[$student->id]['status'] === $value; @endphp
+                                                    @if($isActive)
+                                                        <button
+                                                            type="button"
+                                                            wire:click="updateStatus({{ $student->id }}, '{{ $value }}')"
+                                                            class="px-3 py-1 text-xs font-semibold rounded-md border"
+                                                            style="background-color:{{ $statusColors[$value]['bg'] }};border-color:{{ $statusColors[$value]['border'] }};color:#fff;"
+                                                        >
+                                                            {{ $label }}
+                                                        </button>
+                                                    @else
+                                                        <button
+                                                            type="button"
+                                                            wire:click="updateStatus({{ $student->id }}, '{{ $value }}')"
+                                                            class="px-3 py-1 text-xs font-semibold rounded-md border border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 bg-transparent"
+                                                        >
+                                                            {{ $label }}
+                                                        </button>
+                                                    @endif
                                                 @endforeach
                                             </div>
+                                        </td>
+                                        <td class="px-4 py-3 whitespace-nowrap">
+                                            @if(isset($sessionOccurrenceData[$student->id]))
+                                                @php $sod = $sessionOccurrenceData[$student->id]; @endphp
+                                                <span @class([
+                                                    'inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full',
+                                                    'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' => $sod['status'] === 'COMPLETED',
+                                                    'bg-gray-200 text-gray-800 dark:bg-gray-600 dark:text-gray-100' => $sod['status'] === 'SCHEDULED',
+                                                    'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100' => $sod['status'] === 'CANCELLED',
+                                                    'bg-yellow-100 text-yellow-800 dark:bg-yellow-700 dark:text-yellow-100' => !in_array($sod['status'], ['COMPLETED', 'SCHEDULED', 'CANCELLED']),
+                                                ])>
+                                                    {{ $sod['session_type'] }} &middot; {{ $sod['status'] }}
+                                                </span>
+                                            @else
+                                                <span class="text-xs text-gray-400 dark:text-gray-500">No session</span>
+                                            @endif
                                         </td>
                                         <td class="px-4 py-3">
                                             <input

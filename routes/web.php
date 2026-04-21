@@ -8,6 +8,15 @@ Route::get('/login', [UnifiedLoginController::class, 'showLoginForm'])->name('lo
 Route::post('/login', [UnifiedLoginController::class, 'login'])->name('unified.login');
 Route::post('/logout', [UnifiedLoginController::class, 'logout'])->name('logout')->middleware('auth');
 
+// Temporary report file download (signed URL)
+Route::get('/report-download/{filename}', function (string $filename) {
+    $path = storage_path("app/temp-reports/{$filename}");
+    if (!file_exists($path)) {
+        abort(404, 'Report file not found or has expired.');
+    }
+    return response()->download($path)->deleteFileAfterSend(true);
+})->name('report.download')->middleware(['auth', 'signed']);
+
 // Root redirect
 Route::get('/', function () {
     if (auth()->check()) {

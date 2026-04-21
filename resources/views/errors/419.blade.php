@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session Expired</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900">
+    <div class="min-h-screen flex items-center justify-center px-4">
+        <div class="max-w-md w-full text-center">
+            <div class="mb-8">
+                <svg class="mx-auto h-24 w-24 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            
+            <h1 class="text-6xl font-bold text-gray-900 dark:text-white mb-4">419</h1>
+            <h2 class="text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-4">Session Expired</h2>
+            
+            <p class="text-gray-600 dark:text-gray-400 mb-8">
+                Your session has expired due to inactivity. Please refresh the page to continue.
+            </p>
+            
+            <div class="space-y-3">
+                <button onclick="window.location.reload()" class="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors">
+                    Refresh Page
+                </button>
+                <a href="/admin" class="inline-block px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-lg transition-colors ml-3">
+                    Go to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-refresh after 3 seconds
+        setTimeout(function() {
+            window.location.reload();
+        }, 3000);
+    </script>
+</body>
+</html>

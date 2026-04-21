@@ -123,6 +123,39 @@ class ParentPanelProvider extends PanelProvider
                         }
                     }, true);
                 </script>'
+            )
+            ->renderHook(
+                'panels::body.end',
+                fn () => '<script>
+                    document.addEventListener("livewire:init", () => {
+                        Livewire.hook("request", ({ fail }) => {
+                            fail(({ status, preventDefault }) => {
+                                if (status === 419) {
+                                    preventDefault();
+                                    if (confirm("Your session has expired. The page will refresh to continue.")) {
+                                        window.location.reload();
+                                    } else {
+                                        window.location.reload();
+                                    }
+                                }
+                                if (status === 500) {
+                                    preventDefault();
+                                    const toast = document.createElement("div");
+                                    toast.innerHTML = \'<div style="position:fixed;top:20px;right:20px;z-index:9999;background:#ef4444;color:white;padding:16px 24px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);font-weight:500;max-width:400px;animation:slideIn 0.3s ease-out">A server error occurred. Refreshing...<br><small>If this persists, please log in again.</small></div><style>@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}</style>\';
+                                    document.body.appendChild(toast);
+                                    setTimeout(() => window.location.reload(), 2000);
+                                }
+                                if (status === 503) {
+                                    preventDefault();
+                                    const toast = document.createElement("div");
+                                    toast.innerHTML = \'<div style="position:fixed;top:20px;right:20px;z-index:9999;background:#f59e0b;color:white;padding:16px 24px;border-radius:8px;box-shadow:0 4px 6px rgba(0,0,0,0.1);font-weight:500;max-width:400px;animation:slideIn 0.3s ease-out">Temporary connection issue. Retrying...<br><small>Please wait a moment.</small></div><style>@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}</style>\';
+                                    document.body.appendChild(toast);
+                                    setTimeout(() => window.location.reload(), 3000);
+                                }
+                            });
+                        });
+                    });
+                </script>'
             );
     }
 }
