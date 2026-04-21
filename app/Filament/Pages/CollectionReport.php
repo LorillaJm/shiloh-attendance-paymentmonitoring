@@ -219,48 +219,82 @@ class CollectionReport extends Page implements HasTable, HasForms
 
     public function exportPdf()
     {
-        // Check record count to prevent timeout
-        $count = $this->getTableQuery()->count();
-        
-        if ($count > 5000) {
+        try {
+            set_time_limit(120);
+
+            $count = $this->getTableQuery()->count();
+
+            if ($count > 5000) {
+                Notification::make()
+                    ->danger()
+                    ->title('Export Too Large')
+                    ->body("Cannot export {$count} records. Please narrow your date range.")
+                    ->send();
+                return;
+            }
+
+            if ($count > 1000) {
+                Notification::make()
+                    ->warning()
+                    ->title('Large Export')
+                    ->body("Exporting {$count} records. This may take a moment...")
+                    ->send();
+            }
+
+            $records = $this->getTableQuery()->limit(5000)->get();
+            $summary = $this->getSummary();
+
+            $pdf = Pdf::loadView('reports.collection-pdf', [
+                'records' => $records,
+                'summary' => $summary,
+                'filters' => $this->data,
+            ])->setPaper('a4', 'portrait');
+
+            $filename = 'collection-report-' . now()->format('Y-m-d-His') . '.pdf';
+            $dir = storage_path('app/temp-reports');
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            file_put_contents("{$dir}/{$filename}", $pdf->output());
+
+            $url = \Illuminate\Support\Facades\URL::signedRoute('report.download', ['filename' => $filename]);
+            $this->js("window.open('{$url}', '_blank')");
+        } catch (\Throwable $e) {
             Notification::make()
                 ->danger()
-                ->title('Export Too Large')
-                ->body("Cannot export {$count} records. Please narrow your date range.")
-                ->send();
-            return;
-        }
-        
-        if ($count > 1000) {
-            Notification::make()
-                ->warning()
-                ->title('Large Export')
-                ->body("Exporting {$count} records. This may take a moment...")
+                ->title('PDF Export Failed')
+                ->body($e->getMessage())
                 ->send();
         }
-        
-        $records = $this->getTableQuery()->limit(5000)->get();
-        $summary = $this->getSummary();
-        
-        $pdf = Pdf::loadView('reports.collection-pdf', [
-            'records' => $records,
-            'summary' => $summary,
-            'filters' => $this->data,
-        ]);
-
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->output();
-        }, 'collection-report-' . now()->format('Y-m-d') . '.pdf');
     }
 
     public function exportExcel()
     {
-        $start = $this->data['start_date'] ?? now()->startOfMonth()->format('Y-m-d');
-        $end = $this->data['end_date'] ?? now()->format('Y-m-d');
+        try {
+            set_time_limit(120);
 
-        return Excel::download(
-            new PaymentCollectionExport($start, $end),
-            'collection-report-' . now()->format('Y-m-d') . '.xlsx'
-        );
+            $start = $this->data['start_date'] ?? now()->startOfMonth()->format('Y-m-d');
+            $end = $this->data['end_date'] ?? now()->format('Y-m-d');
+
+            $filename = 'collection-report-' . now()->format('Y-m-d-His') . '.xlsx';
+            $dir = storage_path('app/temp-reports');
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            Excel::store(
+                new PaymentCollectionExport($start, $end),
+                "temp-reports/{$filename}",
+                'local'
+            );
+
+            $url = \Illuminate\Support\Facades\URL::signedRoute('report.download', ['filename' => $filename]);
+            $this->js("window.open('{$url}', '_blank')");
+        } catch (\Throwable $e) {
+            Notification::make()
+                ->danger()
+                ->title('Excel Export Failed')
+                ->body($e->getMessage())
+                ->send();
+        }
     }
 }

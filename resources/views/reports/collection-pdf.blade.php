@@ -40,27 +40,29 @@
             background: #f3f4f6;
             padding: 15px;
             margin-bottom: 20px;
-            border-radius: 5px;
         }
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+        .summary-table-sm {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px;
         }
-        .summary-item {
+        .summary-table-sm td {
             padding: 10px;
             background: white;
-            border-radius: 3px;
+            width: 50%;
         }
         .summary-label {
             font-weight: bold;
             color: #666;
             font-size: 11px;
+            display: block;
+            margin-bottom: 4px;
         }
         .summary-value {
             font-size: 18px;
             color: #2563eb;
             font-weight: bold;
+            display: block;
         }
         table {
             width: 100%;
@@ -101,16 +103,18 @@
     ])
 
     <div class="summary">
-        <div class="summary-grid">
-            <div class="summary-item">
-                <div class="summary-label">TOTAL COLLECTIONS</div>
-                <div class="summary-value">₱{{ number_format($summary['total_amount'], 2) }}</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-label">TOTAL TRANSACTIONS</div>
-                <div class="summary-value">{{ $summary['total_count'] }}</div>
-            </div>
-        </div>
+        <table class="summary-table-sm">
+            <tr>
+                <td>
+                    <span class="summary-label">TOTAL COLLECTIONS</span>
+                    <span class="summary-value">₱{{ number_format($summary['total_amount'], 2) }}</span>
+                </td>
+                <td>
+                    <span class="summary-label">TOTAL TRANSACTIONS</span>
+                    <span class="summary-value">{{ $summary['total_count'] }}</span>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <table>
@@ -130,9 +134,9 @@
             @foreach($records as $record)
             <tr>
                 <td>{{ $record->paid_at->format('Y-m-d H:i') }}</td>
-                <td>{{ $record->enrollment->student->student_no }}</td>
-                <td>{{ $record->enrollment->student->full_name }}</td>
-                <td>{{ $record->enrollment->package->name }}</td>
+                <td>{{ $record->enrollment?->student?->student_no ?? '-' }}</td>
+                <td>{{ $record->enrollment?->student?->full_name ?? '-' }}</td>
+                <td>{{ $record->enrollment?->package?->name ?? '-' }}</td>
                 <td>{{ $record->installment_no == 0 ? 'Downpayment' : "Installment #{$record->installment_no}" }}</td>
                 <td class="amount">₱{{ number_format($record->amount_due, 2) }}</td>
                 <td>{{ $record->payment_method }}</td>

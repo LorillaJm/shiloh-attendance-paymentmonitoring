@@ -51,11 +51,13 @@
     </div>
 
     <div class="flex gap-2 mb-4">
-        <x-filament::button wire:click="exportPdf" color="danger" icon="heroicon-o-document-arrow-down">
-            Export PDF
+        <x-filament::button wire:click="exportPdf" wire:loading.attr="disabled" wire:target="exportPdf" color="danger" icon="heroicon-o-document-arrow-down">
+            <span wire:loading.remove wire:target="exportPdf">Export PDF</span>
+            <span wire:loading wire:target="exportPdf">Generating PDF...</span>
         </x-filament::button>
-        <x-filament::button wire:click="exportExcel" color="success" icon="heroicon-o-table-cells">
-            Export Excel
+        <x-filament::button wire:click="exportExcel" wire:loading.attr="disabled" wire:target="exportExcel" color="success" icon="heroicon-o-table-cells">
+            <span wire:loading.remove wire:target="exportExcel">Export Excel</span>
+            <span wire:loading wire:target="exportExcel">Generating Excel...</span>
         </x-filament::button>
     </div>
 

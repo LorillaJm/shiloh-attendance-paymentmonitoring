@@ -239,20 +239,34 @@ class DueOverdueReport extends Page implements HasTable, HasForms
 
     public function exportPdf()
     {
-        $records = $this->getTableQuery()->get();
-        $summary = $this->getSummary();
-        
-        $pdf = Pdf::loadView('reports.due-overdue-pdf', [
-            'records' => $records,
-            'summary' => $summary,
-            'filters' => $this->data,
-            'reportType' => $this->data['report_type'] ?? 'overdue',
-        ]);
+        try {
+            set_time_limit(120);
 
-        $filename = ($this->data['report_type'] ?? 'overdue') . '-report-' . now()->format('Y-m-d') . '.pdf';
+            $records = $this->getTableQuery()->get();
+            $summary = $this->getSummary();
 
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->output();
-        }, $filename);
+            $pdf = Pdf::loadView('reports.due-overdue-pdf', [
+                'records' => $records,
+                'summary' => $summary,
+                'filters' => $this->data,
+                'reportType' => $this->data['report_type'] ?? 'overdue',
+            ])->setPaper('a4', 'portrait');
+
+            $filename = ($this->data['report_type'] ?? 'overdue') . '-report-' . now()->format('Y-m-d-His') . '.pdf';
+            $dir = storage_path('app/temp-reports');
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            file_put_contents("{$dir}/{$filename}", $pdf->output());
+
+            $url = \Illuminate\Support\Facades\URL::signedRoute('report.download', ['filename' => $filename]);
+            $this->js("window.open('{$url}', '_blank')");
+        } catch (\Throwable $e) {
+            \Filament\Notifications\Notification::make()
+                ->danger()
+                ->title('PDF Export Failed')
+                ->body($e->getMessage())
+                ->send();
+        }
     }
 }

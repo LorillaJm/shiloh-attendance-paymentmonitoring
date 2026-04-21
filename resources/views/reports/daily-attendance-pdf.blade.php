@@ -10,11 +10,11 @@
         .report-header h2 { margin: 5px 0; font-size: 16px; color: #333; }
         .report-header p { margin: 3px 0; color: #666; font-size: 11px; }
         .report-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 8px; }
-        .summary { background: #f3f4f6; padding: 15px; margin-bottom: 20px; border-radius: 5px; }
-        .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .summary-item { padding: 10px; background: white; border-radius: 3px; text-align: center; }
-        .summary-label { font-weight: bold; color: #666; font-size: 10px; }
-        .summary-value { font-size: 16px; font-weight: bold; }
+        .summary { background: #f3f4f6; padding: 15px; margin-bottom: 20px; }
+        .summary-table { width: 100%; border-collapse: separate; border-spacing: 8px; }
+        .summary-table td { padding: 10px; background: white; text-align: center; width: 20%; }
+        .summary-label { font-weight: bold; color: #666; font-size: 10px; display: block; margin-bottom: 4px; }
+        .summary-value { font-size: 16px; font-weight: bold; display: block; }
         .present { color: #10b981; }
         .absent { color: #ef4444; }
         .late { color: #f59e0b; }
@@ -38,28 +38,30 @@
     ])
 
     <div class="summary">
-        <div class="summary-grid">
-            <div class="summary-item">
-                <div class="summary-label">TOTAL</div>
-                <div class="summary-value">{{ $summary['total'] }}</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-label">PRESENT</div>
-                <div class="summary-value present">{{ $summary['present'] }}</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-label">ABSENT</div>
-                <div class="summary-value absent">{{ $summary['absent'] }}</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-label">LATE</div>
-                <div class="summary-value late">{{ $summary['late'] }}</div>
-            </div>
-            <div class="summary-item">
-                <div class="summary-label">EXCUSED</div>
-                <div class="summary-value excused">{{ $summary['excused'] }}</div>
-            </div>
-        </div>
+        <table class="summary-table">
+            <tr>
+                <td>
+                    <span class="summary-label">TOTAL</span>
+                    <span class="summary-value">{{ $summary['total'] }}</span>
+                </td>
+                <td>
+                    <span class="summary-label">PRESENT</span>
+                    <span class="summary-value present">{{ $summary['present'] }}</span>
+                </td>
+                <td>
+                    <span class="summary-label">ABSENT</span>
+                    <span class="summary-value absent">{{ $summary['absent'] }}</span>
+                </td>
+                <td>
+                    <span class="summary-label">LATE</span>
+                    <span class="summary-value late">{{ $summary['late'] }}</span>
+                </td>
+                <td>
+                    <span class="summary-label">EXCUSED</span>
+                    <span class="summary-value excused">{{ $summary['excused'] }}</span>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <table>
@@ -75,15 +77,15 @@
         <tbody>
             @foreach($records as $record)
             <tr>
-                <td>{{ $record->student->student_no }}</td>
-                <td>{{ $record->student->full_name }}</td>
+                <td>{{ $record->student?->student_no ?? 'N/A' }}</td>
+                <td>{{ $record->student?->full_name ?? 'Unknown Student' }}</td>
                 <td>
                     <span class="status-badge status-{{ strtolower($record->status) }}">
                         {{ $record->status }}
                     </span>
                 </td>
                 <td>{{ $record->remarks ?? '-' }}</td>
-                <td>{{ $record->encodedBy->name }}</td>
+                <td>{{ $record->encodedBy?->name ?? '-' }}</td>
             </tr>
             @endforeach
         </tbody>

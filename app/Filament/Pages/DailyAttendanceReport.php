@@ -108,29 +108,65 @@ class DailyAttendanceReport extends Page implements HasTable
 
     public function exportPdf()
     {
-        $records = AttendanceRecord::with(['student', 'encodedBy'])
-            ->whereDate('attendance_date', $this->selectedDate)
-            ->orderBy('student_id')
-            ->get();
-        
-        $summary = $this->getSummary();
-        
-        $pdf = Pdf::loadView('reports.daily-attendance-pdf', [
-            'records' => $records,
-            'summary' => $summary,
-            'date' => $this->selectedDate,
-        ]);
+        try {
+            set_time_limit(120);
 
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->output();
-        }, 'daily-attendance-' . $this->selectedDate . '.pdf');
+            $records = AttendanceRecord::with(['student', 'encodedBy'])
+                ->whereHas('student')
+                ->whereDate('attendance_date', $this->selectedDate)
+                ->orderBy('student_id')
+                ->get();
+
+            $summary = $this->getSummary();
+
+            $pdf = Pdf::loadView('reports.daily-attendance-pdf', [
+                'records' => $records,
+                'summary' => $summary,
+                'date' => $this->selectedDate,
+            ])->setPaper('a4', 'portrait');
+
+            $filename = 'daily-attendance-' . $this->selectedDate . '-' . now()->format('His') . '.pdf';
+            $dir = storage_path('app/temp-reports');
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            file_put_contents("{$dir}/{$filename}", $pdf->output());
+
+            $url = \Illuminate\Support\Facades\URL::signedRoute('report.download', ['filename' => $filename]);
+            $this->js("window.open('{$url}', '_blank')");
+        } catch (\Throwable $e) {
+            \Filament\Notifications\Notification::make()
+                ->danger()
+                ->title('PDF Export Failed')
+                ->body($e->getMessage())
+                ->send();
+        }
     }
 
     public function exportExcel()
     {
-        return Excel::download(
-            new AttendanceExport($this->selectedDate, $this->selectedDate),
-            'daily-attendance-' . $this->selectedDate . '.xlsx'
-        );
+        try {
+            set_time_limit(120);
+
+            $filename = 'daily-attendance-' . $this->selectedDate . '-' . now()->format('His') . '.xlsx';
+            $dir = storage_path('app/temp-reports');
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            Excel::store(
+                new AttendanceExport($this->selectedDate, $this->selectedDate),
+                "temp-reports/{$filename}",
+                'local'
+            );
+
+            $url = \Illuminate\Support\Facades\URL::signedRoute('report.download', ['filename' => $filename]);
+            $this->js("window.open('{$url}', '_blank')");
+        } catch (\Throwable $e) {
+            \Filament\Notifications\Notification::make()
+                ->danger()
+                ->title('Excel Export Failed')
+                ->body($e->getMessage())
+                ->send();
+        }
     }
 }

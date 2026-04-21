@@ -105,13 +105,29 @@ class StudentLedger extends Page implements HasForms
             return;
         }
 
-        $pdf = Pdf::loadView('reports.student-ledger-pdf', [
-            'student' => $this->student,
-            'enrollments' => $this->enrollments,
-        ]);
+        try {
+            set_time_limit(120);
 
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->output();
-        }, 'student-ledger-' . $this->student->student_no . '-' . now()->format('Y-m-d') . '.pdf');
+            $pdf = Pdf::loadView('reports.student-ledger-pdf', [
+                'student' => $this->student,
+                'enrollments' => $this->enrollments,
+            ])->setPaper('a4', 'portrait');
+
+            $filename = 'student-ledger-' . $this->student->student_no . '-' . now()->format('Y-m-d-His') . '.pdf';
+            $dir = storage_path('app/temp-reports');
+            if (!is_dir($dir)) {
+                mkdir($dir, 0755, true);
+            }
+            file_put_contents("{$dir}/{$filename}", $pdf->output());
+
+            $url = \Illuminate\Support\Facades\URL::signedRoute('report.download', ['filename' => $filename]);
+            $this->js("window.open('{$url}', '_blank')");
+        } catch (\Throwable $e) {
+            Notification::make()
+                ->danger()
+                ->title('PDF Export Failed')
+                ->body($e->getMessage())
+                ->send();
+        }
     }
 }

@@ -1,127 +1,223 @@
 <x-filament-panels::page>
+    <style>
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+        .animate-fade-in-up { animation: fadeInUp 0.4s ease-out both; }
+        .animate-fade-in-up-1 { animation: fadeInUp 0.4s ease-out 0.05s both; }
+        .animate-fade-in-up-2 { animation: fadeInUp 0.4s ease-out 0.1s both; }
+        .animate-fade-in-up-3 { animation: fadeInUp 0.4s ease-out 0.15s both; }
+        .animate-fade-in-up-4 { animation: fadeInUp 0.4s ease-out 0.2s both; }
+        .backup-hero-gradient { background: linear-gradient(135deg, #0d9488 0%, #0891b2 50%, #6366f1 100%); }
+        .dark .backup-hero-gradient { background: linear-gradient(135deg, #134e4a 0%, #164e63 50%, #312e81 100%); }
+        .stat-card { transition: all 0.2s ease; }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px -5px rgba(0,0,0,0.1), 0 4px 10px -5px rgba(0,0,0,0.04); }
+        .dark .stat-card:hover { box-shadow: 0 8px 25px -5px rgba(0,0,0,0.3); }
+        .backup-row { transition: all 0.15s ease; }
+        .backup-row:hover { background: rgba(13, 148, 136, 0.04); }
+        .dark .backup-row:hover { background: rgba(13, 148, 136, 0.08); }
+    </style>
+
     <div class="space-y-6">
 
-        {{-- Action Bar --}}
-        <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 p-5">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
-                    <h3 class="text-base font-semibold text-gray-950 dark:text-white">Database Backup</h3>
-                    <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                        Export all tables to Excel files in the <code class="text-xs bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">{{ $this->backupConfig['path'] }}</code> folder.
-                    </p>
+        {{-- Hero Section --}}
+        <div class="animate-fade-in-up backup-hero-gradient rounded-2xl p-6 sm:p-8 relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <svg class="w-full h-full" viewBox="0 0 400 200" fill="none">
+                    <circle cx="350" cy="30" r="80" fill="white" opacity="0.1"/>
+                    <circle cx="50" cy="170" r="60" fill="white" opacity="0.08"/>
+                    <circle cx="200" cy="100" r="120" fill="white" opacity="0.05"/>
+                </svg>
+            </div>
+            <div class="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                        <x-heroicon-o-circle-stack class="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white tracking-tight">Database Backup</h2>
+                        <p class="mt-1 text-sm text-white/70">
+                            Export all {{ $this->backupConfig['tables_count'] }} tables to Excel files in
+                            <code class="text-xs bg-white/15 backdrop-blur-sm px-1.5 py-0.5 rounded font-mono">{{ $this->backupConfig['path'] }}</code>
+                        </p>
+                    </div>
                 </div>
-                <x-filament::button
-                    wire:click="runBackupNow"
-                    wire:loading.attr="disabled"
-                    icon="heroicon-o-arrow-down-tray"
-                    size="lg"
-                >
-                    <span wire:loading.remove wire:target="runBackupNow">Run Backup Now</span>
-                    <span wire:loading wire:target="runBackupNow">Running...</span>
-                </x-filament::button>
+                <div class="flex-shrink-0">
+                    <button
+                        wire:click="runBackupNow"
+                        wire:loading.attr="disabled"
+                        wire:target="runBackupNow"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-teal-700 font-semibold text-sm rounded-xl shadow-lg shadow-black/10 hover:bg-gray-50 hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <span wire:loading.remove wire:target="runBackupNow" class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+                            </svg>
+                            Run Backup Now
+                        </span>
+                        <span wire:loading wire:target="runBackupNow" class="flex items-center gap-2">
+                            <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                            </svg>
+                            Backing up...
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            {{-- Loading progress bar --}}
+            <div wire:loading wire:target="runBackupNow" class="mt-4">
+                <div class="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
+                    <div class="h-full bg-white/80 rounded-full" style="animation: shimmer 1.5s ease-in-out infinite; background-size: 200% 100%; background-image: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent); width: 100%;"></div>
+                </div>
+                <p class="mt-2 text-xs text-white/60">Exporting tables... This may take a moment.</p>
             </div>
         </div>
 
-        {{-- Configuration Overview --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 p-4">
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Schedule</p>
-                <p class="mt-1 text-sm font-semibold text-gray-950 dark:text-white">{{ $this->backupConfig['schedule'] }}</p>
-            </div>
-            <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 p-4">
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tables</p>
-                <p class="mt-1 text-sm font-semibold text-gray-950 dark:text-white">{{ $this->backupConfig['tables_count'] }} configured</p>
-            </div>
-            <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 p-4">
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Retention</p>
-                <p class="mt-1 text-sm font-semibold text-gray-950 dark:text-white">{{ $this->backupConfig['retention_months'] }} months</p>
-            </div>
-            <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 p-4">
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Total Backups</p>
-                <p class="mt-1 text-sm font-semibold text-gray-950 dark:text-white">{{ count($this->backups) }}</p>
-            </div>
+        {{-- Stats Grid --}}
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            @php
+                $stats = [
+                    ['label' => 'Schedule', 'value' => '1st of month', 'sub' => '02:00 AM Manila', 'icon' => 'heroicon-o-clock', 'color' => 'teal', 'delay' => '1'],
+                    ['label' => 'Tables', 'value' => $this->backupConfig['tables_count'], 'sub' => 'configured', 'icon' => 'heroicon-o-table-cells', 'color' => 'cyan', 'delay' => '2'],
+                    ['label' => 'Retention', 'value' => $this->backupConfig['retention_months'], 'sub' => 'months kept', 'icon' => 'heroicon-o-archive-box', 'color' => 'indigo', 'delay' => '3'],
+                    ['label' => 'Backups', 'value' => count($this->backups), 'sub' => 'total stored', 'icon' => 'heroicon-o-folder-open', 'color' => 'violet', 'delay' => '4'],
+                ];
+                $colorMap = [
+                    'teal' => ['bg' => 'bg-teal-50 dark:bg-teal-900/20', 'icon' => 'text-teal-600 dark:text-teal-400', 'ring' => 'ring-teal-100 dark:ring-teal-800/30'],
+                    'cyan' => ['bg' => 'bg-cyan-50 dark:bg-cyan-900/20', 'icon' => 'text-cyan-600 dark:text-cyan-400', 'ring' => 'ring-cyan-100 dark:ring-cyan-800/30'],
+                    'indigo' => ['bg' => 'bg-indigo-50 dark:bg-indigo-900/20', 'icon' => 'text-indigo-600 dark:text-indigo-400', 'ring' => 'ring-indigo-100 dark:ring-indigo-800/30'],
+                    'violet' => ['bg' => 'bg-violet-50 dark:bg-violet-900/20', 'icon' => 'text-violet-600 dark:text-violet-400', 'ring' => 'ring-violet-100 dark:ring-violet-800/30'],
+                ];
+            @endphp
+
+            @foreach($stats as $stat)
+                @php $c = $colorMap[$stat['color']]; @endphp
+                <div class="animate-fade-in-up-{{ $stat['delay'] }} stat-card rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 p-4 sm:p-5">
+                    <div class="flex items-start justify-between">
+                        <div class="min-w-0">
+                            <p class="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{{ $stat['label'] }}</p>
+                            <p class="mt-2 text-2xl font-bold text-gray-900 dark:text-white tracking-tight">{{ $stat['value'] }}</p>
+                            <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">{{ $stat['sub'] }}</p>
+                        </div>
+                        <div class="flex-shrink-0 w-10 h-10 rounded-lg {{ $c['bg'] }} ring-1 {{ $c['ring'] }} flex items-center justify-center">
+                            <x-dynamic-component :component="$stat['icon']" class="w-5 h-5 {{ $c['icon'] }}" />
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </div>
 
         {{-- Backup History --}}
-        <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
-            <div class="p-5 border-b border-gray-200 dark:border-white/10">
-                <h3 class="text-base font-semibold text-gray-950 dark:text-white">Backup History</h3>
+        <div class="animate-fade-in-up rounded-xl bg-white dark:bg-gray-900 shadow-sm ring-1 ring-gray-950/5 dark:ring-white/10 overflow-hidden">
+            <div class="px-5 sm:px-6 py-4 border-b border-gray-100 dark:border-white/5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                        <x-heroicon-o-clock class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Backup History</h3>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ count($this->backups) }} backup{{ count($this->backups) !== 1 ? 's' : '' }} found</p>
+                    </div>
+                </div>
             </div>
 
             @if(count($this->backups) === 0)
-                <div class="p-8 text-center">
-                    <div class="mx-auto w-12 h-12 rounded-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3">
-                        <x-heroicon-o-circle-stack class="w-6 h-6 text-gray-400" />
+                <div class="p-12 text-center">
+                    <div class="mx-auto w-16 h-16 rounded-2xl bg-gray-50 dark:bg-gray-800/50 flex items-center justify-center mb-4 ring-1 ring-gray-100 dark:ring-gray-700">
+                        <x-heroicon-o-circle-stack class="w-8 h-8 text-gray-300 dark:text-gray-600" />
                     </div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">No backups yet. Click "Run Backup Now" to create your first backup.</p>
+                    <p class="text-sm font-medium text-gray-500 dark:text-gray-400">No backups yet</p>
+                    <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">Click "Run Backup Now" to create your first backup.</p>
                 </div>
             @else
                 <div class="overflow-x-auto">
-                    <table class="w-full text-sm">
+                    <table class="w-full">
                         <thead>
-                            <tr class="border-b border-gray-200 dark:border-white/10">
-                                <th class="text-left px-5 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Period</th>
-                                <th class="text-left px-5 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
-                                <th class="text-left px-5 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tables</th>
-                                <th class="text-left px-5 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Rows</th>
-                                <th class="text-left px-5 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date/Time</th>
-                                <th class="text-right px-5 py-3 text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                            <tr class="border-b border-gray-100 dark:border-white/5 bg-gray-50/50 dark:bg-gray-800/30">
+                                <th class="text-left px-5 sm:px-6 py-3 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Period</th>
+                                <th class="text-left px-5 sm:px-6 py-3 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Status</th>
+                                <th class="text-left px-5 sm:px-6 py-3 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Tables</th>
+                                <th class="text-left px-5 sm:px-6 py-3 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Rows</th>
+                                <th class="text-left px-5 sm:px-6 py-3 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Completed</th>
+                                <th class="text-right px-5 sm:px-6 py-3 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-widest"></th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-white/10">
-                            @foreach($this->backups as $backup)
-                                <tr class="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-                                    <td class="px-5 py-3 font-medium text-gray-950 dark:text-white">
-                                        {{ $backup['folder'] }}
+                        <tbody class="divide-y divide-gray-50 dark:divide-white/5">
+                            @foreach($this->backups as $idx => $backup)
+                                @php
+                                    $statusConfig = [
+                                        'success' => ['dot' => 'bg-emerald-500', 'bg' => 'bg-emerald-50 dark:bg-emerald-900/20', 'text' => 'text-emerald-700 dark:text-emerald-400', 'label' => 'Completed'],
+                                        'partial' => ['dot' => 'bg-amber-500', 'bg' => 'bg-amber-50 dark:bg-amber-900/20', 'text' => 'text-amber-700 dark:text-amber-400', 'label' => 'Partial'],
+                                        'failed'  => ['dot' => 'bg-red-500', 'bg' => 'bg-red-50 dark:bg-red-900/20', 'text' => 'text-red-700 dark:text-red-400', 'label' => 'Failed'],
+                                        'running' => ['dot' => 'bg-blue-500 animate-pulse', 'bg' => 'bg-blue-50 dark:bg-blue-900/20', 'text' => 'text-blue-700 dark:text-blue-400', 'label' => 'Running'],
+                                        'unknown' => ['dot' => 'bg-gray-400', 'bg' => 'bg-gray-50 dark:bg-gray-800', 'text' => 'text-gray-600 dark:text-gray-400', 'label' => 'Unknown'],
+                                    ];
+                                    $s = $statusConfig[$backup['status']] ?? $statusConfig['unknown'];
+                                @endphp
+                                <tr class="backup-row group">
+                                    <td class="px-5 sm:px-6 py-3.5">
+                                        <div class="flex items-center gap-2.5">
+                                            <div class="w-8 h-8 rounded-lg bg-gray-100 dark:bg-gray-800 flex items-center justify-center flex-shrink-0">
+                                                <x-heroicon-o-calendar-days class="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                                            </div>
+                                            <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ $backup['folder'] }}</span>
+                                        </div>
                                     </td>
-                                    <td class="px-5 py-3">
-                                        @php
-                                            $statusColors = [
-                                                'success' => 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400',
-                                                'partial' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400',
-                                                'failed'  => 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400',
-                                                'running' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
-                                                'unknown' => 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
-                                            ];
-                                            $color = $statusColors[$backup['status']] ?? $statusColors['unknown'];
-                                        @endphp
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium {{ $color }}">
-                                            {{ ucfirst($backup['status']) }}
+                                    <td class="px-5 sm:px-6 py-3.5">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold {{ $s['bg'] }} {{ $s['text'] }}">
+                                            <span class="w-1.5 h-1.5 rounded-full {{ $s['dot'] }}"></span>
+                                            {{ $s['label'] }}
                                         </span>
                                     </td>
-                                    <td class="px-5 py-3 text-gray-600 dark:text-gray-300">
-                                        {{ $backup['total_tables'] }}
+                                    <td class="px-5 sm:px-6 py-3.5">
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ $backup['total_tables'] }}</span>
+                                        <span class="text-xs text-gray-400 dark:text-gray-500 ml-0.5">tables</span>
                                     </td>
-                                    <td class="px-5 py-3 text-gray-600 dark:text-gray-300">
-                                        {{ number_format($backup['total_rows'] ?? 0) }}
+                                    <td class="px-5 sm:px-6 py-3.5">
+                                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ number_format($backup['total_rows'] ?? 0) }}</span>
+                                        <span class="text-xs text-gray-400 dark:text-gray-500 ml-0.5">rows</span>
                                     </td>
-                                    <td class="px-5 py-3 text-gray-500 dark:text-gray-400 text-xs">
-                                        {{ $backup['started_at'] ?? '—' }}
+                                    <td class="px-5 sm:px-6 py-3.5">
+                                        @if($backup['started_at'])
+                                            <p class="text-xs font-medium text-gray-600 dark:text-gray-300">{{ \Carbon\Carbon::parse($backup['started_at'])->format('M d, Y') }}</p>
+                                            <p class="text-[11px] text-gray-400 dark:text-gray-500">{{ \Carbon\Carbon::parse($backup['started_at'])->format('h:i A') }}</p>
+                                        @else
+                                            <span class="text-xs text-gray-400 dark:text-gray-500">-</span>
+                                        @endif
                                     </td>
-                                    <td class="px-5 py-3 text-right">
-                                        <x-filament::button
+                                    <td class="px-5 sm:px-6 py-3.5 text-right">
+                                        <button
                                             wire:click="deleteBackup('{{ $backup['folder'] }}')"
-                                            wire:confirm="Are you sure you want to delete the {{ $backup['folder'] }} backup?"
-                                            color="danger"
-                                            size="xs"
-                                            icon="heroicon-o-trash"
-                                            outlined
+                                            wire:confirm="Are you sure you want to permanently delete the {{ $backup['folder'] }} backup? This action cannot be undone."
+                                            class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-500 dark:text-gray-400 bg-transparent hover:bg-red-50 dark:hover:bg-red-900/20 hover:text-red-600 dark:hover:text-red-400 rounded-lg transition-all duration-150 opacity-0 group-hover:opacity-100"
                                         >
+                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"/>
+                                            </svg>
                                             Delete
-                                        </x-filament::button>
+                                        </button>
                                     </td>
                                 </tr>
 
-                                {{-- Expandable error details --}}
+                                {{-- Error details --}}
                                 @if(!empty($backup['errors']))
                                     <tr>
-                                        <td colspan="6" class="px-5 py-2 bg-red-50 dark:bg-red-900/10">
-                                            <p class="text-xs font-medium text-red-700 dark:text-red-400">Errors:</p>
-                                            <ul class="mt-1 text-xs text-red-600 dark:text-red-400 list-disc list-inside">
-                                                @foreach($backup['errors'] as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
+                                        <td colspan="6" class="px-5 sm:px-6 py-3 bg-red-50/50 dark:bg-red-900/5 border-l-2 border-red-400 dark:border-red-500">
+                                            <div class="flex items-start gap-2">
+                                                <svg class="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"/>
+                                                </svg>
+                                                <div>
+                                                    <p class="text-xs font-semibold text-red-700 dark:text-red-400">{{ count($backup['errors']) }} error{{ count($backup['errors']) > 1 ? 's' : '' }} occurred</p>
+                                                    <ul class="mt-1 space-y-0.5">
+                                                        @foreach($backup['errors'] as $error)
+                                                            <li class="text-[11px] text-red-600 dark:text-red-400/80">{{ $error }}</li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endif
@@ -133,16 +229,46 @@
         </div>
 
         {{-- Info Card --}}
-        <div class="fi-section rounded-xl bg-blue-50 dark:bg-blue-900/10 ring-1 ring-blue-200 dark:ring-blue-800/30 p-5">
-            <h4 class="text-sm font-semibold text-blue-800 dark:text-blue-300 mb-2">How it works</h4>
-            <ul class="space-y-1.5 text-xs text-blue-700 dark:text-blue-400">
-                <li>• Backups run automatically on the <strong>1st of every month</strong> at 2:00 AM (Manila time).</li>
-                <li>• Each table is exported as a separate <strong>.xlsx</strong> file with bold headers and auto-sized columns.</li>
-                <li>• Files are saved to <code class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">{{ $this->backupConfig['path'] }}/YYYY-MM/</code> in the project root.</li>
-                <li>• A <strong>backup-summary.json</strong> and <strong>backup-log.txt</strong> are generated with each run.</li>
-                <li>• Backups older than <strong>{{ $this->backupConfig['retention_months'] }} months</strong> are automatically cleaned up.</li>
-                <li>• Manual CLI: <code class="bg-blue-100 dark:bg-blue-900/30 px-1 rounded">php artisan backup:run</code></li>
-            </ul>
+        <div x-data="{ open: false }" class="animate-fade-in-up rounded-xl overflow-hidden ring-1 ring-gray-950/5 dark:ring-white/10">
+            <button
+                @click="open = !open"
+                class="w-full flex items-center justify-between px-5 sm:px-6 py-4 bg-gradient-to-r from-slate-50 to-gray-50 dark:from-gray-800/50 dark:to-gray-900 hover:from-slate-100 hover:to-gray-100 dark:hover:from-gray-800 dark:hover:to-gray-800/80 transition-colors"
+            >
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                        <x-heroicon-o-information-circle class="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <span class="text-sm font-semibold text-gray-700 dark:text-gray-300">How it works</span>
+                </div>
+                <svg :class="open ? 'rotate-180' : ''" class="w-4 h-4 text-gray-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"/>
+                </svg>
+            </button>
+            <div x-show="open" x-collapse class="bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-white/5">
+                <div class="px-5 sm:px-6 py-5 grid sm:grid-cols-2 gap-4">
+                    @php
+                        $infoItems = [
+                            ['icon' => 'heroicon-o-calendar', 'title' => 'Automatic Schedule', 'desc' => 'Runs on the 1st of every month at 2:00 AM (Manila time).'],
+                            ['icon' => 'heroicon-o-document-arrow-down', 'title' => 'Excel Export', 'desc' => 'Each table exported as .xlsx with bold headers and auto-sized columns.'],
+                            ['icon' => 'heroicon-o-folder', 'title' => 'Storage Location', 'desc' => 'Saved to ' . $this->backupConfig['path'] . '/YYYY-MM/ in project root.'],
+                            ['icon' => 'heroicon-o-document-text', 'title' => 'Summary Files', 'desc' => 'backup-summary.json and backup-log.txt generated per run.'],
+                            ['icon' => 'heroicon-o-trash', 'title' => 'Auto Cleanup', 'desc' => 'Backups older than ' . $this->backupConfig['retention_months'] . ' months removed automatically.'],
+                            ['icon' => 'heroicon-o-command-line', 'title' => 'Manual CLI', 'desc' => 'php artisan backup:run'],
+                        ];
+                    @endphp
+                    @foreach($infoItems as $item)
+                        <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                            <div class="w-7 h-7 rounded-md bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                                <x-dynamic-component :component="$item['icon']" class="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-gray-700 dark:text-gray-300">{{ $item['title'] }}</p>
+                                <p class="mt-0.5 text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">{{ $item['desc'] }}</p>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
 
     </div>
