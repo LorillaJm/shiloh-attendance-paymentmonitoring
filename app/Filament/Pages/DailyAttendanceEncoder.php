@@ -164,6 +164,98 @@ class DailyAttendanceEncoder extends Page implements HasForms
         $this->attendanceData[$studentId]['status'] = $status;
     }
 
+    public function saveIndividualAttendance($studentId): void
+    {
+        $user = Auth::user();
+        $attendanceDate = $this->data['attendance_date'];
+
+        if (!Gate::forUser($user)->allows('editDate', [AttendanceRecord::class, $attendanceDate])) {
+            $editWindowDays = config('attendance.edit_window_days', 7);
+            Notification::make()
+                ->danger()
+                ->title('Edit Window Exceeded')
+                ->body("You can only edit attendance within {$editWindowDays} days. Admins can edit any date.")
+                ->send();
+            return;
+        }
+
+        $data = $this->attendanceData[$studentId] ?? null;
+        if (!$data) return;
+
+        try {
+            $recordData = [
+                'student_id' => $studentId,
+                'attendance_date' => $attendanceDate,
+                'status' => $data['status'],
+                'remarks' => $data['remarks'],
+                'encoded_by_user_id' => Auth::id(),
+            ];
+
+            if ($data['exists']) {
+                $record = AttendanceRecord::find($data['record_id']);
+                $oldStatus = $record->status;
+                $record->update($recordData);
+
+                if ($oldStatus !== $data['status']) {
+                    ActivityLogger::log(
+                        description: "Attendance updated",
+                        subject: $record,
+                        properties: [
+                            'student_id' => $studentId,
+                            'attendance_date' => $attendanceDate,
+                            'old_status' => $oldStatus,
+                            'new_status' => $data['status'],
+                            'updated_by' => $user->name,
+                        ],
+                        logName: 'attendance'
+                    );
+                }
+
+                try {
+                    broadcast(new AttendanceUpdated($record->id, $studentId, $attendanceDate, 'updated'))->toOthers();
+                } catch (\Throwable $e) {}
+            } else {
+                $record = AttendanceRecord::create($recordData);
+
+                ActivityLogger::log(
+                    description: "Attendance created",
+                    subject: $record,
+                    properties: [
+                        'student_id' => $studentId,
+                        'attendance_date' => $attendanceDate,
+                        'status' => $data['status'],
+                        'created_by' => $user->name,
+                    ],
+                    logName: 'attendance'
+                );
+
+                try {
+                    broadcast(new AttendanceUpdated($record->id, $studentId, $attendanceDate, 'created'))->toOthers();
+                } catch (\Throwable $e) {}
+            }
+
+            // Update local state to reflect saved
+            $this->attendanceData[$studentId]['exists'] = true;
+            $this->attendanceData[$studentId]['record_id'] = $record->id;
+
+            $student = $this->students->firstWhere('id', $studentId);
+            $name = $student?->full_name ?? "Student #{$studentId}";
+
+            Notification::make()
+                ->success()
+                ->title('Saved')
+                ->body("{$name} marked as {$data['status']}.")
+                ->send();
+
+        } catch (\Exception $e) {
+            Notification::make()
+                ->danger()
+                ->title('Error')
+                ->body($e->getMessage())
+                ->send();
+        }
+    }
+
     public function updateRemarks($studentId, $remarks): void
     {
         $this->attendanceData[$studentId]['remarks'] = $remarks;

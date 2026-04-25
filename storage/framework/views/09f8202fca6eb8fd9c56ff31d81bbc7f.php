@@ -28,7 +28,7 @@
                  <?php $__env->endSlot(); ?>
 
                  <?php $__env->slot('headerEnd', null, []); ?> 
-                    <div class="flex gap-2">
+                    <div class="flex flex-wrap gap-2">
                         <?php if (isset($component)) { $__componentOriginal6330f08526bbb3ce2a0da37da512a11f = $component; } ?>
 <?php if (isset($attributes)) { $__attributesOriginal6330f08526bbb3ce2a0da37da512a11f = $attributes; } ?>
 <?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'filament::components.button.index','data' => ['wire:click' => 'markAllPresent','color' => 'success','size' => 'sm','type' => 'button']] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
@@ -95,6 +95,9 @@
                                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                                         Remarks
                                     </th>
+                                    <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                        Action
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
@@ -108,8 +111,40 @@
                                             <?php echo e($student->full_name); ?>
 
                                         </td>
-                                        <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex gap-2">
+                                        <td class="px-4 py-3 whitespace-nowrap"
+                                            x-data="{
+                                                confirming: false,
+                                                pendingStatus: '',
+                                                pendingLabel: '',
+                                                currentStatus: <?php echo \Illuminate\Support\Js::from($attendanceData[$student->id]['status'])->toHtml() ?>,
+                                                statusColors: {
+                                                    'PRESENT': '#16a34a',
+                                                    'ABSENT': '#dc2626',
+                                                    'LATE': '#d97706',
+                                                    'EXCUSED': '#2563eb',
+                                                },
+                                                requestChange(value, label) {
+                                                    if (value === this.currentStatus) return;
+                                                    this.pendingStatus = value;
+                                                    this.pendingLabel = label;
+                                                    this.confirming = true;
+                                                },
+                                                confirmChange() {
+                                                    this.currentStatus = this.pendingStatus;
+                                                    $wire.updateStatus(<?php echo e($student->id); ?>, this.pendingStatus);
+                                                    this.confirming = false;
+                                                    this.pendingStatus = '';
+                                                    this.pendingLabel = '';
+                                                },
+                                                cancelChange() {
+                                                    this.confirming = false;
+                                                    this.pendingStatus = '';
+                                                    this.pendingLabel = '';
+                                                }
+                                            }"
+                                            @status-saved-<?php echo e($student->id); ?>.window="currentStatus = $event.detail.status"
+                                        >
+                                            <div class="flex flex-wrap gap-1.5 sm:gap-2">
                                                 <?php
                                                     $statusColors = [
                                                         'PRESENT' => ['bg' => '#16a34a', 'border' => '#16a34a'],
@@ -119,28 +154,62 @@
                                                     ];
                                                 ?>
                                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = config('attendance.status_options'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $value => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <?php $isActive = $attendanceData[$student->id]['status'] === $value; ?>
-                                                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($isActive): ?>
-                                                        <button
-                                                            type="button"
-                                                            wire:click="updateStatus(<?php echo e($student->id); ?>, '<?php echo e($value); ?>')"
-                                                            class="px-3 py-1 text-xs font-semibold rounded-md border"
-                                                            style="background-color:<?php echo e($statusColors[$value]['bg']); ?>;border-color:<?php echo e($statusColors[$value]['border']); ?>;color:#fff;"
-                                                        >
-                                                            <?php echo e($label); ?>
+                                                    <button
+                                                        type="button"
+                                                        x-on:click="requestChange('<?php echo e($value); ?>', '<?php echo e($label); ?>')"
+                                                        class="px-3 py-1 text-xs font-semibold rounded-md border transition-all duration-150"
+                                                        x-bind:style="currentStatus === '<?php echo e($value); ?>'
+                                                            ? 'background-color:<?php echo e($statusColors[$value]['bg']); ?>;border-color:<?php echo e($statusColors[$value]['border']); ?>;color:#fff;'
+                                                            : ''"
+                                                        x-bind:class="currentStatus === '<?php echo e($value); ?>'
+                                                            ? ''
+                                                            : 'border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 bg-transparent'"
+                                                    >
+                                                        <?php echo e($label); ?>
 
-                                                        </button>
-                                                    <?php else: ?>
-                                                        <button
-                                                            type="button"
-                                                            wire:click="updateStatus(<?php echo e($student->id); ?>, '<?php echo e($value); ?>')"
-                                                            class="px-3 py-1 text-xs font-semibold rounded-md border border-gray-300 dark:border-gray-500 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600 bg-transparent"
-                                                        >
-                                                            <?php echo e($label); ?>
-
-                                                        </button>
-                                                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                                    </button>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                            </div>
+
+                                            
+                                            <div x-show="confirming" x-cloak x-transition.opacity.duration.150ms
+                                                class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                                                x-on:keydown.escape.window="cancelChange()"
+                                            >
+                                                <div x-on:click.away="cancelChange()" x-transition.scale.origin.center
+                                                    class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-5 w-80 max-w-[90vw] text-center border border-gray-200 dark:border-gray-700"
+                                                >
+                                                    <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full"
+                                                        x-bind:style="'background-color:' + (statusColors[pendingStatus] || '#6b7280') + '20'"
+                                                    >
+                                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                                            x-bind:style="'color:' + (statusColors[pendingStatus] || '#6b7280')"
+                                                        >
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                                        </svg>
+                                                    </div>
+                                                    <h3 class="text-base font-semibold text-gray-900 dark:text-white mb-1">
+                                                        Change Status
+                                                    </h3>
+                                                    <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                                        Mark <span class="font-semibold text-gray-900 dark:text-white"><?php echo e($student->full_name); ?></span>
+                                                        as <span class="font-bold" x-text="pendingLabel"
+                                                            x-bind:style="'color:' + (statusColors[pendingStatus] || '#6b7280')"
+                                                        ></span>?
+                                                    </p>
+                                                    <div class="flex gap-2 justify-center">
+                                                        <button type="button" x-on:click="cancelChange()"
+                                                            class="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                                                            Cancel
+                                                        </button>
+                                                        <button type="button" x-on:click="confirmChange()"
+                                                            class="px-4 py-2 text-sm font-semibold rounded-lg text-white transition-colors"
+                                                            x-bind:style="'background-color:' + (statusColors[pendingStatus] || '#6b7280')"
+                                                        >
+                                                            Yes, confirm
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                         <td class="px-4 py-3 whitespace-nowrap">
@@ -167,6 +236,24 @@
                                                 placeholder="Optional remarks"
                                                 class="w-full px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                                             />
+                                        </td>
+                                        <td class="px-4 py-3 text-center whitespace-nowrap">
+                                            <button
+                                                type="button"
+                                                wire:click="saveIndividualAttendance(<?php echo e($student->id); ?>)"
+                                                wire:loading.attr="disabled"
+                                                wire:target="saveIndividualAttendance(<?php echo e($student->id); ?>)"
+                                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-semibold rounded-lg bg-primary-600 text-white hover:bg-primary-700 focus:ring-2 focus:ring-primary-500 focus:ring-offset-1 disabled:opacity-50 transition-colors"
+                                            >
+                                                <svg wire:loading.remove wire:target="saveIndividualAttendance(<?php echo e($student->id); ?>)" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                                </svg>
+                                                <svg wire:loading wire:target="saveIndividualAttendance(<?php echo e($student->id); ?>)" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
+                                                </svg>
+                                                Save
+                                            </button>
                                         </td>
                                     </tr>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
