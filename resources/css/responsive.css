@@ -1,0 +1,818 @@
+/* ============================================
+   RESPONSIVE MOBILE-FIRST OVERRIDES
+   Makes the entire Filament admin UI accessible
+   and touch-friendly on phones, tablets & desktops
+   ============================================ */
+
+/* ============================================
+   1. VIEWPORT / GLOBAL
+   ============================================ */
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ============================================
+   2. TOPBAR — compact on small screens
+   ============================================ */
+@media (max-width: 639px) {
+    .fi-topbar nav,
+    .fi-topbar > nav {
+        padding-inline: 0.5rem !important;
+        gap: 0.25rem !important;
+    }
+
+    /* Shrink the branding text injected via renderHook */
+    .fi-topbar .text-lg,
+    .fi-topbar .text-xl,
+    .fi-topbar .text-2xl,
+    .fi-topbar .sm\:text-xl,
+    .fi-topbar .md\:text-2xl {
+        font-size: 0.875rem !important;
+        line-height: 1.25rem !important;
+    }
+
+    /* Shrink logo in topbar */
+    .fi-topbar img.h-9 {
+        height: 1.75rem !important;
+        width: 1.75rem !important;
+    }
+
+    /* Global search — narrower on mobile */
+    .fi-global-search-field {
+        max-width: 140px !important;
+    }
+
+    .fi-global-search-field input {
+        font-size: 0.8125rem !important;
+        padding: 0.375rem 0.5rem !important;
+    }
+}
+
+/* ============================================
+   3. SIDEBAR — solid overlay on mobile (NO glass)
+   ============================================ */
+@media (max-width: 1023px) {
+    /* Solid opaque sidebar — no transparency */
+    .fi-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        z-index: 50 !important;
+        width: 18rem !important;
+        max-width: 85vw !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        background-color: #ffffff !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        opacity: 1 !important;
+    }
+
+    .dark .fi-sidebar {
+        background-color: #0f172a !important;
+    }
+
+    .fi-sidebar-header {
+        background-color: #ffffff !important;
+    }
+
+    .dark .fi-sidebar-header {
+        background-color: #0f172a !important;
+    }
+
+    .fi-sidebar-nav {
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding-bottom: 2rem !important;
+        background-color: #ffffff !important;
+    }
+
+    .dark .fi-sidebar-nav {
+        background-color: #0f172a !important;
+    }
+
+    /* Overlay backdrop — below sidebar, above content */
+    .fi-sidebar-close-overlay {
+        position: fixed !important;
+        inset: 0 !important;
+        z-index: 40 !important;
+        background: rgba(0, 0, 0, 0.6) !important;
+        backdrop-filter: blur(2px) !important;
+    }
+
+    /* Touch-friendly nav items */
+    .fi-sidebar-item {
+        min-height: 44px !important;
+    }
+
+    .fi-sidebar-item-label {
+        font-size: 0.9375rem !important;
+    }
+
+    /* Nav links must be fully clickable */
+    .fi-sidebar-item-button {
+        position: relative !important;
+        z-index: 1 !important;
+        cursor: pointer !important;
+    }
+
+    /* Nav group labels need more space */
+    .fi-sidebar-group-label {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.25rem !important;
+    }
+}
+
+/* ============================================
+   4. MAIN CONTENT — no overflow on mobile
+   ============================================ */
+.fi-main-ctn,
+.fi-main {
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+}
+
+@media (max-width: 639px) {
+    .fi-main {
+        padding: 0.75rem !important;
+    }
+
+    .fi-header {
+        padding-inline: 0 !important;
+    }
+
+    .fi-header-heading {
+        font-size: 1.25rem !important;
+    }
+
+    .fi-header-subheading {
+        font-size: 0.8125rem !important;
+    }
+
+    /* Breadcrumbs wrap */
+    .fi-breadcrumbs {
+        flex-wrap: wrap !important;
+        gap: 0.25rem !important;
+    }
+}
+
+/* ============================================
+   5. STAT CARDS — single column on phone
+   ============================================ */
+@media (max-width: 639px) {
+    .fi-wi-stats-overview-stats-ctn {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+
+    .fi-wi-stats-overview-stat {
+        padding: 0.875rem !important;
+    }
+
+    .fi-wi-stats-overview-stat-value {
+        font-size: 1.25rem !important;
+    }
+
+    .fi-wi-stats-overview-stat-label {
+        font-size: 0.6875rem !important;
+    }
+}
+
+/* ============================================
+   6. GLASS CARDS (modern-stats-overview widget)
+   ============================================ */
+.glass-row {
+    display: grid;
+    gap: 1rem;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.glass-row--4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.glass-row--3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.glass-card {
+    position: relative;
+    border-radius: 1rem;
+    padding: 1.25rem;
+    overflow: hidden;
+    background: var(--ft-bg-card, #ffffff);
+    border: 1px solid var(--ft-border, rgba(0,0,0,0.08));
+    box-shadow: var(--ft-shadow-card, 0 1px 3px rgba(0,0,0,0.06));
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark .glass-card {
+    background: var(--ft-bg-card, #111820);
+    border-color: var(--ft-border, rgba(255,255,255,0.06));
+}
+
+.glass-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ft-shadow-card-hover, 0 10px 25px rgba(0,0,0,0.08));
+    border-color: var(--ft-border-hover, rgba(13,148,136,0.35));
+}
+
+.glass-card__frost,
+.glass-card__shine {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+.glass-card__frost {
+    background: rgba(255,255,255,0.03);
+}
+
+.glass-card__shine {
+    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, transparent 50%);
+}
+
+.glass-card__glow {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.glass-card:hover .glass-card__glow {
+    opacity: 1;
+}
+
+.glass-card__content {
+    position: relative;
+    z-index: 1;
+}
+
+.glass-card__label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--ft-text-secondary, #64748b);
+    margin-bottom: 0.5rem;
+}
+
+.glass-card__value {
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800;
+    color: var(--ft-text-primary, #0f172a);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.dark .glass-card__value {
+    color: var(--ft-text-primary, #f0f4f8);
+}
+
+.glass-card__value--mono {
+    font-family: 'Inter var', ui-monospace, monospace;
+}
+
+.glass-card__desc {
+    font-size: 0.75rem;
+    color: var(--ft-text-muted, #94a3b8);
+    margin-top: 0.25rem;
+}
+
+.glass-card__chart {
+    position: relative;
+    z-index: 1;
+    margin-top: 0.75rem;
+    height: 36px;
+    opacity: 0.6;
+}
+
+.glass-card__chart svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Accent colors */
+.glass-accent-blue { --accent-c: #3b82f6; }
+.glass-accent-emerald { --accent-c: #10b981; }
+.glass-accent-amber { --accent-c: #f59e0b; }
+.glass-accent-rose { --accent-c: #f43f5e; }
+.glass-accent-green { --accent-c: #22c55e; }
+.glass-accent-cyan { --accent-c: #06b6d4; }
+.glass-accent-slate { --accent-c: #64748b; }
+
+.glass-card__chart { color: var(--accent-c, #5eead4); }
+.glass-card__glow { background: radial-gradient(circle at 50% 80%, color-mix(in srgb, var(--accent-c, #5eead4) 8%, transparent), transparent 70%); }
+
+/* Glass cards — responsive breakpoints */
+@media (max-width: 1023px) {
+    .glass-row--4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .glass-row--3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 639px) {
+    .glass-row--4,
+    .glass-row--3 {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem;
+    }
+
+    .glass-card {
+        padding: 1rem;
+    }
+
+    .glass-card__value {
+        font-size: 1.25rem !important;
+    }
+
+    .glass-card__label {
+        font-size: 0.625rem;
+    }
+}
+
+/* ============================================
+   7. TABLES — horizontal scroll on mobile
+   ============================================ */
+.fi-ta {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+}
+
+@media (max-width: 767px) {
+    .fi-ta-table {
+        font-size: 0.8125rem !important;
+    }
+
+    .fi-ta-cell,
+    .fi-ta-header-cell {
+        padding: 0.5rem 0.625rem !important;
+        white-space: nowrap !important;
+    }
+
+    /* Make actions column not wrap */
+    .fi-ta-actions {
+        white-space: nowrap !important;
+    }
+
+    /* Compact table search & filters bar */
+    .fi-ta-header-toolbar {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }
+
+    .fi-ta-search-field {
+        min-width: 0 !important;
+        flex: 1 1 100% !important;
+    }
+}
+
+/* Custom tables in blade pages */
+@media (max-width: 767px) {
+    .overflow-x-auto table {
+        min-width: 600px;
+    }
+
+    /* Ensure custom table wrappers scroll */
+    div:has(> table) {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+}
+
+/* ============================================
+   8. SECTIONS & CARDS — tighter on mobile
+   ============================================ */
+@media (max-width: 639px) {
+    .fi-section {
+        border-radius: 0.75rem !important;
+        padding: 0.75rem !important;
+    }
+
+    .fi-section-header {
+        padding: 0.75rem !important;
+    }
+
+    .fi-section-content {
+        padding: 0.75rem !important;
+    }
+
+    /* Summary cards in report pages */
+    .bg-white.rounded-lg.shadow.p-6,
+    .dark .bg-gray-800.rounded-lg.shadow.p-6 {
+        padding: 1rem !important;
+    }
+
+    .bg-white.rounded-lg.shadow.p-6 .text-3xl,
+    .dark .bg-gray-800.rounded-lg.shadow.p-6 .text-3xl {
+        font-size: 1.5rem !important;
+    }
+}
+
+/* ============================================
+   9. CHART WIDGET — compact on mobile
+   ============================================ */
+@media (max-width: 639px) {
+    .fi-wi-chart {
+        padding: 0.75rem !important;
+        margin-top: 0.75rem !important;
+    }
+}
+
+/* ============================================
+   10. FORMS — touch-friendly on mobile
+   ============================================ */
+@media (max-width: 767px) {
+    /* Filament form fields: ensure 44px min touch */
+    .fi-input,
+    .fi-select,
+    .fi-textarea,
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="search"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+        min-height: 44px !important;
+        font-size: 1rem !important;
+    }
+
+    /* Filament form grid — stack on mobile */
+    .fi-fo-component-ctn {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Buttons — 44px touch target */
+    .fi-btn {
+        min-height: 44px !important;
+        padding-inline: 1rem !important;
+        font-size: 0.875rem !important;
+    }
+
+    /* Action buttons row — wrap */
+    .fi-ac {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }
+
+    .fi-ac-action {
+        flex: 1 1 auto !important;
+    }
+
+    /* Header actions — stack under heading */
+    .fi-header-actions {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }
+}
+
+/* ============================================
+   11. MODALS — full-width on mobile
+   ============================================ */
+@media (max-width: 639px) {
+    .fi-modal-window {
+        width: calc(100vw - 1rem) !important;
+        max-width: 100% !important;
+        margin: 0.5rem !important;
+        border-radius: 1rem !important;
+    }
+
+    .fi-modal-content {
+        padding: 1rem !important;
+    }
+}
+
+/* ============================================
+   12. WIDGETS — proper column span on mobile
+   ============================================ */
+@media (max-width: 767px) {
+    .fi-wi {
+        grid-column: span 1 / span 1 !important;
+    }
+
+    /* Widgets container — single column */
+    .fi-widgets {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+    }
+}
+
+/* ============================================
+   13. QUICK LINKS WIDGET — responsive grid
+   ============================================ */
+@media (max-width: 639px) {
+    /* Alerts / quick links grid */
+    .grid.grid-cols-2.gap-3.sm\:grid-cols-3.md\:grid-cols-4.lg\:grid-cols-6 {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+
+    .grid.grid-cols-2.gap-3.sm\:grid-cols-3.md\:grid-cols-4.lg\:grid-cols-6 a {
+        padding: 0.5rem !important;
+    }
+
+    .grid.grid-cols-2.gap-3.sm\:grid-cols-3.md\:grid-cols-4.lg\:grid-cols-6 .text-lg {
+        font-size: 1rem !important;
+    }
+}
+
+/* ============================================
+   14. ATTENDANCE ENCODER — responsive table
+   ============================================ */
+@media (max-width: 767px) {
+    /* Status buttons — compact */
+    .flex.gap-2 button.px-3.py-1 {
+        padding: 0.375rem 0.5rem !important;
+        font-size: 0.6875rem !important;
+    }
+
+    /* Header actions (Mark All Present/Absent) — stack */
+    .fi-section-header .flex.gap-2 {
+        flex-direction: column !important;
+        gap: 0.375rem !important;
+    }
+}
+
+/* ============================================
+   15. REPORT PAGES — grid-cols-5 responsive
+   ============================================ */
+@media (max-width: 1023px) {
+    /* 5-column grids → 3 cols on tablet */
+    .grid.grid-cols-1.md\:grid-cols-5 {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+@media (max-width: 639px) {
+    /* 5-column grids → 2 cols on phone */
+    .grid.grid-cols-1.md\:grid-cols-5 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+
+    .grid.grid-cols-1.md\:grid-cols-5 .text-2xl {
+        font-size: 1.25rem !important;
+    }
+
+    .grid.grid-cols-1.md\:grid-cols-5 .p-6 {
+        padding: 0.75rem !important;
+    }
+
+    .grid.grid-cols-1.md\:grid-cols-5 .p-4 {
+        padding: 0.625rem !important;
+    }
+}
+
+/* ============================================
+   16. STUDENT LEDGER — responsive
+   ============================================ */
+@media (max-width: 639px) {
+    /* Student info grid */
+    .grid.grid-cols-2.gap-4 {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem !important;
+    }
+
+    /* Ledger summary grid (Total Fee / Total Paid / Balance) */
+    .grid.grid-cols-3.gap-4 {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem !important;
+    }
+
+    .grid.grid-cols-3.gap-4 .text-xl {
+        font-size: 1.125rem !important;
+    }
+
+    /* Enrollment card header — stack */
+    .flex.justify-between.items-center.mb-4 {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.25rem !important;
+    }
+}
+
+/* ============================================
+   17. MONTHLY ATTENDANCE — filter row
+   ============================================ */
+@media (max-width: 639px) {
+    .flex.items-center.gap-4 {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }
+
+    .flex.items-center.gap-4 select,
+    .flex.items-center.gap-4 input[type="date"] {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+}
+
+/* ============================================
+   18. BACKUP PAGE — responsive
+   ============================================ */
+@media (max-width: 639px) {
+    /* Hero section */
+    .backup-hero-gradient {
+        padding: 1rem !important;
+    }
+
+    .backup-hero-gradient .text-xl {
+        font-size: 1rem !important;
+    }
+
+    .backup-hero-gradient .text-sm {
+        font-size: 0.75rem !important;
+    }
+
+    /* Stats grid */
+    .grid.grid-cols-2.lg\:grid-cols-4 {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+
+    .grid.grid-cols-2.lg\:grid-cols-4 .text-2xl {
+        font-size: 1.25rem !important;
+    }
+
+    .grid.grid-cols-2.lg\:grid-cols-4 .p-4 {
+        padding: 0.625rem !important;
+    }
+}
+
+/* ============================================
+   19. EXPORT BUTTONS — wrap on mobile
+   ============================================ */
+@media (max-width: 639px) {
+    .flex.gap-2.mb-4 {
+        flex-wrap: wrap !important;
+    }
+
+    .flex.gap-2.mb-4 .fi-btn,
+    .flex.gap-2.mb-4 button,
+    .flex.gap-2.mb-4 a {
+        flex: 1 1 auto !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+}
+
+/* ============================================
+   20. RESOURCE PAGES — create/edit forms
+   ============================================ */
+@media (max-width: 767px) {
+    /* Infolist entries */
+    .fi-in-entry-wrp {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Relation managers */
+    .fi-re {
+        overflow-x: auto !important;
+    }
+
+    /* Resource header — page title + actions */
+    .fi-resource-header {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }
+}
+
+/* ============================================
+   21. NOTIFICATIONS / TOASTS — mobile safe
+   ============================================ */
+@media (max-width: 639px) {
+    .fi-no-ctn {
+        left: 0.5rem !important;
+        right: 0.5rem !important;
+        max-width: calc(100vw - 1rem) !important;
+    }
+
+    .fi-no {
+        max-width: 100% !important;
+    }
+}
+
+/* ============================================
+   22. TABS — scrollable on mobile
+   ============================================ */
+@media (max-width: 639px) {
+    .fi-tabs-list {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        flex-wrap: nowrap !important;
+        scrollbar-width: none !important;
+    }
+
+    .fi-tabs-list::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .fi-tabs-tab {
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+    }
+}
+
+/* ============================================
+   23. USER QUICK ACTIONS — responsive
+   ============================================ */
+@media (max-width: 639px) {
+    /* Encode Attendance button */
+    a.inline-flex.items-center.gap-3.px-8.py-4 {
+        padding: 0.75rem 1.5rem !important;
+        font-size: 0.875rem !important;
+    }
+
+    a.inline-flex.items-center.gap-3.px-8.py-4 .text-lg {
+        font-size: 0.9375rem !important;
+    }
+}
+
+/* ============================================
+   24. PAGINATION — compact on mobile
+   ============================================ */
+@media (max-width: 639px) {
+    .fi-ta-pagination {
+        flex-wrap: wrap !important;
+        gap: 0.25rem !important;
+        justify-content: center !important;
+    }
+
+    .fi-ta-pagination-records-per-page {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+
+/* ============================================
+   25. COLLECTIONS SUMMARY — icon responsive
+   ============================================ */
+@media (max-width: 639px) {
+    .flex.items-center.justify-between .bg-green-100.p-3,
+    .flex.items-center.justify-between .bg-blue-100.p-3 {
+        padding: 0.5rem !important;
+    }
+
+    .flex.items-center.justify-between .bg-green-100.p-3 svg,
+    .flex.items-center.justify-between .bg-blue-100.p-3 svg {
+        width: 1.25rem !important;
+        height: 1.25rem !important;
+    }
+}
+
+/* ============================================
+   26. SAFE AREA — iPhone notch / home bar
+   ============================================ */
+@supports (padding: env(safe-area-inset-bottom)) {
+    .fi-sidebar {
+        padding-bottom: env(safe-area-inset-bottom) !important;
+    }
+
+    .fi-main {
+        padding-bottom: calc(1rem + env(safe-area-inset-bottom)) !important;
+    }
+}
+
+/* ============================================
+   27. SMOOTH SCROLLING
+   ============================================ */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+/* ============================================
+   28. PRINT — already handled elsewhere,
+       keep touch styles out of print
+   ============================================ */
+@media print {
+    .fi-sidebar,
+    .fi-topbar,
+    .fi-sidebar-close-overlay {
+        display: none !important;
+    }
+
+    .fi-main {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+}

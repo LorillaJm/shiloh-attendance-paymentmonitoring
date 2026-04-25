@@ -9,7 +9,7 @@
                 </x-slot>
 
                 <x-slot name="headerEnd">
-                    <div class="flex gap-2">
+                    <div class="flex flex-wrap gap-2">
                         <x-filament::button
                             wire:click="markAllPresent"
                             color="success"
@@ -62,7 +62,7 @@
                                             {{ $student->full_name }}
                                         </td>
                                         <td class="px-4 py-3 whitespace-nowrap">
-                                            <div class="flex gap-2">
+                                            <div class="flex flex-wrap gap-1.5 sm:gap-2">
                                                 @php
                                                     $statusColors = [
                                                         'PRESENT' => ['bg' => '#16a34a', 'border' => '#16a34a'],

@@ -82,21 +82,26 @@ class ParentPanelProvider extends PanelProvider
             ->loginRouteSlug('../admin/login')  // Redirect to unified login
             ->renderHook(
                 'panels::topbar.start',
-                fn () => '<div class="flex items-center justify-center flex-1 gap-2.5 py-1">
-                    <img src="' . asset('images/logo.png') . '" alt="Shiloh Logo" class="h-9 w-9 object-cover rounded-full bg-white shadow-sm p-0.5" />
-                    <span class="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                fn () => '<div class="flex items-center gap-2.5 py-1 min-w-0">
+                    <img src="' . asset('images/logo.png') . '" alt="Shiloh Logo" class="h-8 w-8 flex-shrink-0 object-cover rounded-full bg-white shadow-sm p-0.5" />
+                    <span class="text-base sm:text-lg md:text-xl font-bold tracking-tight truncate
+                        text-gray-900 dark:text-white">
                         Shiloh Learning Center
                     </span>
                 </div>
                 <style>
-                    /* Hide the X button (close sidebar button) */
-                    .fi-topbar-close-sidebar-btn {
-                        display: none !important;
+                    /* Only hide sidebar buttons on desktop */
+                    @media (min-width: 1024px) {
+                        .fi-topbar-close-sidebar-btn { display: none !important; }
+                        .fi-topbar-open-sidebar-btn { display: none !important; }
                     }
-                    
-                    /* Hide the hamburger button (open sidebar button) on mobile */
-                    .fi-topbar-open-sidebar-btn {
-                        display: none !important;
+                    /* Ensure hamburger is visible and on the left on mobile */
+                    @media (max-width: 1023px) {
+                        .fi-topbar-open-sidebar-btn,
+                        .fi-topbar-close-sidebar-btn {
+                            order: -1 !important;
+                            flex-shrink: 0 !important;
+                        }
                     }
                 </style>'
             )
@@ -155,6 +160,160 @@ class ParentPanelProvider extends PanelProvider
                             });
                         });
                     });
+                </script>'
+            )
+            ->renderHook(
+                'panels::body.end',
+                fn () => '
+                <!-- Parent Panel: Responsive Sidebar + Loading Indicator -->
+                <style>
+                    /* Solid opaque sidebar on mobile */
+                    @media (max-width: 1023px) {
+                        .fi-sidebar {
+                            position: fixed !important;
+                            z-index: 50 !important;
+                            width: 18rem !important;
+                            max-width: 85vw !important;
+                            background-color: #ffffff !important;
+                            backdrop-filter: none !important;
+                        }
+                        .dark .fi-sidebar {
+                            background-color: #0f172a !important;
+                        }
+                        .fi-sidebar-header {
+                            background-color: #ffffff !important;
+                        }
+                        .dark .fi-sidebar-header {
+                            background-color: #0f172a !important;
+                        }
+                        .fi-sidebar-nav {
+                            background-color: #ffffff !important;
+                        }
+                        .dark .fi-sidebar-nav {
+                            background-color: #0f172a !important;
+                        }
+                        .fi-sidebar-close-overlay {
+                            z-index: 40 !important;
+                        }
+                        .fi-sidebar-item { min-height: 44px !important; }
+                        .fi-sidebar-item-button { cursor: pointer !important; }
+                    }
+                    /* Topbar z-index */
+                    .fi-topbar { z-index: 30 !important; }
+                    /* Main content no overflow */
+                    .fi-main-ctn, .fi-main { max-width: 100vw !important; overflow-x: hidden !important; }
+                    /* Mobile padding */
+                    @media (max-width: 639px) {
+                        .fi-main { padding: 0.75rem !important; }
+                        .fi-header-heading { font-size: 1.25rem !important; }
+                    }
+                    /* Tables horizontal scroll */
+                    .fi-ta { overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; }
+                    @media (max-width: 767px) {
+                        .fi-ta-table { font-size: 0.8125rem !important; }
+                        .fi-ta-cell, .fi-ta-header-cell { padding: 0.5rem 0.625rem !important; white-space: nowrap !important; }
+                        .fi-ta-header-toolbar { flex-wrap: wrap !important; gap: 0.5rem !important; }
+                        .fi-ta-search-field { flex: 1 1 100% !important; }
+                        .fi-fo-component-ctn { grid-template-columns: 1fr !important; }
+                        .fi-btn { min-height: 44px !important; }
+                        .fi-input, .fi-select, .fi-textarea, input, select, textarea { min-height: 44px !important; font-size: 1rem !important; }
+                        .fi-wi { grid-column: span 1 / span 1 !important; }
+                        .fi-widgets { grid-template-columns: 1fr !important; }
+                    }
+                    /* Modals full-width on mobile */
+                    @media (max-width: 639px) {
+                        .fi-modal-window { width: calc(100vw - 1rem) !important; max-width: 100% !important; margin: 0.5rem !important; }
+                    }
+                    /* Tabs scrollable */
+                    @media (max-width: 639px) {
+                        .fi-tabs-list { overflow-x: auto !important; flex-wrap: nowrap !important; scrollbar-width: none !important; }
+                        .fi-tabs-list::-webkit-scrollbar { display: none !important; }
+                        .fi-tabs-tab { flex-shrink: 0 !important; white-space: nowrap !important; }
+                    }
+                    /* Parent dashboard inline-style overrides */
+                    @media (max-width: 639px) {
+                        [style*="grid-template-columns: repeat(auto-fit, minmax(240px"] {
+                            grid-template-columns: 1fr !important;
+                            gap: 0.75rem !important;
+                        }
+                        [style*="grid-template-columns: repeat(auto-fit, minmax(320px"] {
+                            grid-template-columns: 1fr !important;
+                            gap: 0.75rem !important;
+                        }
+                        [style*="font-size: 1.875rem"] {
+                            font-size: 1.25rem !important;
+                        }
+                        [style*="padding: 2rem"] {
+                            padding: 1.25rem !important;
+                        }
+                        [style*="padding: 1.5rem"] {
+                            padding: 1rem !important;
+                        }
+                        [style*="width: 80px; height: 80px"][style*="border-radius: 50%"] {
+                            width: 56px !important;
+                            height: 56px !important;
+                            font-size: 1.5rem !important;
+                        }
+                        [style*="font-size: 1.875rem; font-weight: 700; color: white"] {
+                            font-size: 1.25rem !important;
+                        }
+                    }
+                    /* Safe area for iPhone notch */
+                    @supports (padding: env(safe-area-inset-bottom)) {
+                        .fi-sidebar { padding-bottom: env(safe-area-inset-bottom) !important; }
+                        .fi-main { padding-bottom: calc(1rem + env(safe-area-inset-bottom)) !important; }
+                    }
+                    /* Loading indicator styles */
+                    @keyframes parentSpinner { to { transform: rotate(360deg); } }
+                    @keyframes parentBarShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+                    .dark #parent-loading-indicator > div:last-child > div {
+                        background: rgba(15,23,42,0.95) !important;
+                        border-color: rgba(255,255,255,0.06) !important;
+                        box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+                    }
+                    .dark #parent-loading-indicator > div:last-child > div > span { color: #94a3b8 !important; }
+                    .dark #parent-loading-indicator > div:last-child { background: rgba(0,0,0,0.25) !important; }
+                </style>
+                <div id="parent-loading-indicator" style="display:none;">
+                    <div style="position:fixed;top:0;left:0;right:0;z-index:9999;height:3px;background:rgba(0,0,0,0.05);">
+                        <div id="parent-loading-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#2563eb,#818cf8,#2563eb);background-size:200% 100%;border-radius:0 2px 2px 0;transition:width 0.3s ease;animation:parentBarShimmer 1.5s ease infinite;"></div>
+                    </div>
+                    <div style="position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);backdrop-filter:blur(1px);">
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 32px;border-radius:16px;background:rgba(255,255,255,0.95);box-shadow:0 8px 32px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.06);">
+                            <div style="width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#2563eb;border-radius:50%;animation:parentSpinner 0.7s linear infinite;"></div>
+                            <span style="font-size:13px;font-weight:500;color:#64748b;">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    (function() {
+                        const indicator = document.getElementById("parent-loading-indicator");
+                        const bar = document.getElementById("parent-loading-bar");
+                        let barInterval = null;
+                        function showLoading() {
+                            if (!indicator) return;
+                            indicator.style.display = "block";
+                            let width = 15;
+                            bar.style.width = width + "%";
+                            clearInterval(barInterval);
+                            barInterval = setInterval(() => {
+                                if (width < 90) { width += (90 - width) * 0.08; bar.style.width = width + "%"; }
+                            }, 150);
+                        }
+                        function hideLoading() {
+                            if (!indicator) return;
+                            clearInterval(barInterval);
+                            bar.style.width = "100%";
+                            setTimeout(() => { indicator.style.display = "none"; bar.style.width = "0%"; }, 250);
+                        }
+                        document.addEventListener("livewire:navigating", showLoading);
+                        document.addEventListener("livewire:navigated", hideLoading);
+                        document.addEventListener("click", function(e) {
+                            const link = e.target.closest(".fi-sidebar-item-button[href]");
+                            if (link && link.getAttribute("href") && !link.getAttribute("href").startsWith("#")) { showLoading(); }
+                        });
+                        document.addEventListener("livewire:navigating", () => { setTimeout(hideLoading, 15000); });
+                    })();
                 </script>'
             );
     }

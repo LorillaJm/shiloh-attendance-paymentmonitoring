@@ -34,7 +34,7 @@ unset($__defined_vars); ?>
 
 <div
     <?php echo e($attributes->class([
-            'fi-topbar sticky top-0 z-20 overflow-x-clip',
+            'fi-topbar sticky top-0 z-30 overflow-x-clip',
             'fi-topbar-with-navigation' => filament()->hasTopNavigation(),
         ])); ?>
 

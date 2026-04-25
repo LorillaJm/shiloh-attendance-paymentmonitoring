@@ -17,7 +17,7 @@
             </div>
         </div>
 
-        <div class="flex gap-2 mb-4">
+        <div class="flex flex-wrap gap-2 mb-4">
             <x-filament::button wire:click="exportPdf" color="danger" icon="heroicon-o-document-arrow-down">
                 Export PDF
             </x-filament::button>

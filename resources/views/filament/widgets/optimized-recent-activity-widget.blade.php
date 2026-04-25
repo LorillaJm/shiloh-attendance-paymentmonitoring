@@ -25,7 +25,7 @@
         </x-slot>
 
         <div class="overflow-x-auto">
-            <table class="w-full" style="border-collapse: separate; border-spacing: 0;">
+            <table class="w-full min-w-[640px]" style="border-collapse: separate; border-spacing: 0;">
                 <thead>
                     <tr class="bg-gray-50 dark:bg-[#0f1520]">
                         <th class="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-[#5b6a82]">

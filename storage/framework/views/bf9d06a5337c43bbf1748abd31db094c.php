@@ -25,6 +25,9 @@
         .backup-row { transition: all 0.15s ease; }
         .backup-row:hover { background: rgba(13, 148, 136, 0.04); }
         .dark .backup-row:hover { background: rgba(13, 148, 136, 0.08); }
+        .backup-btn { background: white; color: #0f766e; }
+        .dark .backup-btn { background: #14b8a6; color: white; }
+        .dark .backup-btn:hover { background: #2dd4bf; }
     </style>
 
     <div class="space-y-6">
@@ -75,7 +78,7 @@
                         wire:click="runBackupNow"
                         wire:loading.attr="disabled"
                         wire:target="runBackupNow"
-                        class="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-teal-700 font-semibold text-sm rounded-xl shadow-lg shadow-black/10 hover:bg-gray-50 hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                        class="backup-btn inline-flex items-center gap-2 px-5 py-2.5 font-semibold text-sm rounded-xl shadow-lg shadow-black/10 hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         <span wire:loading.remove wire:target="runBackupNow" class="flex items-center gap-2">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

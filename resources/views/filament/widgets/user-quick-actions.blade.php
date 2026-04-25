@@ -25,7 +25,7 @@
             </div>
 
             {{-- Quick Stats Grid --}}
-            <div class="grid grid-cols-2 gap-4 pt-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-4">
                 <div class="text-center p-4 rounded-xl bg-gray-100 dark:bg-[#1a2332] border border-gray-200 dark:border-white/[0.06]">
                     <div class="text-2xl font-bold text-primary-600 dark:text-primary-400">
                         {{ \App\Models\AttendanceRecord::whereDate('attendance_date', now('Asia/Manila')->format('Y-m-d'))->count() }}

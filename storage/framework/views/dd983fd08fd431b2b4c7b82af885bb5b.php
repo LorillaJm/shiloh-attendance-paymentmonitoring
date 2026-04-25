@@ -47,7 +47,7 @@ unset($__defined_vars); ?>
 
         <meta charset="utf-8" />
         <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
 
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($favicon = filament()->getFavicon()): ?>
             <link rel="icon" href="<?php echo e($favicon); ?>" />

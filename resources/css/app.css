@@ -4,6 +4,9 @@
 /* Import Dark Mode Transitions */
 @import './dark-mode-improvements.css';
 
+/* Import Responsive Mobile Overrides */
+@import './responsive.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

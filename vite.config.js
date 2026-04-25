@@ -8,6 +8,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/css/apple-dashboard.css',
                 'resources/css/dark-mode-improvements.css',
+                'resources/css/responsive.css',
                 'resources/css/filament/admin/theme.css',
                 'resources/js/app.js',
                 'resources/js/apple-dashboard.js',

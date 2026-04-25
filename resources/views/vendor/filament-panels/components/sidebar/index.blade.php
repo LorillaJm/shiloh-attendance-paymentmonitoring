@@ -35,7 +35,7 @@
     @endif
     {{
         $attributes->class([
-            'fi-sidebar fixed inset-y-0 start-0 z-30 flex flex-col h-screen content-start transition-all lg:z-0 lg:shadow-none lg:ring-0 lg:transition-none',
+            'fi-sidebar fixed inset-y-0 start-0 z-40 flex flex-col h-screen content-start bg-white dark:bg-gray-900 transition-all lg:z-0 lg:bg-transparent lg:dark:bg-transparent lg:shadow-none lg:ring-0 lg:transition-none',
             'lg:translate-x-0 rtl:lg:-translate-x-0' => ! (filament()->isSidebarCollapsibleOnDesktop() || filament()->isSidebarFullyCollapsibleOnDesktop() || filament()->hasTopNavigation()),
             'lg:-translate-x-full rtl:lg:translate-x-full' => filament()->hasTopNavigation(),
         ])

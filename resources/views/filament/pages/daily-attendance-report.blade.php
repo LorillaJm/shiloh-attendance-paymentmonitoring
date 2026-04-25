@@ -5,7 +5,7 @@
                 Select Date
             </x-slot>
 
-            <div class="flex items-center gap-4">
+            <div class="flex flex-wrap items-center gap-3 sm:gap-4">
                 <input
                     type="date"
                     wire:model.live="selectedDate"
@@ -50,7 +50,7 @@
         </div>
     </div>
 
-    <div class="flex gap-2 mb-4">
+    <div class="flex flex-wrap gap-2 mb-4">
         <x-filament::button wire:click="exportPdf" wire:loading.attr="disabled" wire:target="exportPdf" color="danger" icon="heroicon-o-document-arrow-down">
             <span wire:loading.remove wire:target="exportPdf">Export PDF</span>
             <span wire:loading wire:target="exportPdf">Generating PDF...</span>
