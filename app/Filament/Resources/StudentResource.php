@@ -175,6 +175,24 @@ class StudentResource extends Resource
                     ])
                     ->columns(2)
                     ->collapsible(),
+                
+                Forms\Components\Section::make('Link to Parent Portal')
+                    ->description('Connect this student to a guardian account for Parent Portal access')
+                    ->icon('heroicon-o-link')
+                    ->schema([
+                        Forms\Components\Select::make('guardian_ids')
+                            ->label('Link to Guardian(s)')
+                            ->multiple()
+                            ->relationship('guardians', 'id')
+                            ->getOptionLabelFromRecordUsing(function ($record) {
+                                $email = $record->user?->email ?? 'No account';
+                                return "{$record->full_name} ({$email})";
+                            })
+                            ->searchable(['first_name', 'last_name'])
+                            ->helperText('Search and select guardian(s) to allow them to view this student in the Parent Portal.'),
+                    ])
+                    ->collapsible()
+                    ->collapsed(fn ($context) => $context === 'create'),
             ]);
     }
 

@@ -38,31 +38,12 @@ class StudentScheduleResource extends Resource
                     ->options(User::where('role', UserRole::ADMIN->value)->pluck('name', 'id'))
                     ->searchable()
                     ->helperText('Optional: Assign a staff member to this schedule'),
-                Forms\Components\Select::make('recurrence_type')
-                    ->options([
-                        'DAILY' => 'Daily',
-                        'WEEKLY' => 'Weekly',
-                        'CUSTOM' => 'Custom',
-                    ])
+                Forms\Components\DatePicker::make('effective_from')
+                    ->label('Session Date')
                     ->required()
-                    ->reactive(),
-                Forms\Components\CheckboxList::make('recurrence_days')
-                    ->label('Days of Week')
-                    ->options([
-                        1 => 'Monday',
-                        2 => 'Tuesday',
-                        3 => 'Wednesday',
-                        4 => 'Thursday',
-                        5 => 'Friday',
-                        6 => 'Saturday',
-                        7 => 'Sunday',
-                    ])
-                    ->columns(4)
-                    ->visible(fn ($get) => $get('recurrence_type') === 'WEEKLY'),
+                    ->default(now()),
                 Forms\Components\TimePicker::make('start_time')->required(),
                 Forms\Components\TimePicker::make('end_time')->required(),
-                Forms\Components\DatePicker::make('effective_from')->required()->default(now()),
-                Forms\Components\DatePicker::make('effective_until'),
                 Forms\Components\Toggle::make('is_active')->default(true),
                 Forms\Components\Textarea::make('notes')->rows(2),
             ]);
@@ -77,7 +58,10 @@ class StudentScheduleResource extends Resource
                 Tables\Columns\TextColumn::make('student.full_name')->searchable(),
                 Tables\Columns\TextColumn::make('sessionType.name'),
                 Tables\Columns\TextColumn::make('teacher.name')->label('Assigned Staff'),
-                Tables\Columns\TextColumn::make('recurrence_type'),
+                Tables\Columns\TextColumn::make('effective_from')
+                    ->label('Session Date')
+                    ->date('M d, Y')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('start_time')->time('H:i'),
                 Tables\Columns\TextColumn::make('end_time')->time('H:i'),
                 Tables\Columns\IconColumn::make('is_active')->boolean(),
@@ -92,31 +76,14 @@ class StudentScheduleResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('generate_sessions')
-                    ->label('Generate Sessions')
-                    ->icon('heroicon-o-calendar')
-                    ->color('success')
-                    ->form([
-                        Forms\Components\DatePicker::make('start_date')->required()->default(now()),
-                        Forms\Components\DatePicker::make('end_date')->required()->default(now()->addMonth()),
-                    ])
-                    ->action(function (StudentSchedule $record, array $data) {
-                        $count = \App\Services\SessionOccurrenceGenerator::generateFromSchedule(
-                            $record,
-                            \Carbon\Carbon::parse($data['start_date']),
-                            \Carbon\Carbon::parse($data['end_date'])
-                        );
-                        \Filament\Notifications\Notification::make()
-                            ->success()
-                            ->title("Generated {$count} session occurrences")
-                            ->send();
-                    }),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ])
+            ->defaultSort('effective_from', 'desc')
             ->defaultPaginationPageOption(25)
             ->paginationPageOptions([10, 25, 50, 100]);
     }
