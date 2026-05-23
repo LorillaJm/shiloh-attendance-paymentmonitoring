@@ -12,7 +12,8 @@ export default defineConfig({
                 'resources/css/filament/admin/theme.css',
                 'resources/js/app.js',
                 'resources/js/apple-dashboard.js',
-                'resources/js/theme-toggle.js'
+                'resources/js/theme-toggle.js',
+                'resources/js/push-notifications.js'
             ],
             refresh: true,
         }),

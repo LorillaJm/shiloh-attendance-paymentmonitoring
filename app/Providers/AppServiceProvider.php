@@ -46,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
         \App\Models\Student::observe(\App\Observers\StudentObserver::class);
         \App\Models\PaymentSchedule::observe(\App\Observers\PaymentScheduleObserver::class);
         \App\Models\AttendanceRecord::observe(\App\Observers\AttendanceRecordObserver::class);
+        \App\Models\Announcement::observe(\App\Observers\AnnouncementObserver::class);
 
         // Share theme with all views
         view()->composer('*', function ($view) {

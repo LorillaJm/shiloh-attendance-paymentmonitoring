@@ -287,7 +287,10 @@ class AdminPanelProvider extends PanelProvider
                             setTimeout(hideLoading, 15000);
                         });
                     })();
-                </script>'
+                </script>')
+            ->renderHook(
+                'panels::scripts.after',
+                fn () => view('components.push-notification-scripts')->render()
             );
     }
 }

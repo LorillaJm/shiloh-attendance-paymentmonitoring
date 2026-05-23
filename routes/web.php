@@ -2,11 +2,19 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\UnifiedLoginController;
+use App\Http\Controllers\PushSubscriptionController;
 
 // Unified login routes
 Route::get('/login', [UnifiedLoginController::class, 'showLoginForm'])->name('login')->middleware('guest');
 Route::post('/login', [UnifiedLoginController::class, 'login'])->name('unified.login');
 Route::post('/logout', [UnifiedLoginController::class, 'logout'])->name('logout')->middleware('auth');
+
+// Push notification subscription routes
+Route::middleware('auth')->group(function () {
+    Route::post('/push/subscribe', [PushSubscriptionController::class, 'store'])->name('push.subscribe');
+    Route::post('/push/unsubscribe', [PushSubscriptionController::class, 'destroy'])->name('push.unsubscribe');
+});
+Route::get('/push/vapid-public-key', [PushSubscriptionController::class, 'vapidPublicKey'])->name('push.vapid');
 
 // Temporary report file download (signed URL)
 Route::get('/report-download/{filename}', function (string $filename) {
