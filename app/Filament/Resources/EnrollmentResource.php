@@ -173,7 +173,14 @@ class EnrollmentResource extends Resource
                                 $totalFee = (float) ($get('total_fee') ?? 0);
                                 $downpayment = (float) ($state ?? 0);
                                 $set('remaining_balance', max(0, $totalFee - $downpayment));
+                                // Calculate downpayment_percent for database
+                                $percent = $totalFee > 0 ? ($downpayment / $totalFee) * 100 : 0;
+                                $set('downpayment_percent', round($percent, 2));
                             }),
+
+                        // Hidden field to store calculated percentage (required by database)
+                        Forms\Components\Hidden::make('downpayment_percent')
+                            ->default(0),
 
                         Forms\Components\TextInput::make('remaining_balance')
                             ->label('Balance to Pay')

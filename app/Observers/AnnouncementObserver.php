@@ -47,26 +47,45 @@ class AnnouncementObserver
     protected function sendPushNotifications(Announcement $announcement): void
     {
         try {
+            // Skip if webpush is not properly configured
+            if (!class_exists(\NotificationChannels\WebPush\WebPushChannel::class)) {
+                Log::info('WebPush not available, skipping push notifications');
+                return;
+            }
+
             $users = $this->getTargetUsers($announcement);
             
+            if ($users->isEmpty()) {
+                Log::info('No target users for announcement push notification');
+                return;
+            }
+
+            $notifiedCount = 0;
             foreach ($users as $user) {
-                // Check if user has push subscriptions method and subscriptions exist
-                if (method_exists($user, 'pushSubscriptions') && $user->pushSubscriptions()->exists()) {
-                    $user->notify(new AnnouncementPushNotification(
-                        $announcement->title,
-                        strip_tags($announcement->message ?? ''),
-                        '/admin/announcements'
-                    ));
+                try {
+                    // Check if user has push subscriptions
+                    if (method_exists($user, 'pushSubscriptions') && $user->pushSubscriptions()->exists()) {
+                        $user->notify(new AnnouncementPushNotification(
+                            $announcement->title ?? 'New Announcement',
+                            strip_tags($announcement->message ?? ''),
+                            '/admin/announcements'
+                        ));
+                        $notifiedCount++;
+                    }
+                } catch (\Throwable $userError) {
+                    Log::warning("Failed to notify user {$user->id}: " . $userError->getMessage());
+                    continue;
                 }
             }
 
             Log::info("Push notifications sent for announcement: {$announcement->title}", [
                 'announcement_id' => $announcement->id,
-                'users_notified' => $users->count()
+                'users_notified' => $notifiedCount
             ]);
         } catch (\Throwable $e) {
             Log::error("Failed to send push notifications: {$e->getMessage()}", [
-                'announcement_id' => $announcement->id ?? null
+                'announcement_id' => $announcement->id ?? null,
+                'trace' => $e->getTraceAsString()
             ]);
         }
     }

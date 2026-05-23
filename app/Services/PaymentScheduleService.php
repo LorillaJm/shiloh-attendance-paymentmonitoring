@@ -94,12 +94,17 @@ class PaymentScheduleService
         // 4. Bulk insert all schedules
         PaymentSchedule::insert($schedules);
         
-        // Broadcast enrollment created event
-        broadcast(new EnrollmentCreated(
-            $enrollment->id,
-            $enrollment->student_id,
-            count($schedules)
-        ))->toOthers();
+        // Broadcast enrollment created event (fail silently if Reverb not running)
+        try {
+            broadcast(new EnrollmentCreated(
+                $enrollment->id,
+                $enrollment->student_id,
+                count($schedules)
+            ))->toOthers();
+        } catch (\Throwable $e) {
+            // Reverb/Pusher not running - ignore broadcast error
+            \Log::debug('Broadcast skipped: ' . $e->getMessage());
+        }
         
         // Log schedule generation
         ActivityLogger::log(
@@ -135,12 +140,16 @@ class PaymentScheduleService
             'remarks' => $remarks,
         ]);
 
-        // Broadcast real-time update
-        broadcast(new PaymentUpdated(
-            $schedule->id,
-            'PAID',
-            'paid'
-        ))->toOthers();
+        // Broadcast real-time update (fail silently if Reverb not running)
+        try {
+            broadcast(new PaymentUpdated(
+                $schedule->id,
+                'PAID',
+                'paid'
+            ))->toOthers();
+        } catch (\Throwable $e) {
+            \Log::debug('Broadcast skipped: ' . $e->getMessage());
+        }
 
         // TODO: Add activity logging if needed
         // ActivityLogger::log(...);

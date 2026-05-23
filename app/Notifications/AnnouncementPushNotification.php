@@ -36,17 +36,9 @@ class AnnouncementPushNotification extends Notification
             ->icon($this->icon)
             ->body($this->body)
             ->action('View', 'view_action')
-            ->badge('/images/badge.png')
-            ->dir('ltr')
-            ->image('/images/notification-banner.png')
-            ->lang('en')
-            ->renotify()
-            ->requireInteraction()
             ->tag('announcement')
-            ->vibrate([200, 100, 200])
             ->data([
                 'url' => $this->url,
-                'id' => $notification->id ?? null,
             ]);
     }
 
