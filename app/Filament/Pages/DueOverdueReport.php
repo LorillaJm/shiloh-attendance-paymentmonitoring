@@ -20,7 +20,7 @@ class DueOverdueReport extends Page implements HasTable, HasForms
 {
     use InteractsWithTable, InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-exclamation-circle';
+    protected static ?string $navigationIcon = 'heroicon-m-exclamation-circle';
 
     protected static string $view = 'filament.pages.due-overdue-report';
 

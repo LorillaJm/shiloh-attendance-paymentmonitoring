@@ -3,78 +3,78 @@
    Modern SaaS Dashboard Design
    ============================================ */
 
-/* CSS Variables for Theme System */
+/* CSS Variables for Theme System — Apple Design Language */
 :root {
-    /* Light Mode Colors */
-    --bg-primary: #F5F6F8;
+    /* Light Mode Colors — Apple */
+    --bg-primary: #FAFAFC;
     --bg-secondary: #FFFFFF;
-    --bg-tertiary: #FAFBFC;
+    --bg-tertiary: #F5F5F7;
     
     --text-primary: #1D1D1F;
     --text-secondary: #6E6E73;
-    --text-tertiary: #8E8E93;
+    --text-tertiary: #86868B;
     
-    --accent-primary: #2563EB;
-    --accent-hover: #1D4ED8;
-    --accent-light: #DBEAFE;
+    --accent-primary: #0071E3;
+    --accent-hover: #006EDB;
+    --accent-light: rgba(0, 113, 227, 0.08);
     
-    --border-color: #E5E7EB;
-    --border-light: #F3F4F6;
+    --border-color: #EDEDF2;
+    --border-light: #F5F5F7;
     
-    --success: #10B981;
-    --success-light: #D1FAE5;
-    --warning: #F59E0B;
-    --warning-light: #FEF3C7;
-    --danger: #EF4444;
-    --danger-light: #FEE2E2;
-    --info: #3B82F6;
-    --info-light: #DBEAFE;
+    --success: #34C759;
+    --success-light: rgba(52, 199, 89, 0.1);
+    --warning: #FF9500;
+    --warning-light: rgba(255, 149, 0, 0.1);
+    --danger: #FF3B30;
+    --danger-light: rgba(255, 59, 48, 0.1);
+    --info: #0071E3;
+    --info-light: rgba(0, 113, 227, 0.08);
     
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 8px 24px rgba(0, 0, 0, 0.12);
     
     --radius-sm: 8px;
     --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 20px;
+    --radius-lg: 18px;
+    --radius-xl: 28px;
     
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark Mode Colors */
+/* Dark Mode Colors — Apple Dark */
 [data-theme="dark"] {
-    --bg-primary: #0F172A;
-    --bg-secondary: #1E293B;
-    --bg-tertiary: #334155;
+    --bg-primary: #000000;
+    --bg-secondary: #1C1C1E;
+    --bg-tertiary: #2C2C2E;
     
-    --text-primary: #F8FAFC;
-    --text-secondary: #94A3B8;
-    --text-tertiary: #64748B;
+    --text-primary: #F5F5F7;
+    --text-secondary: #A1A1A6;
+    --text-tertiary: #6E6E73;
     
-    --accent-primary: #3B82F6;
-    --accent-hover: #60A5FA;
-    --accent-light: #1E3A8A;
+    --accent-primary: #0A84FF;
+    --accent-hover: #409CFF;
+    --accent-light: rgba(10, 132, 255, 0.12);
     
-    --border-color: #334155;
-    --border-light: #1E293B;
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-light: rgba(255, 255, 255, 0.04);
     
-    --success: #10B981;
-    --success-light: #064E3B;
-    --warning: #F59E0B;
-    --warning-light: #78350F;
-    --danger: #EF4444;
-    --danger-light: #7F1D1D;
-    --info: #3B82F6;
-    --info-light: #1E3A8A;
+    --success: #30D158;
+    --success-light: rgba(48, 209, 88, 0.12);
+    --warning: #FFD60A;
+    --warning-light: rgba(255, 214, 10, 0.12);
+    --danger: #FF453A;
+    --danger-light: rgba(255, 69, 58, 0.12);
+    --info: #0A84FF;
+    --info-light: rgba(10, 132, 255, 0.12);
     
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 16px 40px rgba(0, 0, 0, 0.6);
 }
 
 /* Base Styles */

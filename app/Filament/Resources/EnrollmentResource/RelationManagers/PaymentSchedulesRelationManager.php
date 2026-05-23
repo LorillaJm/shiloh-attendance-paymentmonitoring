@@ -87,7 +87,7 @@ class PaymentSchedulesRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\Action::make('markAsPaid')
                     ->label('Mark as Paid')
-                    ->icon('heroicon-o-check-circle')
+                    ->icon('heroicon-m-check-circle')
                     ->color('success')
                     ->visible(fn ($record) => $record->status !== 'PAID')
                     ->form([

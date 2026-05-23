@@ -54,23 +54,23 @@ class UserAttendanceSummaryWidget extends BaseWidget
         return [
             Stat::make('Present Today', number_format($stats['present']))
                 ->description('Students marked present')
-                ->descriptionIcon('heroicon-o-check-circle')
+                ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success')
                 ->chart([5, 7, 8, 10, 12, 15, $stats['present']]),
 
             Stat::make('Absent Today', number_format($stats['absent']))
                 ->description('Students marked absent')
-                ->descriptionIcon('heroicon-o-x-circle')
+                ->descriptionIcon('heroicon-m-x-circle')
                 ->color('danger'),
 
             Stat::make('Late Today', number_format($stats['late']))
                 ->description('Students marked late')
-                ->descriptionIcon('heroicon-o-clock')
+                ->descriptionIcon('heroicon-m-clock')
                 ->color('warning'),
 
             Stat::make('You Encoded', number_format($stats['encoded_today']))
                 ->description('Records you entered today')
-                ->descriptionIcon('heroicon-o-pencil-square')
+                ->descriptionIcon('heroicon-m-pencil-square')
                 ->color('info'),
         ];
     }

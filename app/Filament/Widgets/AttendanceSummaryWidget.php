@@ -45,7 +45,7 @@ class AttendanceSummaryWidget extends BaseWidget
             return [
                 Stat::make('Present', number_format($stats['present_today']))
                     ->description('Attended')
-                    ->descriptionIcon('heroicon-o-check-circle')
+                    ->descriptionIcon('heroicon-m-check-circle')
                     ->color('success')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform',
@@ -53,7 +53,7 @@ class AttendanceSummaryWidget extends BaseWidget
 
                 Stat::make('Absent', number_format($stats['absent_today']))
                     ->description('Did not attend')
-                    ->descriptionIcon('heroicon-o-x-circle')
+                    ->descriptionIcon('heroicon-m-x-circle')
                     ->color('danger')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform',
@@ -61,7 +61,7 @@ class AttendanceSummaryWidget extends BaseWidget
 
                 Stat::make('Late', number_format($stats['late_today']))
                     ->description('Arrived late')
-                    ->descriptionIcon('heroicon-o-clock')
+                    ->descriptionIcon('heroicon-m-clock')
                     ->color('warning')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform',
@@ -69,7 +69,7 @@ class AttendanceSummaryWidget extends BaseWidget
 
                 Stat::make('Excused', number_format($stats['excused_today']))
                     ->description('With excuse')
-                    ->descriptionIcon('heroicon-o-document-text')
+                    ->descriptionIcon('heroicon-m-document-text')
                     ->color('info')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform',

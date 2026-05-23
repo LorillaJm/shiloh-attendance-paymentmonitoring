@@ -17,7 +17,7 @@ class AnnouncementResource extends Resource
 {
     protected static ?string $model = Announcement::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-megaphone';
+    protected static ?string $navigationIcon = 'heroicon-m-megaphone';
 
     protected static ?string $navigationGroup = 'System';
 
@@ -164,7 +164,7 @@ class AnnouncementResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('publish')
-                    ->icon('heroicon-o-paper-airplane')
+                    ->icon('heroicon-m-paper-airplane')
                     ->color('success')
                     ->visible(fn (Announcement $record) => !$record->is_published)
                     ->requiresConfirmation()

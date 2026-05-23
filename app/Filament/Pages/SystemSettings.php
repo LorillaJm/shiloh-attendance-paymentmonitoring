@@ -13,7 +13,7 @@ use Filament\Pages\Page;
 
 class SystemSettings extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
+    protected static ?string $navigationIcon = 'heroicon-m-cog-6-tooth';
     protected static string $view = 'filament.pages.system-settings';
     protected static ?string $navigationGroup = 'System';
     protected static ?int $navigationSort = 1;

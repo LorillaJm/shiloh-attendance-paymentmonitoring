@@ -16,7 +16,7 @@ class MyChildrenPayments extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-credit-card';
+    protected static ?string $navigationIcon = 'heroicon-m-credit-card';
     protected static string $view = 'filament.parent.pages.my-children-payments';
     protected static ?string $navigationLabel = 'Payments';
     protected static ?string $title = 'Payment History';

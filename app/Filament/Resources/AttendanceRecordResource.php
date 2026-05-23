@@ -18,7 +18,7 @@ class AttendanceRecordResource extends Resource
 {
     protected static ?string $model = AttendanceRecord::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
+    protected static ?string $navigationIcon = 'heroicon-m-clipboard-document-check';
 
     protected static ?string $navigationGroup = 'Attendance Management';
 
@@ -48,7 +48,7 @@ class AttendanceRecordResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Attendance Information')
                     ->description('Record student attendance details')
-                    ->icon('heroicon-o-clipboard-document-check')
+                    ->icon('heroicon-m-clipboard-document-check')
                     ->schema([
                         Forms\Components\Select::make('session_occurrence_id')
                             ->label('Session (Optional)')
@@ -100,14 +100,14 @@ class AttendanceRecordResource extends Resource
                     ->date('M d, Y')
                     ->sortable()
                     ->searchable()
-                    ->icon('heroicon-o-calendar')
+                    ->icon('heroicon-m-calendar')
                     ->weight('semibold'),
 
                 Tables\Columns\TextColumn::make('student.student_no')
                     ->label('Student No')
                     ->searchable()
                     ->sortable()
-                    ->icon('heroicon-o-identification')
+                    ->icon('heroicon-m-identification')
                     ->color('primary')
                     ->copyable(),
 
@@ -121,10 +121,10 @@ class AttendanceRecordResource extends Resource
                     ->badge()
                     ->colors(config('attendance.status_colors'))
                     ->icons([
-                        'heroicon-o-check-circle' => 'PRESENT',
-                        'heroicon-o-x-circle' => 'ABSENT',
-                        'heroicon-o-clock' => 'LATE',
-                        'heroicon-o-document-text' => 'EXCUSED',
+                        'heroicon-m-check-circle' => 'PRESENT',
+                        'heroicon-m-x-circle' => 'ABSENT',
+                        'heroicon-m-clock' => 'LATE',
+                        'heroicon-m-document-text' => 'EXCUSED',
                     ])
                     ->sortable(),
 
@@ -138,7 +138,7 @@ class AttendanceRecordResource extends Resource
                     ->label('Encoded By')
                     ->toggleable()
                     ->sortable()
-                    ->icon('heroicon-o-user'),
+                    ->icon('heroicon-m-user'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Created')
@@ -202,11 +202,11 @@ class AttendanceRecordResource extends Resource
             ])
             ->emptyStateHeading('No attendance records')
             ->emptyStateDescription('Start marking attendance using the Daily Encoder.')
-            ->emptyStateIcon('heroicon-o-clipboard-document-check')
+            ->emptyStateIcon('heroicon-m-clipboard-document-check')
             ->emptyStateActions([
                 Tables\Actions\Action::make('encode')
                     ->label('Go to Daily Encoder')
-                    ->icon('heroicon-o-pencil-square')
+                    ->icon('heroicon-m-pencil-square')
                     ->url(route('filament.admin.pages.daily-attendance-encoder')),
             ])
             ->defaultPaginationPageOption(25)

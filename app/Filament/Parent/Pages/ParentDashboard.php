@@ -8,7 +8,7 @@ use App\Services\ParentPortalService;
 
 class ParentDashboard extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-home';
+    protected static ?string $navigationIcon = 'heroicon-m-home';
     protected static string $view = 'filament.parent.pages.modern-dashboard';
     protected static ?string $navigationLabel = 'Dashboard';
     protected static ?string $title = 'My Children';

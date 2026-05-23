@@ -31,30 +31,30 @@ class AdminPanelProvider extends PanelProvider
             ->loginRouteSlug('login')  // Redirect to our custom login
             ->colors([
                 'primary' => [
-                    50 => '240, 253, 250',
-                    100 => '204, 251, 241',
-                    200 => '153, 246, 228',
-                    300 => '94, 234, 212',
-                    400 => '45, 212, 191',
-                    500 => '20, 184, 166',
-                    600 => '13, 148, 136',
-                    700 => '15, 118, 110',
-                    800 => '17, 94, 89',
-                    900 => '20, 78, 74',
-                    950 => '4, 47, 46',
+                    50 => '235, 245, 255',
+                    100 => '214, 235, 255',
+                    200 => '173, 214, 255',
+                    300 => '122, 188, 255',
+                    400 => '51, 153, 255',
+                    500 => '0, 113, 227',
+                    600 => '0, 110, 219',
+                    700 => '0, 90, 180',
+                    800 => '0, 70, 140',
+                    900 => '0, 50, 100',
+                    950 => '0, 30, 60',
                 ],
                 'gray' => [
-                    50 => '248, 250, 252',
-                    100 => '241, 245, 249',
-                    200 => '226, 232, 240',
-                    300 => '203, 213, 225',
-                    400 => '148, 163, 184',
-                    500 => '100, 116, 139',
-                    600 => '71, 85, 105',
-                    700 => '51, 65, 85',
-                    800 => '30, 41, 59',
-                    900 => '15, 23, 42',
-                    950 => '8, 12, 24',
+                    50 => '250, 250, 252',
+                    100 => '245, 245, 247',
+                    200 => '237, 237, 242',
+                    300 => '210, 210, 215',
+                    400 => '174, 174, 178',
+                    500 => '110, 110, 115',
+                    600 => '99, 99, 102',
+                    700 => '72, 72, 74',
+                    800 => '44, 44, 46',
+                    900 => '28, 28, 30',
+                    950 => '0, 0, 0',
                 ],
             ])
             ->font('Inter')
@@ -216,13 +216,13 @@ class AdminPanelProvider extends PanelProvider
                 <div id="page-loading-indicator" style="display:none;">
                     <!-- Top progress bar -->
                     <div style="position:fixed;top:0;left:0;right:0;z-index:9999;height:3px;background:rgba(0,0,0,0.05);">
-                        <div id="page-loading-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#14b8a6,#5eead4,#14b8a6);background-size:200% 100%;border-radius:0 2px 2px 0;transition:width 0.3s ease;animation:loadingBarShimmer 1.5s ease infinite;"></div>
+                        <div id="page-loading-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#0071E3,#3399FF,#0071E3);background-size:200% 100%;border-radius:0 2px 2px 0;transition:width 0.3s ease;animation:loadingBarShimmer 1.5s ease infinite;"></div>
                     </div>
                     <!-- Centered spinner overlay -->
                     <div style="position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);backdrop-filter:blur(1px);-webkit-backdrop-filter:blur(1px);">
-                        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 32px;border-radius:16px;background:rgba(255,255,255,0.95);box-shadow:0 8px 32px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.06);">
-                            <div style="width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#14b8a6;border-radius:50%;animation:pageSpinner 0.7s linear infinite;"></div>
-                            <span style="font-size:13px;font-weight:500;color:#64748b;letter-spacing:0.01em;">Loading...</span>
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 32px;border-radius:18px;background:rgba(255,255,255,0.95);box-shadow:0 8px 24px rgba(0,0,0,0.12);border:1px solid #EDEDF2;">
+                            <div style="width:36px;height:36px;border:3px solid #EDEDF2;border-top-color:#0071E3;border-radius:50%;animation:pageSpinner 0.7s linear infinite;"></div>
+                            <span style="font-size:13px;font-weight:500;color:#6E6E73;letter-spacing:-0.01em;">Loading...</span>
                         </div>
                     </div>
                 </div>
@@ -230,15 +230,15 @@ class AdminPanelProvider extends PanelProvider
                     @keyframes pageSpinner { to { transform: rotate(360deg); } }
                     @keyframes loadingBarShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
                     .dark #page-loading-indicator > div:last-child > div {
-                        background: rgba(15,23,42,0.95) !important;
-                        border-color: rgba(255,255,255,0.06) !important;
-                        box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+                        background: rgba(28,28,30,0.95) !important;
+                        border-color: rgba(255,255,255,0.08) !important;
+                        box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
                     }
                     .dark #page-loading-indicator > div:last-child > div > span {
-                        color: #94a3b8 !important;
+                        color: #A1A1A6 !important;
                     }
                     .dark #page-loading-indicator > div:last-child {
-                        background: rgba(0,0,0,0.25) !important;
+                        background: rgba(0,0,0,0.3) !important;
                     }
                 </style>
                 <script>

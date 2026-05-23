@@ -62,26 +62,26 @@ class AttendanceSnapshotWidget extends BaseWidget
         return [
             Stat::make('Attendance Rate (7 Days)', $stats['attendance_rate'] . '%')
                 ->description('Present / Total records')
-                ->descriptionIcon('heroicon-o-chart-bar')
+                ->descriptionIcon('heroicon-m-chart-bar')
                 ->color($stats['attendance_rate'] >= 90 ? 'success' : ($stats['attendance_rate'] >= 75 ? 'warning' : 'danger'))
                 ->chart([85, 87, 89, 91, 88, 90, $stats['attendance_rate']])
                 ->url(route('filament.admin.pages.daily-attendance-report')),
 
             Stat::make('Present (7 Days)', number_format($stats['present']))
                 ->description('Students marked present')
-                ->descriptionIcon('heroicon-o-check-circle')
+                ->descriptionIcon('heroicon-m-check-circle')
                 ->color('success')
                 ->url(route('filament.admin.resources.attendance-records.index')),
 
             Stat::make('Absent (7 Days)', number_format($stats['absent']))
                 ->description('Students marked absent')
-                ->descriptionIcon('heroicon-o-x-circle')
+                ->descriptionIcon('heroicon-m-x-circle')
                 ->color('danger')
                 ->url(route('filament.admin.resources.attendance-records.index')),
 
             Stat::make('Today\'s Attendance', number_format($stats['today_present']) . ' / ' . number_format($stats['today_total']))
                 ->description('Present / Total today')
-                ->descriptionIcon('heroicon-o-calendar')
+                ->descriptionIcon('heroicon-m-calendar')
                 ->color('info')
                 ->url(route('filament.admin.pages.daily-attendance-encoder')),
         ];

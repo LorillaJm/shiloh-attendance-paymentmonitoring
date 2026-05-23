@@ -74,20 +74,20 @@ class OverdueTable extends BaseWidget
 
                 Tables\Columns\TextColumn::make('enrollment.student.guardian_contact')
                     ->label('Contact')
-                    ->icon('heroicon-o-phone')
+                    ->icon('heroicon-m-phone')
                     ->copyable()
                     ->toggleable(),
             ])
             ->actions([
                 Tables\Actions\Action::make('view_student')
                     ->label('Student')
-                    ->icon('heroicon-o-user')
+                    ->icon('heroicon-m-user')
                     ->url(fn ($record) => route('filament.admin.resources.students.edit', $record->enrollment->student_id))
                     ->openUrlInNewTab(),
                     
                 Tables\Actions\Action::make('view_enrollment')
                     ->label('Enrollment')
-                    ->icon('heroicon-o-academic-cap')
+                    ->icon('heroicon-m-academic-cap')
                     ->url(fn ($record) => route('filament.admin.resources.enrollments.view', $record->enrollment_id))
                     ->openUrlInNewTab(),
             ])

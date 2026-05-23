@@ -22,7 +22,7 @@ class DailyAttendanceEncoder extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-pencil-square';
+    protected static ?string $navigationIcon = 'heroicon-m-pencil-square';
 
     protected static string $view = 'filament.pages.daily-attendance-encoder';
 

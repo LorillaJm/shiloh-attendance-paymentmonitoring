@@ -16,7 +16,7 @@ class CollectionsSummary extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-currency-dollar';
+    protected static ?string $navigationIcon = 'heroicon-m-currency-dollar';
 
     protected static string $view = 'filament.pages.collections-summary';
 
@@ -164,7 +164,7 @@ class CollectionsSummary extends Page implements HasTable
             ->actions([
                 Tables\Actions\Action::make('view_enrollment')
                     ->label('View')
-                    ->icon('heroicon-o-eye')
+                    ->icon('heroicon-m-eye')
                     ->url(fn ($record) => route('filament.admin.resources.enrollments.view', $record->enrollment_id)),
             ])
             ->heading('Payment History - ' . now()->format('F Y'))

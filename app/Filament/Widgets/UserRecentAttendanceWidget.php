@@ -71,10 +71,10 @@ class UserRecentAttendanceWidget extends BaseWidget
                         'info' => 'EXCUSED',
                     ])
                     ->icons([
-                        'heroicon-o-check-circle' => 'PRESENT',
-                        'heroicon-o-x-circle' => 'ABSENT',
-                        'heroicon-o-clock' => 'LATE',
-                        'heroicon-o-document-text' => 'EXCUSED',
+                        'heroicon-m-check-circle' => 'PRESENT',
+                        'heroicon-m-x-circle' => 'ABSENT',
+                        'heroicon-m-clock' => 'LATE',
+                        'heroicon-m-document-text' => 'EXCUSED',
                     ])
                     ->sortable(),
 

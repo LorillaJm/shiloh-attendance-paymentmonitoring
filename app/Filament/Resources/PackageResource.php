@@ -15,7 +15,7 @@ class PackageResource extends Resource
 {
     protected static ?string $model = Package::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-cube-transparent';
+    protected static ?string $navigationIcon = 'heroicon-m-cube-transparent';
 
     protected static ?string $navigationGroup = 'Master Data';
 
@@ -45,7 +45,7 @@ class PackageResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Package Information')
                     ->description('Define package details and pricing')
-                    ->icon('heroicon-o-cube-transparent')
+                    ->icon('heroicon-m-cube-transparent')
                     ->schema([
                         Forms\Components\TextInput::make('name')
                             ->required()
@@ -104,7 +104,7 @@ class PackageResource extends Resource
                 
                 Forms\Components\Section::make('Calculated Amounts')
                     ->description('Auto-calculated payment breakdown')
-                    ->icon('heroicon-o-calculator')
+                    ->icon('heroicon-m-calculator')
                     ->schema([
                         Forms\Components\Placeholder::make('downpayment_amount')
                             ->label('Downpayment Amount')
@@ -144,7 +144,7 @@ class PackageResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->weight('semibold')
-                    ->icon('heroicon-o-cube-transparent')
+                    ->icon('heroicon-m-cube-transparent')
                     ->color('primary'),
                 
                 Tables\Columns\TextColumn::make('total_fee')
@@ -205,11 +205,11 @@ class PackageResource extends Resource
             ])
             ->emptyStateHeading('No programs yet')
             ->emptyStateDescription('Create your first program/package to start enrolling students.')
-            ->emptyStateIcon('heroicon-o-cube-transparent')
+            ->emptyStateIcon('heroicon-m-cube-transparent')
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Create Program')
-                    ->icon('heroicon-o-plus'),
+                    ->icon('heroicon-m-plus'),
             ])
             ->defaultSort('name')
             ->striped();

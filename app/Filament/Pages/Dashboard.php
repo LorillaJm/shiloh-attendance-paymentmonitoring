@@ -6,7 +6,7 @@ use Filament\Pages\Dashboard as BaseDashboard;
 
 class Dashboard extends BaseDashboard
 {
-    protected static ?string $navigationIcon = 'heroicon-o-home';
+    protected static ?string $navigationIcon = 'heroicon-m-squares-2x2';
 
     protected static string $view = 'filament.pages.dashboard';
     
@@ -82,7 +82,7 @@ class Dashboard extends BaseDashboard
         return [
             \Filament\Actions\Action::make('refresh')
                 ->label('Refresh Data')
-                ->icon('heroicon-o-arrow-path')
+                ->icon('heroicon-m-arrow-path')
                 ->color('gray')
                 ->action(function () {
                     \App\Services\DashboardCacheService::clearAll();

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 class SessionOccurrenceResource extends Resource
 {
     protected static ?string $model = SessionOccurrence::class;
-    protected static ?string $navigationIcon = 'heroicon-o-calendar';
+    protected static ?string $navigationIcon = 'heroicon-m-calendar';
     protected static ?string $navigationGroup = 'Session Management';
     protected static ?int $navigationSort = 3;
     protected static ?string $navigationLabel = 'Session Occurrences';

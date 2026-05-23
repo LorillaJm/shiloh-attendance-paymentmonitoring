@@ -1,6 +1,6 @@
 /* ============================================
    DARK MODE — Smooth Transitions & Extras
-   Colors handled by apple-dashboard.css (fintech design system)
+   Colors handled by apple-dashboard.css (Apple design system)
    ============================================ */
 
 /* Smooth transitions for theme toggling */
@@ -29,50 +29,52 @@ html:not(.dark) { color-scheme: light; }
 .dark body,
 .dark .fi-body,
 .dark .fi-main {
-    color: var(--ft-text-primary, #f0f4f8) !important;
+    color: var(--apple-text-primary, #F5F5F7) !important;
 }
 
 .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
-    color: var(--ft-text-primary, #f0f4f8) !important;
+    color: var(--apple-text-primary, #F5F5F7) !important;
 }
 
 .dark .fi-header-heading,
 .dark .fi-section-header-heading {
-    color: var(--ft-text-primary, #f0f4f8) !important;
+    color: var(--apple-text-primary, #F5F5F7) !important;
 }
 
 /* Dark mode modals & dropdowns */
 .dark .fi-modal {
-    background-color: var(--ft-bg-card, #111820) !important;
-    border-color: var(--ft-border, rgba(255,255,255,0.06)) !important;
+    background-color: var(--apple-bg-card, #1C1C1E) !important;
+    border-color: var(--apple-border, rgba(255,255,255,0.08)) !important;
+    box-shadow: var(--apple-shadow-modal) !important;
 }
 
 .dark .fi-dropdown-list {
-    background-color: var(--ft-bg-card, #111820) !important;
-    border-color: var(--ft-border, rgba(255,255,255,0.06)) !important;
+    background-color: var(--apple-bg-card, #1C1C1E) !important;
+    border-color: var(--apple-border, rgba(255,255,255,0.08)) !important;
+    box-shadow: var(--apple-shadow-elevated) !important;
 }
 
 .dark .fi-dropdown-list-item:hover {
-    background-color: var(--ft-bg-card-hover, #161f2b) !important;
+    background-color: var(--apple-bg-card-hover, #2C2C2E) !important;
 }
 
 /* Dark mode notifications */
 .dark .fi-no {
-    background-color: var(--ft-bg-card, #111820) !important;
-    border-color: var(--ft-border, rgba(255,255,255,0.06)) !important;
+    background-color: var(--apple-bg-card, #1C1C1E) !important;
+    border-color: var(--apple-border, rgba(255,255,255,0.08)) !important;
 }
 
 /* Dark mode search */
 .dark .fi-global-search-input {
-    background-color: var(--ft-bg-input, #151d28) !important;
-    border-color: var(--ft-border, rgba(255,255,255,0.06)) !important;
-    color: var(--ft-text-primary, #f0f4f8) !important;
+    background-color: var(--apple-bg-input, #2C2C2E) !important;
+    border-color: var(--apple-border, rgba(255,255,255,0.08)) !important;
+    color: var(--apple-text-primary, #F5F5F7) !important;
 }
 
 /* Theme toggle button */
 .theme-toggle-btn {
-    transition: transform 0.3s ease, opacity 0.3s ease !important;
+    transition: transform 0.2s ease, opacity 0.2s ease !important;
 }
 .theme-toggle-btn:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }

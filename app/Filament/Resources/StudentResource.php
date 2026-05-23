@@ -19,7 +19,7 @@ class StudentResource extends Resource
 {
     protected static ?string $model = Student::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationIcon = 'heroicon-m-user-group';
 
     protected static ?string $navigationGroup = 'Master Data';
 
@@ -47,7 +47,7 @@ class StudentResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Personal Information')
                     ->description('Basic student details and identification')
-                    ->icon('heroicon-o-user')
+                    ->icon('heroicon-m-user')
                     ->schema([
                         Forms\Components\TextInput::make('student_no')
                             ->label('Student Number')
@@ -137,7 +137,7 @@ class StudentResource extends Resource
                 
                 Forms\Components\Section::make('Contact & Guardian Information')
                     ->description('Address and guardian details')
-                    ->icon('heroicon-o-phone')
+                    ->icon('heroicon-m-phone')
                     ->schema([
                         Forms\Components\Textarea::make('address')
                             ->rows(2)
@@ -178,7 +178,7 @@ class StudentResource extends Resource
                 
                 Forms\Components\Section::make('Link to Parent Portal')
                     ->description('Connect this student to a guardian account for Parent Portal access')
-                    ->icon('heroicon-o-link')
+                    ->icon('heroicon-m-link')
                     ->schema([
                         Forms\Components\Select::make('guardian_ids')
                             ->label('Link to Guardian(s)')
@@ -205,7 +205,7 @@ class StudentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->copyable()
-                    ->icon('heroicon-o-identification')
+                    ->icon('heroicon-m-identification')
                     ->weight('semibold')
                     ->color('primary'),
                 
@@ -220,7 +220,7 @@ class StudentResource extends Resource
                     ->date('M d, Y')
                     ->sortable()
                     ->toggleable()
-                    ->icon('heroicon-o-cake'),
+                    ->icon('heroicon-m-cake'),
                 
                 Tables\Columns\TextColumn::make('sex')
                     ->badge()
@@ -234,7 +234,7 @@ class StudentResource extends Resource
                     ->label('Contact')
                     ->toggleable()
                     ->searchable()
-                    ->icon('heroicon-o-phone')
+                    ->icon('heroicon-m-phone')
                     ->copyable(),
                 
                 Tables\Columns\TextColumn::make('status')
@@ -245,9 +245,9 @@ class StudentResource extends Resource
                         'danger' => 'DROPPED',
                     ])
                     ->icons([
-                        'heroicon-o-check-circle' => 'ACTIVE',
-                        'heroicon-o-pause-circle' => 'INACTIVE',
-                        'heroicon-o-x-circle' => 'DROPPED',
+                        'heroicon-m-check-circle' => 'ACTIVE',
+                        'heroicon-m-pause-circle' => 'INACTIVE',
+                        'heroicon-m-x-circle' => 'DROPPED',
                     ])
                     ->sortable(),
                 
@@ -282,11 +282,11 @@ class StudentResource extends Resource
             ])
             ->emptyStateHeading('No students found')
             ->emptyStateDescription('Add your first student to get started with attendance and payments.')
-            ->emptyStateIcon('heroicon-o-user-group')
+            ->emptyStateIcon('heroicon-m-user-group')
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Add Student')
-                    ->icon('heroicon-o-plus'),
+                    ->icon('heroicon-m-plus'),
             ])
             ->defaultSort('student_no', 'desc')
             ->defaultPaginationPageOption(25)

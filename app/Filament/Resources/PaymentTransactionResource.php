@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 class PaymentTransactionResource extends Resource
 {
     protected static ?string $model = PaymentTransaction::class;
-    protected static ?string $navigationIcon = 'heroicon-o-banknotes';
+    protected static ?string $navigationIcon = 'heroicon-m-banknotes';
     protected static ?string $navigationGroup = 'Payment Management';
     protected static ?string $navigationLabel = 'Payment Transactions';
     protected static ?int $navigationSort = 3;

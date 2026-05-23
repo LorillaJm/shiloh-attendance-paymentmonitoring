@@ -15,7 +15,7 @@ class DuePayments extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clock';
+    protected static ?string $navigationIcon = 'heroicon-m-clock';
 
     protected static string $view = 'filament.pages.due-payments';
 
@@ -89,7 +89,7 @@ class DuePayments extends Page implements HasTable
             ->actions([
                 Tables\Actions\Action::make('view_enrollment')
                     ->label('View Enrollment')
-                    ->icon('heroicon-o-eye')
+                    ->icon('heroicon-m-eye')
                     ->url(fn ($record) => route('filament.admin.resources.enrollments.view', $record->enrollment_id)),
             ])
             ->heading('Due on Next 15th: ' . $next15th->format('F d, Y'))

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\File;
 
 class BackupManagement extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-circle-stack';
+    protected static ?string $navigationIcon = 'heroicon-m-circle-stack';
     protected static string $view = 'filament.pages.backup-management';
     protected static ?string $navigationGroup = 'Administration';
     protected static ?string $title = 'Backup Management';

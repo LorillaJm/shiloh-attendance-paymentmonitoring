@@ -13,29 +13,33 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+                sans: ['-apple-system', 'BlinkMacSystemFont', '"SF Pro Display"', '"SF Pro Text"', '"Helvetica Neue"', ...defaultTheme.fontFamily.sans],
             },
             colors: {
-                /* Premium dark theme surface colors */
-                surface: {
-                    DEFAULT: '#0b0f14',
-                    50: '#141a22',
-                    100: '#1a2230',
-                    200: '#1e2736',
-                    300: '#243040',
-                    400: '#2c3a4d',
-                    500: '#374b63',
+                /* Apple Design System */
+                apple: {
+                    blue: '#0071E3',
+                    'blue-hover': '#006EDB',
+                    'blue-active': '#0076DF',
                 },
-                /* Accent mint/cyan/teal */
+                surface: {
+                    DEFAULT: '#FAFAFC',
+                    50: '#FFFFFF',
+                    100: '#FAFAFC',
+                    200: '#F5F5F7',
+                    300: '#EDEDF2',
+                    400: '#D2D2D7',
+                    500: '#AEAEB2',
+                },
                 accent: {
-                    DEFAULT: '#5eead4',
-                    50: '#0d3d38',
-                    100: '#115e4a',
-                    200: '#14b8a6',
-                    300: '#2dd4bf',
-                    400: '#5eead4',
-                    500: '#99f6e4',
-                    600: '#ccfbf1',
+                    DEFAULT: '#0071E3',
+                    50: '#EBF5FF',
+                    100: '#D6EBFF',
+                    200: '#ADD6FF',
+                    300: '#7ABCFF',
+                    400: '#3399FF',
+                    500: '#0071E3',
+                    600: '#006EDB',
                 },
             },
             spacing: {
@@ -43,19 +47,19 @@ export default {
                 '18': '4.5rem',
             },
             borderRadius: {
-                'xl': '0.75rem',
-                '2xl': '1rem',
-                '3xl': '1.5rem',
+                'apple-sm': '8px',
+                'apple-md': '12px',
+                'apple-lg': '18px',
+                'apple-xl': '28px',
             },
             boxShadow: {
-                'soft': '0 2px 8px 0 rgba(0, 0, 0, 0.15)',
-                'soft-lg': '0 4px 16px 0 rgba(0, 0, 0, 0.25)',
-                'soft-xl': '0 8px 24px 0 rgba(0, 0, 0, 0.35)',
-                'glow-sm': '0 0 10px rgba(94, 234, 212, 0.08)',
-                'glow': '0 0 20px rgba(94, 234, 212, 0.12)',
-                'glow-lg': '0 0 40px rgba(94, 234, 212, 0.15)',
-                'card': '0 4px 24px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.04)',
-                'card-hover': '0 8px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(94, 234, 212, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.06)',
+                'apple-sm': '0 1px 3px rgba(0, 0, 0, 0.04)',
+                'apple': '0 2px 8px rgba(0, 0, 0, 0.08)',
+                'apple-lg': '0 4px 12px rgba(0, 0, 0, 0.1)',
+                'apple-xl': '0 8px 24px rgba(0, 0, 0, 0.12)',
+                'apple-hover': '0 2px 8px rgba(0, 0, 0, 0.08)',
+                'apple-modal': '0 16px 40px rgba(0, 0, 0, 0.16)',
+                'apple-focus': '0 0 0 3px rgba(0, 113, 227, 0.1)',
             },
         },
     },

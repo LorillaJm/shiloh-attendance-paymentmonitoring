@@ -121,7 +121,7 @@ class StatsOverviewWidget extends BaseWidget
             return [
                 Stat::make('Error', 'Unable to load stats')
                     ->description('Please refresh the page')
-                    ->descriptionIcon('heroicon-o-exclamation-triangle')
+                    ->descriptionIcon('heroicon-m-exclamation-triangle')
                     ->color('danger'),
             ];
         }

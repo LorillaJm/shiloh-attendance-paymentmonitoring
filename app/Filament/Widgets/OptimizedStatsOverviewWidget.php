@@ -62,32 +62,39 @@ class OptimizedStatsOverviewWidget extends BaseWidget
             return [
                 Stat::make('Total Students', number_format($stats['total_students']))
                     ->description('Registered in system')
+                    ->descriptionIcon('heroicon-m-user-group')
                     ->color('primary')
                     ->chart([7, 3, 4, 5, 6, 3, 5, 3]),
 
                 Stat::make('Active Students', number_format($stats['active_students']))
                     ->description('With active enrollment')
+                    ->descriptionIcon('heroicon-m-academic-cap')
                     ->color('success')
                     ->chart([3, 5, 6, 7, 8, 6, 7, 8]),
 
                 Stat::make('Due Today', number_format($stats['due_today']))
                     ->description('Scheduled for today')
+                    ->descriptionIcon('heroicon-m-calendar')
                     ->color('warning'),
 
                 Stat::make('Overdue', number_format($stats['overdue']))
                     ->description('Needs attention')
+                    ->descriptionIcon('heroicon-m-exclamation-triangle')
                     ->color('danger'),
 
                 Stat::make('Today', '₱' . number_format($stats['collected_today'], 2))
                     ->description('Collections received')
+                    ->descriptionIcon('heroicon-m-banknotes')
                     ->color('success'),
 
                 Stat::make('This Month', '₱' . number_format($stats['collected_this_month'], 2))
                     ->description('Month to date')
+                    ->descriptionIcon('heroicon-m-calendar-days')
                     ->color('info'),
 
                 Stat::make('Outstanding', '₱' . number_format($stats['outstanding_balance'], 2))
                     ->description('Total receivables')
+                    ->descriptionIcon('heroicon-m-clipboard-document-list')
                     ->color('gray'),
             ];
             

@@ -19,7 +19,7 @@ class StudentAttendanceView extends Page implements HasTable, HasForms
 {
     use InteractsWithTable, InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-eye';
+    protected static ?string $navigationIcon = 'heroicon-m-eye';
 
     protected static string $view = 'filament.pages.student-attendance-view';
 
@@ -46,25 +46,17 @@ class StudentAttendanceView extends Page implements HasTable, HasForms
                     ->schema([
                         Forms\Components\Select::make('selectedStudentId')
                             ->label('Student')
-                            ->searchable()
-                            ->getSearchResultsUsing(function (string $search): array {
+                            ->options(function () {
                                 return Student::query()
-                                    ->where(function ($q) use ($search) {
-                                        $q->where('student_no', 'like', "%{$search}%")
-                                            ->orWhere('first_name', 'like', "%{$search}%")
-                                            ->orWhere('last_name', 'like', "%{$search}%");
-                                    })
-                                    ->orderBy('student_no')
-                                    ->limit(50)
+                                    ->where('status', 'ACTIVE')
+                                    ->orderBy('last_name')
+                                    ->orderBy('first_name')
                                     ->get()
                                     ->mapWithKeys(fn ($s) => [$s->id => "{$s->student_no} - {$s->full_name}"])
                                     ->toArray();
                             })
-                            ->getOptionLabelUsing(function ($value): ?string {
-                                $student = Student::find($value);
-                                return $student ? "{$student->student_no} - {$student->full_name}" : null;
-                            })
-                            ->placeholder('Type to search students...')
+                            ->searchable()
+                            ->placeholder('Select a student...')
                             ->live()
                             ->afterStateUpdated(fn ($state) => $this->selectedStudentId = $state)
                             ->columnSpanFull(),
@@ -116,7 +108,7 @@ class StudentAttendanceView extends Page implements HasTable, HasForms
             ->defaultSort('attendance_date', 'desc')
             ->emptyStateHeading($this->selectedStudentId ? 'No attendance records found' : 'Select a student')
             ->emptyStateDescription($this->selectedStudentId ? 'This student has no attendance records yet.' : 'Use the search above to find a student and view their attendance history.')
-            ->emptyStateIcon('heroicon-o-clipboard-document-list')
+            ->emptyStateIcon('heroicon-m-clipboard-document-list')
             ->defaultPaginationPageOption(25)
             ->paginationPageOptions([10, 25, 50, 100])
             ->striped();

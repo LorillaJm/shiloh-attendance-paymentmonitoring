@@ -29,17 +29,30 @@ class ParentPanelProvider extends PanelProvider
             ->loginRouteSlug('login')  // Redirect to our custom login
             ->colors([
                 'primary' => [
-                    50 => '#EEF2FF',
-                    100 => '#E0E7FF',
-                    200 => '#C7D2FE',
-                    300 => '#A5B4FC',
-                    400 => '#818CF8',
-                    500 => '#2563EB',
-                    600 => '#4F46E5',
-                    700 => '#4338CA',
-                    800 => '#3730A3',
-                    900 => '#312E81',
-                    950 => '#1E1B4B',
+                    50 => '#EBF5FF',
+                    100 => '#D6EBFF',
+                    200 => '#ADD6FF',
+                    300 => '#7ABCFF',
+                    400 => '#3399FF',
+                    500 => '#0071E3',
+                    600 => '#006EDB',
+                    700 => '#005AB4',
+                    800 => '#00468C',
+                    900 => '#003264',
+                    950 => '#001E3C',
+                ],
+                'gray' => [
+                    50 => '#FAFAFC',
+                    100 => '#F5F5F7',
+                    200 => '#EDEDF2',
+                    300 => '#D2D2D7',
+                    400 => '#AEAEB2',
+                    500 => '#6E6E73',
+                    600 => '#636366',
+                    700 => '#48484A',
+                    800 => '#2C2C2E',
+                    900 => '#1C1C1E',
+                    950 => '#000000',
                 ],
             ])
             ->font('Inter')
@@ -267,21 +280,21 @@ class ParentPanelProvider extends PanelProvider
                     @keyframes parentSpinner { to { transform: rotate(360deg); } }
                     @keyframes parentBarShimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
                     .dark #parent-loading-indicator > div:last-child > div {
-                        background: rgba(15,23,42,0.95) !important;
-                        border-color: rgba(255,255,255,0.06) !important;
-                        box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+                        background: rgba(28,28,30,0.95) !important;
+                        border-color: rgba(255,255,255,0.08) !important;
+                        box-shadow: 0 8px 24px rgba(0,0,0,0.5) !important;
                     }
-                    .dark #parent-loading-indicator > div:last-child > div > span { color: #94a3b8 !important; }
-                    .dark #parent-loading-indicator > div:last-child { background: rgba(0,0,0,0.25) !important; }
+                    .dark #parent-loading-indicator > div:last-child > div > span { color: #A1A1A6 !important; }
+                    .dark #parent-loading-indicator > div:last-child { background: rgba(0,0,0,0.3) !important; }
                 </style>
                 <div id="parent-loading-indicator" style="display:none;">
                     <div style="position:fixed;top:0;left:0;right:0;z-index:9999;height:3px;background:rgba(0,0,0,0.05);">
-                        <div id="parent-loading-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#2563eb,#818cf8,#2563eb);background-size:200% 100%;border-radius:0 2px 2px 0;transition:width 0.3s ease;animation:parentBarShimmer 1.5s ease infinite;"></div>
+                        <div id="parent-loading-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#0071E3,#3399FF,#0071E3);background-size:200% 100%;border-radius:0 2px 2px 0;transition:width 0.3s ease;animation:parentBarShimmer 1.5s ease infinite;"></div>
                     </div>
                     <div style="position:fixed;inset:0;z-index:9998;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.15);backdrop-filter:blur(1px);">
-                        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 32px;border-radius:16px;background:rgba(255,255,255,0.95);box-shadow:0 8px 32px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.06);">
-                            <div style="width:36px;height:36px;border:3px solid #e2e8f0;border-top-color:#2563eb;border-radius:50%;animation:parentSpinner 0.7s linear infinite;"></div>
-                            <span style="font-size:13px;font-weight:500;color:#64748b;">Loading...</span>
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:24px 32px;border-radius:18px;background:rgba(255,255,255,0.95);box-shadow:0 8px 24px rgba(0,0,0,0.12);border:1px solid #EDEDF2;">
+                            <div style="width:36px;height:36px;border:3px solid #EDEDF2;border-top-color:#0071E3;border-radius:50%;animation:parentSpinner 0.7s linear infinite;"></div>
+                            <span style="font-size:13px;font-weight:500;color:#6E6E73;">Loading...</span>
                         </div>
                     </div>
                 </div>

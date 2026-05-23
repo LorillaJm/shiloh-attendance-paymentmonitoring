@@ -16,7 +16,7 @@ class MyChildrenAttendance extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationIcon = 'heroicon-m-user-group';
     protected static string $view = 'filament.parent.pages.my-children-attendance';
     protected static ?string $navigationLabel = 'Attendance';
     protected static ?string $title = 'Attendance Records';

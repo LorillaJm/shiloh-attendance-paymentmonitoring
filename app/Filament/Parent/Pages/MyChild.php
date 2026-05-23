@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class MyChild extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-user';
+    protected static ?string $navigationIcon = 'heroicon-m-user';
     protected static string $view = 'filament.parent.pages.my-child';
     protected static ?string $navigationLabel = 'My Child';
     protected static ?string $title = 'Child Profile';

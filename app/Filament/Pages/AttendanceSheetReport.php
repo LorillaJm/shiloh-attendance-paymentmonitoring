@@ -21,7 +21,7 @@ class AttendanceSheetReport extends Page implements HasTable, HasForms
 {
     use InteractsWithTable, InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static ?string $navigationIcon = 'heroicon-m-clipboard-document-list';
 
     protected static string $view = 'filament.pages.attendance-sheet-report';
 

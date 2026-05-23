@@ -10,7 +10,7 @@ use App\Models\Enrollment;
 
 class Notifications extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-bell-alert';
+    protected static ?string $navigationIcon = 'heroicon-m-bell-alert';
     protected static string $view = 'filament.parent.pages.notifications';
     protected static ?string $navigationLabel = 'Notifications';
     protected static ?string $title = 'Notifications & Reminders';

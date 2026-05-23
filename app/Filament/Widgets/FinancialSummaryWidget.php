@@ -59,12 +59,12 @@ class FinancialSummaryWidget extends BaseWidget
             });
 
             $growthColor = $stats['growth_percent'] >= 0 ? 'success' : 'danger';
-            $growthIcon = $stats['growth_percent'] >= 0 ? 'heroicon-o-arrow-trending-up' : 'heroicon-o-arrow-trending-down';
+            $growthIcon = $stats['growth_percent'] >= 0 ? 'heroicon-m-arrow-trending-up' : 'heroicon-m-arrow-trending-down';
 
             return [
                 Stat::make('Revenue', '₱' . number_format($stats['revenue_this_month'], 2))
                     ->description(now('Asia/Manila')->format('F Y'))
-                    ->descriptionIcon('heroicon-o-banknotes')
+                    ->descriptionIcon('heroicon-m-banknotes')
                     ->color('success')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform stat-card-currency',
@@ -72,7 +72,7 @@ class FinancialSummaryWidget extends BaseWidget
 
                 Stat::make('Last Month', '₱' . number_format($stats['revenue_last_month'], 2))
                     ->description(now('Asia/Manila')->subMonth()->format('F Y'))
-                    ->descriptionIcon('heroicon-o-chart-bar')
+                    ->descriptionIcon('heroicon-m-chart-bar')
                     ->color('gray')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform stat-card-currency',
@@ -88,7 +88,7 @@ class FinancialSummaryWidget extends BaseWidget
 
                 Stat::make('Outstanding', '₱' . number_format($stats['outstanding_balance'], 2))
                     ->description('Total receivables')
-                    ->descriptionIcon('heroicon-o-currency-dollar')
+                    ->descriptionIcon('heroicon-m-currency-dollar')
                     ->color('warning')
                     ->extraAttributes([
                         'class' => 'stat-card-uniform stat-card-currency',

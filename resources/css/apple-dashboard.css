@@ -1,70 +1,80 @@
 /* ============================================
-   DARK FINTECH DESIGN SYSTEM
-   Premium Trading Dashboard — Teal Accent
+   APPLE DESIGN SYSTEM
+   Clean, Minimal, Premium — Apple Blue Accent
+   Based on www.apple.com design language
    ============================================ */
 
 /* ============================================
    1. CSS VARIABLES — LIGHT MODE
    ============================================ */
 :root {
-    --ft-bg-page: #f8fafc;
-    --ft-bg-sidebar: #ffffff;
-    --ft-bg-topbar: #ffffff;
-    --ft-bg-card: #ffffff;
-    --ft-bg-card-hover: #f1f5f9;
-    --ft-bg-input: #f8fafc;
+    --apple-bg-page: #FAFAFC;
+    --apple-bg-sidebar: #FFFFFF;
+    --apple-bg-topbar: #FFFFFF;
+    --apple-bg-card: #FFFFFF;
+    --apple-bg-card-hover: #F5F5F7;
+    --apple-bg-input: #FFFFFF;
 
-    --ft-border: rgba(0, 0, 0, 0.08);
-    --ft-border-hover: rgba(13, 148, 136, 0.35);
+    --apple-border: #EDEDF2;
+    --apple-border-hover: rgba(0, 113, 227, 0.3);
 
-    --ft-text-primary: #0f172a;
-    --ft-text-secondary: #64748b;
-    --ft-text-muted: #94a3b8;
+    --apple-text-primary: #1D1D1F;
+    --apple-text-secondary: #333336;
+    --apple-text-muted: #6E6E73;
 
-    --ft-accent: #0d9488;
-    --ft-accent-light: rgba(13, 148, 136, 0.1);
-    --ft-accent-glow: 0 0 20px rgba(13, 148, 136, 0.15);
+    --apple-accent: #0071E3;
+    --apple-accent-hover: #006EDB;
+    --apple-accent-light: rgba(0, 113, 227, 0.08);
 
-    --ft-success: #16a34a;
-    --ft-warning: #ca8a04;
-    --ft-danger: #dc2626;
+    --apple-success: #34C759;
+    --apple-warning: #FF9500;
+    --apple-danger: #FF3B30;
 
-    --ft-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-    --ft-shadow-card-hover: 0 10px 25px rgba(0, 0, 0, 0.08);
+    --apple-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.04);
+    --apple-shadow-card-hover: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --apple-shadow-elevated: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --apple-shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.16);
 
-    --ft-radius: 16px;
-    --ft-radius-sm: 10px;
-    --ft-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --apple-radius: 18px;
+    --apple-radius-sm: 8px;
+    --apple-radius-lg: 28px;
+    --apple-transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Typography */
+    --apple-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+    --apple-letter-spacing: -0.022em;
 }
 
 /* ============================================
    2. CSS VARIABLES — DARK MODE
    ============================================ */
 .dark {
-    --ft-bg-page: #080b10;
-    --ft-bg-sidebar: #0c1018;
-    --ft-bg-topbar: #0c1018;
-    --ft-bg-card: #111820;
-    --ft-bg-card-hover: #161f2b;
-    --ft-bg-input: #151d28;
+    --apple-bg-page: #000000;
+    --apple-bg-sidebar: #1C1C1E;
+    --apple-bg-topbar: #1C1C1E;
+    --apple-bg-card: #1C1C1E;
+    --apple-bg-card-hover: #2C2C2E;
+    --apple-bg-input: #2C2C2E;
 
-    --ft-border: rgba(255, 255, 255, 0.06);
-    --ft-border-hover: rgba(94, 234, 212, 0.2);
+    --apple-border: rgba(255, 255, 255, 0.08);
+    --apple-border-hover: rgba(0, 113, 227, 0.4);
 
-    --ft-text-primary: #f0f4f8;
-    --ft-text-secondary: #8b9ab5;
-    --ft-text-muted: #5a6a82;
+    --apple-text-primary: #F5F5F7;
+    --apple-text-secondary: #A1A1A6;
+    --apple-text-muted: #6E6E73;
 
-    --ft-accent: #5eead4;
-    --ft-accent-light: rgba(94, 234, 212, 0.08);
-    --ft-accent-glow: 0 0 24px rgba(94, 234, 212, 0.12);
+    --apple-accent: #0A84FF;
+    --apple-accent-hover: #409CFF;
+    --apple-accent-light: rgba(10, 132, 255, 0.12);
 
-    --ft-success: #22c55e;
-    --ft-warning: #eab308;
-    --ft-danger: #ef4444;
+    --apple-success: #30D158;
+    --apple-warning: #FFD60A;
+    --apple-danger: #FF453A;
 
-    --ft-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.3);
-    --ft-shadow-card-hover: 0 12px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(94, 234, 212, 0.06);
+    --apple-shadow-card: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --apple-shadow-card-hover: 0 4px 12px rgba(0, 0, 0, 0.4);
+    --apple-shadow-elevated: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --apple-shadow-modal: 0 16px 40px rgba(0, 0, 0, 0.6);
 }
 
 /* ============================================
@@ -80,72 +90,76 @@
    ============================================ */
 .fi-body,
 body.fi-body {
-    background-color: var(--ft-bg-page) !important;
+    background-color: var(--apple-bg-page) !important;
+    font-family: var(--apple-font) !important;
+    letter-spacing: var(--apple-letter-spacing);
 }
 
 .fi-main {
-    background-color: var(--ft-bg-page) !important;
+    background-color: var(--apple-bg-page) !important;
 }
 
 /* ============================================
    5. FILAMENT OVERRIDES — SIDEBAR
    ============================================ */
 .fi-sidebar {
-    background-color: var(--ft-bg-sidebar) !important;
-    border-right: 1px solid var(--ft-border) !important;
+    background-color: var(--apple-bg-sidebar) !important;
+    border-right: 1px solid var(--apple-border) !important;
 }
 
 .fi-sidebar-header {
-    background-color: var(--ft-bg-sidebar) !important;
-    border-bottom: 1px solid var(--ft-border) !important;
+    background-color: var(--apple-bg-sidebar) !important;
+    border-bottom: 1px solid var(--apple-border) !important;
 }
 
 .fi-sidebar-nav {
-    background-color: var(--ft-bg-sidebar) !important;
+    background-color: var(--apple-bg-sidebar) !important;
 }
 
-/* Active sidebar item — teal highlight */
+/* Active sidebar item — Apple Blue highlight */
 .fi-sidebar-item.fi-active {
-    background-color: var(--ft-accent-light) !important;
-    color: var(--ft-accent) !important;
+    background-color: var(--apple-accent-light) !important;
+    color: var(--apple-accent) !important;
+    border-radius: var(--apple-radius-sm) !important;
 }
 
 .fi-sidebar-item.fi-active .fi-sidebar-item-label {
-    color: var(--ft-accent) !important;
+    color: var(--apple-accent) !important;
     font-weight: 600 !important;
 }
 
 .fi-sidebar-item.fi-active .fi-sidebar-item-icon {
-    color: var(--ft-accent) !important;
+    color: var(--apple-accent) !important;
 }
 
 /* Sidebar hover */
 .fi-sidebar-item:hover {
-    background-color: var(--ft-accent-light) !important;
+    background-color: var(--apple-accent-light) !important;
+    border-radius: var(--apple-radius-sm) !important;
 }
 
 /* Sidebar group labels */
 .fi-sidebar-group-label {
-    color: var(--ft-text-muted) !important;
-    font-size: 0.7rem !important;
+    color: var(--apple-text-muted) !important;
+    font-size: 0.6875rem !important;
     font-weight: 600 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.08em !important;
+    letter-spacing: 0.06em !important;
 }
 
-/* Mobile sidebar — solid background, no glass */
+/* Mobile sidebar — solid background */
 @media (max-width: 1023px) {
     .fi-sidebar,
     .fi-sidebar-nav,
     .fi-sidebar-header {
-        background-color: var(--ft-bg-sidebar) !important;
+        background-color: var(--apple-bg-sidebar) !important;
         z-index: 50 !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
     }
     .fi-sidebar-close-overlay {
         z-index: 40 !important;
-        background-color: rgba(0, 0, 0, 0.6) !important;
+        background-color: rgba(0, 0, 0, 0.5) !important;
     }
 }
 
@@ -155,13 +169,13 @@ body.fi-body {
 .fi-topbar,
 .fi-topbar nav,
 .fi-topbar > nav {
-    background-color: var(--ft-bg-topbar) !important;
-    border-bottom: 1px solid var(--ft-border) !important;
+    background-color: var(--apple-bg-topbar) !important;
+    border-bottom: 1px solid var(--apple-border) !important;
     box-shadow: none !important;
 }
 
 /* ============================================
-   7. STAT CARDS — THE HERO
+   7. STAT CARDS
    ============================================ */
 .fi-wi-stats-overview {
     background: transparent !important;
@@ -176,44 +190,44 @@ body.fi-body {
 }
 
 .fi-wi-stats-overview-stat {
-    background-color: var(--ft-bg-card) !important;
-    border: 1px solid var(--ft-border) !important;
-    border-radius: var(--ft-radius) !important;
-    box-shadow: var(--ft-shadow-card) !important;
-    transition: all var(--ft-transition) !important;
+    background-color: var(--apple-bg-card) !important;
+    border: 1px solid var(--apple-border) !important;
+    border-radius: var(--apple-radius) !important;
+    box-shadow: var(--apple-shadow-card) !important;
+    transition: all var(--apple-transition) !important;
     min-height: 0 !important;
-    padding: 1.25rem !important;
+    padding: 1.5rem !important;
 }
 
 .fi-wi-stats-overview-stat:hover {
-    background-color: var(--ft-bg-card-hover) !important;
-    border-color: var(--ft-border-hover) !important;
-    box-shadow: var(--ft-shadow-card-hover) !important;
-    transform: translateY(-3px) !important;
+    background-color: var(--apple-bg-card-hover) !important;
+    border-color: var(--apple-border-hover) !important;
+    box-shadow: var(--apple-shadow-card-hover) !important;
+    transform: translateY(-2px) !important;
 }
 
 .fi-wi-stats-overview-stat-value {
     font-size: clamp(1.5rem, 3vw, 2rem) !important;
-    font-weight: 800 !important;
-    color: var(--ft-text-primary) !important;
+    font-weight: 700 !important;
+    color: var(--apple-text-primary) !important;
     letter-spacing: -0.02em !important;
     line-height: 1.2 !important;
 }
 
 .fi-wi-stats-overview-stat-label {
-    font-size: 0.7rem !important;
+    font-size: 0.75rem !important;
     font-weight: 600 !important;
-    color: var(--ft-text-secondary) !important;
+    color: var(--apple-text-muted) !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.06em !important;
+    letter-spacing: 0.04em !important;
     order: -1 !important;
     margin-bottom: 0.5rem !important;
 }
 
 .fi-wi-stats-overview-stat-description {
-    font-size: 0.75rem !important;
-    color: var(--ft-text-muted) !important;
-    margin-top: 0.25rem !important;
+    font-size: 0.8125rem !important;
+    color: var(--apple-text-muted) !important;
+    margin-top: 0.375rem !important;
 }
 
 /* Stat card grid breakpoints */
@@ -237,88 +251,110 @@ body.fi-body {
    8. SECTIONS & CARDS
    ============================================ */
 .fi-section {
-    background-color: var(--ft-bg-card) !important;
-    border: 1px solid var(--ft-border) !important;
-    border-radius: var(--ft-radius) !important;
-    box-shadow: var(--ft-shadow-card) !important;
-    transition: all var(--ft-transition) !important;
+    background-color: var(--apple-bg-card) !important;
+    border: 1px solid var(--apple-border) !important;
+    border-radius: var(--apple-radius) !important;
+    box-shadow: var(--apple-shadow-card) !important;
+    transition: all var(--apple-transition) !important;
 }
 
 .fi-section:hover {
-    border-color: var(--ft-border-hover) !important;
+    border-color: var(--apple-border-hover) !important;
+    box-shadow: var(--apple-shadow-card-hover) !important;
 }
 
 /* ============================================
    9. CHART WIDGET
    ============================================ */
 .fi-wi-chart {
-    background-color: var(--ft-bg-card) !important;
-    border: 1px solid var(--ft-border) !important;
-    border-radius: var(--ft-radius) !important;
-    box-shadow: var(--ft-shadow-card) !important;
+    background-color: var(--apple-bg-card) !important;
+    border: 1px solid var(--apple-border) !important;
+    border-radius: var(--apple-radius) !important;
+    box-shadow: var(--apple-shadow-card) !important;
     padding: 1.5rem !important;
     margin-top: 1.5rem !important;
-    transition: all var(--ft-transition) !important;
+    transition: all var(--apple-transition) !important;
 }
 
 .fi-wi-chart:hover {
-    border-color: var(--ft-border-hover) !important;
+    border-color: var(--apple-border-hover) !important;
+    box-shadow: var(--apple-shadow-card-hover) !important;
 }
 
 /* ============================================
    10. TABLES
    ============================================ */
 .fi-ta-table {
-    background-color: var(--ft-bg-card) !important;
+    background-color: var(--apple-bg-card) !important;
 }
 
-.dark .fi-ta-row:hover {
-    background-color: var(--ft-bg-card-hover) !important;
+.fi-ta-row:hover {
+    background-color: var(--apple-bg-card-hover) !important;
 }
 
 /* ============================================
-   11. FORMS
+   11. FORMS — Apple-style inputs
    ============================================ */
+input,
+textarea,
+select,
+.fi-input,
+.fi-select {
+    border-color: var(--apple-border) !important;
+    border-radius: var(--apple-radius-sm) !important;
+    transition: all var(--apple-transition) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.fi-input:focus,
+.fi-select:focus {
+    border-color: var(--apple-accent) !important;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1) !important;
+    outline: none !important;
+}
+
 .dark input,
 .dark textarea,
 .dark select,
 .dark .fi-input,
 .dark .fi-select {
-    background-color: var(--ft-bg-input) !important;
-    border-color: var(--ft-border) !important;
+    background-color: var(--apple-bg-input) !important;
+    border-color: var(--apple-border) !important;
 }
 
 .dark input:focus,
 .dark textarea:focus,
 .dark select:focus {
-    border-color: var(--ft-accent) !important;
-    box-shadow: 0 0 0 2px rgba(94, 234, 212, 0.15) !important;
+    border-color: var(--apple-accent) !important;
+    box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.15) !important;
 }
 
 /* ============================================
    12. ANIMATIONS
    ============================================ */
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(12px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.96); }
+    from { opacity: 0; transform: scale(0.97); }
     to { opacity: 1; transform: scale(1); }
 }
 
 .fi-main {
-    animation: fadeInUp 0.4s ease-out;
+    animation: fadeInUp 0.35s ease-out;
 }
 
 /* ============================================
-   13. SCROLLBAR
+   13. SCROLLBAR — Apple-thin style
    ============================================ */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--ft-text-muted); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--ft-text-secondary); }
+::-webkit-scrollbar-thumb { background: var(--apple-text-muted); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--apple-text-secondary); }
 
 /* ============================================
    14. RESPONSIVE — MOBILE

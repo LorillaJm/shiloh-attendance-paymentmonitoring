@@ -16,7 +16,7 @@ class MyChildrenSessions extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationIcon = 'heroicon-m-academic-cap';
     protected static string $view = 'filament.parent.pages.my-children-sessions';
     protected static ?string $navigationLabel = 'Sessions';
     protected static ?string $title = 'Session History';

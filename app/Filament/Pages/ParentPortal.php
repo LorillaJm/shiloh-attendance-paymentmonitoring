@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ParentPortal extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-home';
+    protected static ?string $navigationIcon = 'heroicon-m-home';
     protected static string $view = 'filament.pages.parent-portal';
     protected static ?string $navigationLabel = 'My Children';
     protected static ?int $navigationSort = 1;

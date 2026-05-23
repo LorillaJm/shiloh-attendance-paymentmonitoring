@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Auth;
 
 class SessionHistory extends Page
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-m-document-text';
     protected static string $view = 'filament.pages.session-history';
     protected static ?string $navigationGroup = 'Reports';
     protected static ?string $navigationLabel = 'Session History Report';

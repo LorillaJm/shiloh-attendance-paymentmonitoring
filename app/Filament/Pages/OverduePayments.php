@@ -15,7 +15,7 @@ class OverduePayments extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
+    protected static ?string $navigationIcon = 'heroicon-m-exclamation-triangle';
 
     protected static string $view = 'filament.pages.overdue-payments';
 
@@ -93,7 +93,7 @@ class OverduePayments extends Page implements HasTable
             ->actions([
                 Tables\Actions\Action::make('view_enrollment')
                     ->label('View')
-                    ->icon('heroicon-o-eye')
+                    ->icon('heroicon-m-eye')
                     ->url(fn ($record) => route('filament.admin.resources.enrollments.view', $record->enrollment_id)),
             ])
             ->heading('Overdue Payments')

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Builder;
 class StudentScheduleResource extends Resource
 {
     protected static ?string $model = StudentSchedule::class;
-    protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+    protected static ?string $navigationIcon = 'heroicon-m-calendar-days';
     protected static ?string $navigationGroup = 'Session Management';
     protected static ?int $navigationSort = 2;
     protected static ?string $navigationLabel = 'Student Schedules';

@@ -20,7 +20,7 @@ class EnrollmentResource extends Resource
 {
     protected static ?string $model = Enrollment::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
+    protected static ?string $navigationIcon = 'heroicon-m-academic-cap';
 
     protected static ?string $navigationGroup = 'Enrollment Management';
     
@@ -49,7 +49,7 @@ class EnrollmentResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Registration Details')
                     ->description('Select student and program for registration')
-                    ->icon('heroicon-o-academic-cap')
+                    ->icon('heroicon-m-academic-cap')
                     ->schema([
                         Forms\Components\Select::make('student_id')
                             ->label('Student')
@@ -111,16 +111,12 @@ class EnrollmentResource extends Resource
                                     $package = \App\Models\Package::find($state);
                                     if ($package) {
                                         $set('total_fee', $package->total_fee);
-                                        $set('downpayment_percent', $package->downpayment_percent);
-                                        
-                                        $downpaymentAmount = ($package->total_fee * $package->downpayment_percent) / 100;
-                                        $set('downpayment_amount', $downpaymentAmount);
-                                        $set('remaining_balance', $package->total_fee - $downpaymentAmount);
+                                        $set('downpayment_amount', 0);
+                                        $set('remaining_balance', $package->total_fee);
                                     }
                                 } else {
                                     // Clear fields when no package selected
                                     $set('total_fee', null);
-                                    $set('downpayment_percent', null);
                                     $set('downpayment_amount', null);
                                     $set('remaining_balance', null);
                                 }
@@ -146,38 +142,38 @@ class EnrollmentResource extends Resource
                     ->collapsible(),
 
                 Forms\Components\Section::make('Payment Plan Summary')
-                    ->description('Calculated payment breakdown')
-                    ->icon('heroicon-o-banknotes')
+                    ->description('Enter payment details manually')
+                    ->icon('heroicon-m-banknotes')
                     ->schema([
                         Forms\Components\TextInput::make('total_fee')
                             ->label('Total Program Fee')
                             ->numeric()
                             ->prefix('₱')
                             ->required()
-                            ->disabled()
-                            ->dehydrated()
+                            ->live(onBlur: true)
                             ->placeholder('0.00')
-                            ->formatStateUsing(fn ($state) => $state ? number_format($state, 2) : '0.00'),
-
-                        Forms\Components\TextInput::make('downpayment_percent')
-                            ->label('Down Payment %')
-                            ->numeric()
-                            ->suffix('%')
-                            ->required()
-                            ->disabled()
-                            ->dehydrated()
-                            ->placeholder('0.00')
-                            ->formatStateUsing(fn ($state) => $state ? number_format($state, 2) : '0.00'),
+                            ->helperText('Enter the program fee (can be adjusted for discounts)')
+                            ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) {
+                                $totalFee = (float) ($state ?? 0);
+                                $downpayment = (float) ($get('downpayment_amount') ?? 0);
+                                $set('remaining_balance', max(0, $totalFee - $downpayment));
+                            }),
 
                         Forms\Components\TextInput::make('downpayment_amount')
                             ->label('Down Payment Amount')
                             ->numeric()
                             ->prefix('₱')
                             ->required()
-                            ->disabled()
-                            ->dehydrated()
+                            ->default(0)
+                            ->minValue(0)
+                            ->live(onBlur: true)
                             ->placeholder('0.00')
-                            ->formatStateUsing(fn ($state) => $state ? number_format($state, 2) : '0.00'),
+                            ->helperText('Enter the down payment amount directly')
+                            ->afterStateUpdated(function (Forms\Set $set, Forms\Get $get, $state) {
+                                $totalFee = (float) ($get('total_fee') ?? 0);
+                                $downpayment = (float) ($state ?? 0);
+                                $set('remaining_balance', max(0, $totalFee - $downpayment));
+                            }),
 
                         Forms\Components\TextInput::make('remaining_balance')
                             ->label('Balance to Pay')
@@ -187,14 +183,14 @@ class EnrollmentResource extends Resource
                             ->disabled()
                             ->dehydrated()
                             ->placeholder('0.00')
-                            ->formatStateUsing(fn ($state) => $state ? number_format($state, 2) : '0.00'),
+                            ->helperText('Auto-calculated: Total Fee - Down Payment'),
                     ])
                     ->columns(2)
                     ->collapsible(),
 
                 Forms\Components\Section::make('Session Tracking')
                     ->description('Track student attendance sessions')
-                    ->icon('heroicon-o-calendar-days')
+                    ->icon('heroicon-m-calendar-days')
                     ->schema([
                         Forms\Components\TextInput::make('total_sessions')
                             ->label('Total Sessions Included')
@@ -208,9 +204,9 @@ class EnrollmentResource extends Resource
                             ->label('Sessions Used')
                             ->numeric()
                             ->default(0)
-                            ->disabled()
-                            ->dehydrated()
-                            ->helperText('Automatically updated when attendance is marked'),
+                            ->minValue(0)
+                            ->live(onBlur: true)
+                            ->helperText('Enter sessions used manually or auto-updated via attendance'),
 
                         Forms\Components\Placeholder::make('session_info')
                             ->label('Remaining Sessions')
@@ -240,7 +236,7 @@ class EnrollmentResource extends Resource
                     ->label('Student No')
                     ->searchable()
                     ->sortable()
-                    ->icon('heroicon-o-identification')
+                    ->icon('heroicon-m-identification')
                     ->color('primary')
                     ->weight('semibold'),
 
@@ -259,7 +255,7 @@ class EnrollmentResource extends Resource
                     ->label('Registration Date')
                     ->date('M d, Y')
                     ->sortable()
-                    ->icon('heroicon-o-calendar'),
+                    ->icon('heroicon-m-calendar'),
 
                 Tables\Columns\TextColumn::make('total_fee')
                     ->label('Total Fee')
@@ -289,9 +285,9 @@ class EnrollmentResource extends Resource
                         default => 'danger'
                     })
                     ->icon(fn ($record) => match(true) {
-                        $record->total_sessions == 0 => 'heroicon-o-minus-circle',
-                        $record->sessions_remaining > 0 => 'heroicon-o-check-circle',
-                        default => 'heroicon-o-x-circle'
+                        $record->total_sessions == 0 => 'heroicon-m-minus-circle',
+                        $record->sessions_remaining > 0 => 'heroicon-m-check-circle',
+                        default => 'heroicon-m-x-circle'
                     })
                     ->sortable(['sessions_used'])
                     ->toggleable(),
@@ -303,8 +299,8 @@ class EnrollmentResource extends Resource
                         'danger' => 'CANCELLED',
                     ])
                     ->icons([
-                        'heroicon-o-check-circle' => 'ACTIVE',
-                        'heroicon-o-x-circle' => 'CANCELLED',
+                        'heroicon-m-check-circle' => 'ACTIVE',
+                        'heroicon-m-x-circle' => 'CANCELLED',
                     ]),
             ])
             ->filters([
@@ -328,11 +324,11 @@ class EnrollmentResource extends Resource
             ])
             ->emptyStateHeading('No registrations yet')
             ->emptyStateDescription('Start by registering a student to a program.')
-            ->emptyStateIcon('heroicon-o-academic-cap')
+            ->emptyStateIcon('heroicon-m-academic-cap')
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make()
                     ->label('Register Student')
-                    ->icon('heroicon-o-plus'),
+                    ->icon('heroicon-m-plus'),
             ])
             ->defaultPaginationPageOption(25)
             ->defaultPaginationPageOption(25)

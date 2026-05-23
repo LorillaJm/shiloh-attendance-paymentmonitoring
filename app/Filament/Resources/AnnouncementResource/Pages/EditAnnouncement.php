@@ -15,7 +15,7 @@ class EditAnnouncement extends EditRecord
         return [
             Actions\DeleteAction::make(),
             Actions\Action::make('publish')
-                ->icon('heroicon-o-paper-airplane')
+                ->icon('heroicon-m-paper-airplane')
                 ->color('success')
                 ->visible(fn () => !$this->record->is_published)
                 ->requiresConfirmation()
