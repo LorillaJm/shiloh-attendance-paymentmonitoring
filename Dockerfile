@@ -47,6 +47,14 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 # Copy application files
 COPY . /var/www/html
 
+# Create Laravel cache directories BEFORE composer install
+RUN mkdir -p /var/www/html/storage/framework/cache \
+    && mkdir -p /var/www/html/storage/framework/sessions \
+    && mkdir -p /var/www/html/storage/framework/views \
+    && mkdir -p /var/www/html/bootstrap/cache \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
+
 # Install Composer dependencies (production only)
 RUN composer install \
     --no-dev \
