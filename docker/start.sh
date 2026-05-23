@@ -32,6 +32,10 @@ ls -la /var/www/html/bootstrap/cache/
 # Skip database check - let it connect on first request
 echo "⚠️  Skipping database check - will connect on first request"
 
+# Run migrations (safe with --force for production)
+echo "🗄️  Running database migrations..."
+php artisan migrate --force || echo "Migration skipped or failed"
+
 # Publish Livewire and Filament assets
 echo "📦 Publishing Livewire and Filament assets..."
 php artisan vendor:publish --tag=livewire:assets --force || echo "Livewire assets publish skipped"
