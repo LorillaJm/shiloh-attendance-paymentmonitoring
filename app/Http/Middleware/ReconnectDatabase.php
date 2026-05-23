@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class ReconnectDatabase
@@ -16,13 +17,17 @@ class ReconnectDatabase
     public function handle(Request $request, Closure $next): Response
     {
         try {
+            // Test the connection
             DB::connection()->getPdo();
         } catch (\Throwable $e) {
+            Log::warning('Database connection lost, attempting reconnect: ' . $e->getMessage());
+            
             try {
                 DB::reconnect();
+                Log::info('Database reconnected successfully');
             } catch (\Throwable $reconnectError) {
-                // If reconnection also fails, let the request proceed
-                // and let the exception handler deal with it
+                Log::error('Database reconnection failed: ' . $reconnectError->getMessage());
+                // Let the request proceed and let the exception handler deal with it
             }
         }
 

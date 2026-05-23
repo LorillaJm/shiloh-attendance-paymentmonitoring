@@ -15,11 +15,15 @@ class AnnouncementObserver
      */
     public function created(Announcement $announcement): void
     {
-        if (!$announcement->is_published) {
-            return;
-        }
+        try {
+            if (!$announcement->is_published) {
+                return;
+            }
 
-        $this->sendPushNotifications($announcement);
+            $this->sendPushNotifications($announcement);
+        } catch (\Throwable $e) {
+            Log::error('AnnouncementObserver created error: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -27,9 +31,13 @@ class AnnouncementObserver
      */
     public function updated(Announcement $announcement): void
     {
-        // Send push if announcement was just published
-        if ($announcement->wasChanged('is_published') && $announcement->is_published) {
-            $this->sendPushNotifications($announcement);
+        try {
+            // Send push if announcement was just published
+            if ($announcement->wasChanged('is_published') && $announcement->is_published) {
+                $this->sendPushNotifications($announcement);
+            }
+        } catch (\Throwable $e) {
+            Log::error('AnnouncementObserver updated error: ' . $e->getMessage());
         }
     }
 
@@ -42,11 +50,11 @@ class AnnouncementObserver
             $users = $this->getTargetUsers($announcement);
             
             foreach ($users as $user) {
-                // Check if user has push subscriptions
-                if ($user->pushSubscriptions()->exists()) {
+                // Check if user has push subscriptions method and subscriptions exist
+                if (method_exists($user, 'pushSubscriptions') && $user->pushSubscriptions()->exists()) {
                     $user->notify(new AnnouncementPushNotification(
                         $announcement->title,
-                        strip_tags($announcement->message),
+                        strip_tags($announcement->message ?? ''),
                         '/admin/announcements'
                     ));
                 }
@@ -56,9 +64,9 @@ class AnnouncementObserver
                 'announcement_id' => $announcement->id,
                 'users_notified' => $users->count()
             ]);
-        } catch (\Exception $e) {
-            Log::error("Failed to send push notifications for announcement: {$e->getMessage()}", [
-                'announcement_id' => $announcement->id
+        } catch (\Throwable $e) {
+            Log::error("Failed to send push notifications: {$e->getMessage()}", [
+                'announcement_id' => $announcement->id ?? null
             ]);
         }
     }
@@ -68,26 +76,31 @@ class AnnouncementObserver
      */
     protected function getTargetUsers(Announcement $announcement)
     {
-        $query = User::query();
+        try {
+            $query = User::query();
 
-        switch ($announcement->target_audience) {
-            case 'parents':
-                $query->where('role', UserRole::PARENT);
-                break;
-            case 'admins':
-                $query->whereIn('role', [UserRole::ADMIN, UserRole::SUPERADMIN]);
-                break;
-            case 'specific_user':
-                if ($announcement->target_user_id) {
-                    $query->where('id', $announcement->target_user_id);
-                }
-                break;
-            case 'all':
-            default:
-                // All users
-                break;
+            switch ($announcement->target_audience) {
+                case 'parents':
+                    $query->where('role', UserRole::PARENT);
+                    break;
+                case 'admins':
+                    $query->whereIn('role', [UserRole::ADMIN, UserRole::SUPERADMIN]);
+                    break;
+                case 'specific_user':
+                    if ($announcement->target_user_id) {
+                        $query->where('id', $announcement->target_user_id);
+                    }
+                    break;
+                case 'all':
+                default:
+                    // All users
+                    break;
+            }
+
+            return $query->get();
+        } catch (\Throwable $e) {
+            Log::error('getTargetUsers error: ' . $e->getMessage());
+            return collect();
         }
-
-        return $query->get();
     }
 }
