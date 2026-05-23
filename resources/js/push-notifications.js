@@ -20,9 +20,16 @@ class PushNotificationManager {
             return;
         }
 
-        // Preload notification sound
-        this.notificationSound = new Audio('/sounds/notification.mp3');
-        this.notificationSound.volume = 0.5;
+        // Preload notification sound (gracefully handle if missing)
+        try {
+            this.notificationSound = new Audio('/sounds/notification.mp3');
+            this.notificationSound.volume = 0.5;
+            // Preload to check if file exists
+            this.notificationSound.load();
+        } catch (e) {
+            console.warn('[Push] Notification sound not available');
+            this.notificationSound = null;
+        }
 
         // Listen for sound play messages from service worker
         navigator.serviceWorker.addEventListener('message', (event) => {

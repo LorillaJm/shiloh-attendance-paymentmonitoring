@@ -4,7 +4,7 @@ FROM php:8.3-fpm-alpine
 # Set working directory
 WORKDIR /var/www/html
 
-# Install system dependencies
+# Install system dependencies including Node.js for Vite build
 RUN apk add --no-cache \
     nginx \
     supervisor \
@@ -20,7 +20,9 @@ RUN apk add --no-cache \
     bash \
     unzip \
     icu-dev \
-    icu-data-full
+    icu-data-full \
+    nodejs \
+    npm
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
@@ -62,6 +64,9 @@ RUN composer install \
     --no-interaction \
     --prefer-dist \
     --verbose
+
+# Install npm dependencies and build Vite assets
+RUN npm ci && npm run build
 
 # Copy Docker configuration files
 COPY docker/nginx.conf /etc/nginx/nginx.conf
