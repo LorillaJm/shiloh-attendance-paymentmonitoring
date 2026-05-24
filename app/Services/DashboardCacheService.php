@@ -128,7 +128,9 @@ class DashboardCacheService
     public static function clearAll(): void
     {
         Cache::forget('dashboard.student_counts');
-        // Clear other specific cache keys as needed
+        Cache::forget('revenue_chart_30d');
+        Cache::forget('dashboard_kpi_stats_v3');
+        Cache::forget('dashboard_financial_summary_v1');
     }
 
     /**
@@ -169,9 +171,10 @@ class DashboardCacheService
         if ($date) {
             $cacheKey = "dashboard.payments.{$date->format('Y-m')}";
             Cache::forget($cacheKey);
-        } else {
-            // Clear all payment caches
-            self::clearAll();
         }
+        // Always clear revenue chart and KPI caches when payments change
+        Cache::forget('revenue_chart_30d');
+        Cache::forget('dashboard_kpi_stats_v3');
+        Cache::forget('dashboard_financial_summary_v1');
     }
 }

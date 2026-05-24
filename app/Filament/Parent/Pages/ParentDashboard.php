@@ -11,7 +11,7 @@ class ParentDashboard extends Page
     protected static ?string $navigationIcon = 'heroicon-m-home';
     protected static string $view = 'filament.parent.pages.modern-dashboard';
     protected static ?string $navigationLabel = 'Dashboard';
-    protected static ?string $title = 'My Children';
+    protected static ?string $title = '';
     
     protected static bool $shouldRegisterNavigation = true;
     protected static ?int $navigationSort = 1;
@@ -35,6 +35,6 @@ class ParentDashboard extends Page
     
     public function getHeading(): string
     {
-        return 'My Children';
+        return '';
     }
 }
