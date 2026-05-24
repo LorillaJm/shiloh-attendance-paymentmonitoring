@@ -2,16 +2,17 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Due/Overdue Report</title>
     <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; }
+        body { font-family: 'DejaVu Sans', sans-serif; font-size: 11px; color: #333333; margin: 30px; line-height: 1.4; }
         .report-header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; }
         .report-header h1 { margin: 0; font-size: 20px; color: #2563eb; }
         .report-header h2 { margin: 5px 0; font-size: 16px; color: #333; }
         .report-header p { margin: 3px 0; color: #666; font-size: 11px; }
         .report-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 8px; }
         .summary { background: #fef2f2; padding: 15px; margin-bottom: 20px; border-left: 4px solid #ef4444; }
-        .summary-table-sm { width: 100%; border-collapse: separate; border-spacing: 8px; }
+        .summary-table-sm { width: 100%; border-collapse: collapse; }
         .summary-table-sm td { padding: 10px; background: white; width: 50%; }
         .summary-label { font-weight: bold; color: #666; font-size: 11px; display: block; margin-bottom: 4px; }
         .summary-value { font-size: 18px; color: #ef4444; font-weight: bold; display: block; }

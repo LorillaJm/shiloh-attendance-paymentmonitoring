@@ -109,28 +109,42 @@ class DailyAttendanceReport extends Page implements HasTable
     public function exportPdf()
     {
         try {
-            set_time_limit(120);
-
-            $records = AttendanceRecord::with(['student', 'encodedBy'])
+            // Increase limits before any processing
+            @ini_set('memory_limit', '512M');
+            set_time_limit(300);
+            
+            // Use chunk loading to reduce memory footprint
+            $records = AttendanceRecord::with(['student:id,student_no,first_name,last_name', 'encodedBy:id,name'])
                 ->whereHas('student')
                 ->whereDate('attendance_date', $this->selectedDate)
                 ->orderBy('student_id')
-                ->get();
+                ->get(['id', 'student_id', 'attendance_date', 'status', 'remarks', 'encoded_by_user_id', 'created_at']);
 
             $summary = $this->getSummary();
 
+            // Configure DomPDF for lower memory usage
             $pdf = Pdf::loadView('reports.daily-attendance-pdf', [
                 'records' => $records,
                 'summary' => $summary,
                 'date' => $this->selectedDate,
-            ])->setPaper('a4', 'portrait');
+            ])
+            ->setPaper('a4', 'portrait')
+            ->setOption('isHtml5ParserEnabled', true)
+            ->setOption('isRemoteEnabled', false)
+            ->setOption('chroot', public_path());
 
             $filename = 'daily-attendance-' . $this->selectedDate . '-' . now()->format('His') . '.pdf';
             $dir = storage_path('app/temp-reports');
             if (!is_dir($dir)) {
                 mkdir($dir, 0755, true);
             }
-            file_put_contents("{$dir}/{$filename}", $pdf->output());
+            
+            // Stream directly to file instead of keeping in memory
+            $pdf->save("{$dir}/{$filename}");
+            
+            // Clear memory
+            unset($records, $pdf);
+            gc_collect_cycles();
 
             $url = \Illuminate\Support\Facades\URL::signedRoute('report.download', ['filename' => $filename]);
             $this->js("window.open('{$url}', '_blank')");
@@ -138,7 +152,7 @@ class DailyAttendanceReport extends Page implements HasTable
             \Filament\Notifications\Notification::make()
                 ->danger()
                 ->title('PDF Export Failed')
-                ->body($e->getMessage())
+                ->body($e->getMessage() . ' (Memory: ' . memory_get_peak_usage(true) / 1024 / 1024 . 'MB)')
                 ->send();
         }
     }

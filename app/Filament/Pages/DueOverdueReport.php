@@ -240,24 +240,37 @@ class DueOverdueReport extends Page implements HasTable, HasForms
     public function exportPdf()
     {
         try {
-            set_time_limit(120);
+            // Increase limits before any processing
+            @ini_set('memory_limit', '512M');
+            set_time_limit(300);
 
             $records = $this->getTableQuery()->get();
             $summary = $this->getSummary();
 
+            // Configure DomPDF for lower memory usage
             $pdf = Pdf::loadView('reports.due-overdue-pdf', [
                 'records' => $records,
                 'summary' => $summary,
                 'filters' => $this->data,
                 'reportType' => $this->data['report_type'] ?? 'overdue',
-            ])->setPaper('a4', 'portrait');
+            ])
+            ->setPaper('a4', 'portrait')
+            ->setOption('isHtml5ParserEnabled', true)
+            ->setOption('isRemoteEnabled', false)
+            ->setOption('chroot', public_path());
 
             $filename = ($this->data['report_type'] ?? 'overdue') . '-report-' . now()->format('Y-m-d-His') . '.pdf';
             $dir = storage_path('app/temp-reports');
             if (!is_dir($dir)) {
                 mkdir($dir, 0755, true);
             }
-            file_put_contents("{$dir}/{$filename}", $pdf->output());
+            
+            // Stream directly to file instead of keeping in memory
+            $pdf->save("{$dir}/{$filename}");
+            
+            // Clear memory
+            unset($records, $pdf);
+            gc_collect_cycles();
 
             $url = \Illuminate\Support\Facades\URL::signedRoute('report.download', ['filename' => $filename]);
             $this->js("window.open('{$url}', '_blank')");
@@ -265,7 +278,7 @@ class DueOverdueReport extends Page implements HasTable, HasForms
             \Filament\Notifications\Notification::make()
                 ->danger()
                 ->title('PDF Export Failed')
-                ->body($e->getMessage())
+                ->body($e->getMessage() . ' (Memory: ' . memory_get_peak_usage(true) / 1024 / 1024 . 'MB)')
                 ->send();
         }
     }

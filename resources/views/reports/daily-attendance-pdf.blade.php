@@ -2,98 +2,181 @@
 <html>
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Daily Attendance Report</title>
     <style>
-        body { font-family: Arial, sans-serif; font-size: 12px; margin: 20px; }
-        .report-header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 15px; }
-        .report-header h1 { margin: 0; font-size: 20px; color: #2563eb; }
-        .report-header h2 { margin: 5px 0; font-size: 16px; color: #333; }
-        .report-header p { margin: 3px 0; color: #666; font-size: 11px; }
-        .report-logo { width: 80px; height: 80px; object-fit: contain; margin-bottom: 8px; }
-        .summary { background: #f3f4f6; padding: 15px; margin-bottom: 20px; }
-        .summary-table { width: 100%; border-collapse: separate; border-spacing: 8px; }
-        .summary-table td { padding: 10px; background: white; text-align: center; width: 20%; }
-        .summary-label { font-weight: bold; color: #666; font-size: 10px; display: block; margin-bottom: 4px; }
-        .summary-value { font-size: 16px; font-weight: bold; display: block; }
-        .present { color: #10b981; }
-        .absent { color: #ef4444; }
-        .late { color: #f59e0b; }
-        .excused { color: #3b82f6; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th { background: #2563eb; color: white; padding: 10px; text-align: left; font-size: 11px; }
-        td { padding: 8px; border-bottom: 1px solid #e5e7eb; }
-        tr:nth-child(even) { background: #f9fafb; }
-        .status-badge { padding: 4px 8px; border-radius: 3px; font-weight: bold; font-size: 10px; }
-        .status-present { background: #d1fae5; color: #065f46; }
-        .status-absent { background: #fee2e2; color: #991b1b; }
-        .status-late { background: #fef3c7; color: #92400e; }
-        .status-excused { background: #dbeafe; color: #1e40af; }
-        .footer { margin-top: 30px; text-align: center; font-size: 10px; color: #666; border-top: 1px solid #e5e7eb; padding-top: 10px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'DejaVu Sans', sans-serif;
+            font-size: 11px;
+            color: #333333;
+            margin: 30px;
+            line-height: 1.4;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #2563eb;
+            margin-bottom: 20px;
+        }
+        .header img { height: 65px; margin-bottom: 8px; }
+        .header h1 { font-size: 18px; color: #1e3a5f; margin: 0 0 2px 0; }
+        .header h2 { font-size: 14px; color: #2563eb; font-weight: bold; margin: 0 0 2px 0; }
+        .header p { font-size: 10px; color: #666666; margin: 2px 0; }
+
+        /* Summary Cards */
+        .summary-row { width: 100%; margin-bottom: 20px; }
+        .summary-row table { width: 100%; border-collapse: collapse; }
+        .summary-row td { width: 20%; text-align: center; padding: 12px 8px; }
+        .summary-card {
+            border: 1px solid #e5e7eb;
+            padding: 10px;
+            text-align: center;
+        }
+        .summary-label { font-size: 9px; font-weight: bold; color: #888888; letter-spacing: 1px; text-transform: uppercase; }
+        .summary-value { font-size: 22px; font-weight: bold; margin-top: 4px; }
+        .color-total { color: #6366f1; }
+        .color-present { color: #10b981; }
+        .color-absent { color: #ef4444; }
+        .color-late { color: #f59e0b; }
+        .color-excused { color: #3b82f6; }
+
+        /* Data Table */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        .data-table th {
+            background-color: #2563eb;
+            color: #ffffff;
+            padding: 8px 10px;
+            text-align: left;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .data-table td {
+            padding: 7px 10px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 10px;
+        }
+        .data-table tr.even td { background-color: #f9fafb; }
+        .data-table .row-num { width: 30px; text-align: center; color: #999999; }
+
+        /* Status Badges */
+        .badge { padding: 3px 8px; font-weight: bold; font-size: 9px; text-transform: uppercase; }
+        .badge-present { background-color: #d1fae5; color: #065f46; }
+        .badge-absent { background-color: #fee2e2; color: #991b1b; }
+        .badge-late { background-color: #fef3c7; color: #92400e; }
+        .badge-excused { background-color: #dbeafe; color: #1e40af; }
+
+        /* Footer */
+        .footer {
+            margin-top: 30px;
+            padding-top: 10px;
+            border-top: 1px solid #dddddd;
+            text-align: center;
+            font-size: 9px;
+            color: #999999;
+        }
+
+        /* Page break */
+        .page-break { page-break-after: always; }
     </style>
 </head>
 <body>
-    @include('reports.partials.header', [
-        'reportTitle' => 'Daily Attendance Report',
-        'reportSubtitle' => 'Date: ' . \Carbon\Carbon::parse($date)->format('l, F d, Y'),
-    ])
+    {{-- Header --}}
+    @php
+        $logoPath = public_path('images/logo.jpg');
+        $logoBase64 = '';
+        if (file_exists($logoPath)) {
+            $logoBase64 = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($logoPath));
+        }
+    @endphp
+    <div class="header">
+        @if($logoBase64)
+            <img src="{{ $logoBase64 }}" alt="Logo">
+        @endif
+        <h1>Shiloh's Learning and Development Center</h1>
+        <h2>Daily Attendance Report</h2>
+        <p>Date: {{ \Carbon\Carbon::parse($date)->format('l, F d, Y') }}</p>
+        <p>Generated: {{ now()->format('F d, Y h:i A') }}</p>
+    </div>
 
-    <div class="summary">
-        <table class="summary-table">
+    {{-- Summary Cards --}}
+    <div class="summary-row">
+        <table>
             <tr>
                 <td>
-                    <span class="summary-label">TOTAL</span>
-                    <span class="summary-value">{{ $summary['total'] }}</span>
+                    <div class="summary-card">
+                        <div class="summary-label">Total</div>
+                        <div class="summary-value color-total">{{ $summary['total'] }}</div>
+                    </div>
                 </td>
                 <td>
-                    <span class="summary-label">PRESENT</span>
-                    <span class="summary-value present">{{ $summary['present'] }}</span>
+                    <div class="summary-card">
+                        <div class="summary-label">Present</div>
+                        <div class="summary-value color-present">{{ $summary['present'] }}</div>
+                    </div>
                 </td>
                 <td>
-                    <span class="summary-label">ABSENT</span>
-                    <span class="summary-value absent">{{ $summary['absent'] }}</span>
+                    <div class="summary-card">
+                        <div class="summary-label">Absent</div>
+                        <div class="summary-value color-absent">{{ $summary['absent'] }}</div>
+                    </div>
                 </td>
                 <td>
-                    <span class="summary-label">LATE</span>
-                    <span class="summary-value late">{{ $summary['late'] }}</span>
+                    <div class="summary-card">
+                        <div class="summary-label">Late</div>
+                        <div class="summary-value color-late">{{ $summary['late'] }}</div>
+                    </div>
                 </td>
                 <td>
-                    <span class="summary-label">EXCUSED</span>
-                    <span class="summary-value excused">{{ $summary['excused'] }}</span>
+                    <div class="summary-card">
+                        <div class="summary-label">Excused</div>
+                        <div class="summary-value color-excused">{{ $summary['excused'] }}</div>
+                    </div>
                 </td>
             </tr>
         </table>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th>Student No</th>
-                <th>Student Name</th>
-                <th>Status</th>
-                <th>Remarks</th>
-                <th>Encoded By</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($records as $record)
-            <tr>
-                <td>{{ $record->student?->student_no ?? 'N/A' }}</td>
-                <td>{{ $record->student?->full_name ?? 'Unknown Student' }}</td>
-                <td>
-                    <span class="status-badge status-{{ strtolower($record->status) }}">
-                        {{ $record->status }}
-                    </span>
-                </td>
-                <td>{{ $record->remarks ?? '-' }}</td>
-                <td>{{ $record->encodedBy?->name ?? '-' }}</td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    {{-- Data Table --}}
+    @if($records->count() > 0)
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th class="row-num">#</th>
+                    <th>Student No</th>
+                    <th>Student Name</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                    <th>Encoded By</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($records as $index => $record)
+                    <tr class="{{ $index % 2 === 1 ? 'even' : '' }}">
+                        <td class="row-num">{{ $index + 1 }}</td>
+                        <td>{{ $record->student?->student_no ?? 'N/A' }}</td>
+                        <td>{{ $record->student?->full_name ?? 'Unknown' }}</td>
+                        <td>
+                            <span class="badge badge-{{ strtolower($record->status) }}">{{ $record->status }}</span>
+                        </td>
+                        <td>{{ $record->remarks ?? '-' }}</td>
+                        <td>{{ $record->encodedBy?->name ?? '-' }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    @else
+        <p style="text-align: center; padding: 30px; color: #999999;">No attendance records found for this date.</p>
+    @endif
 
+    {{-- Footer --}}
     <div class="footer">
-        <p>This is a computer-generated report from Shiloh Attendance and Payment System</p>
-        <p>Printed on {{ now()->format('F d, Y h:i A') }}</p>
+        <p>This is a computer-generated report from Shiloh Attendance & Payment System</p>
+        <p>Total Records: {{ $records->count() }} | Printed on {{ now()->format('F d, Y h:i A') }}</p>
     </div>
 </body>
 </html>

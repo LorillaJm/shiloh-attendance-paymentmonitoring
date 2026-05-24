@@ -48,12 +48,12 @@ class AttendanceExport implements FromCollection, WithHeadings, WithMapping, Wit
     public function map($record): array
     {
         return [
-            $record->attendance_date->format('Y-m-d'),
-            $record->student->student_no,
-            $record->student->full_name,
+            $record->attendance_date?->format('Y-m-d') ?? '',
+            $record->student?->student_no ?? 'N/A',
+            $record->student?->full_name ?? 'Unknown',
             $record->status,
             $record->remarks ?? '-',
-            $record->encodedBy->name,
+            $record->encodedBy?->name ?? '-',
         ];
     }
 
