@@ -22,14 +22,22 @@ class RevenueChartWidget extends ChartWidget
     protected function getFilters(): ?array
     {
         $filters = [];
-        $current = now('Asia/Manila');
+        $currentYear = (int) now('Asia/Manila')->format('Y');
+        $currentMonth = (int) now('Asia/Manila')->format('m');
 
-        // Generate last 12 months as filter options
-        for ($i = 0; $i < 12; $i++) {
-            $date = $current->copy()->subMonths($i);
-            $key = $date->format('Y-m');
-            $label = $date->format('F Y');
-            $filters[$key] = $label;
+        // Current year: January up to current month
+        $filters["year_{$currentYear}"] = "── {$currentYear} ──";
+        for ($m = 1; $m <= $currentMonth; $m++) {
+            $date = Carbon::create($currentYear, $m, 1);
+            $filters[$date->format('Y-m')] = $date->format('F');
+        }
+
+        // Previous year: all 12 months
+        $prevYear = $currentYear - 1;
+        $filters["year_{$prevYear}"] = "── {$prevYear} ──";
+        for ($m = 1; $m <= 12; $m++) {
+            $date = Carbon::create($prevYear, $m, 1);
+            $filters[$date->format('Y-m')] = $date->format('F');
         }
 
         return $filters;
@@ -38,6 +46,12 @@ class RevenueChartWidget extends ChartWidget
     protected function getData(): array
     {
         $filter = $this->filter ?? now('Asia/Manila')->format('Y-m');
+        
+        // Handle year separator selection (e.g. "year_2026")
+        if (str_starts_with($filter, 'year_')) {
+            $filter = str_replace('year_', '', $filter) . '-01';
+        }
+        
         $selectedDate = Carbon::createFromFormat('Y-m', $filter)->timezone('Asia/Manila');
         $startDate = $selectedDate->copy()->startOfMonth();
         $endDate = $selectedDate->copy()->endOfMonth();
