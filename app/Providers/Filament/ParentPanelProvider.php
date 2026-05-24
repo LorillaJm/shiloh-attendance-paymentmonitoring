@@ -67,6 +67,7 @@ class ParentPanelProvider extends PanelProvider
             ->topNavigation(false)
             ->profile(\App\Filament\Parent\Pages\EditProfile::class)
             ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->pages([
                 \App\Filament\Parent\Pages\ParentDashboard::class,
                 \App\Filament\Parent\Pages\MyChild::class,

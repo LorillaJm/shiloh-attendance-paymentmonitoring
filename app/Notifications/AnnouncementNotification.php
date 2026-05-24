@@ -34,12 +34,12 @@ class AnnouncementNotification extends Notification implements ShouldBroadcast
 
     public function toDatabase(object $notifiable): array
     {
-        return [
-            'announcement_id' => $this->announcement->id,
-            'title' => $this->announcement->title,
-            'message' => $this->announcement->message,
-            'created_by' => $this->announcement->creator->name,
-        ];
+        return \Filament\Notifications\Notification::make()
+            ->title($this->announcement->title)
+            ->body($this->announcement->message)
+            ->icon('heroicon-o-megaphone')
+            ->info()
+            ->getDatabaseMessage();
     }
 
     public function toBroadcast(object $notifiable): BroadcastMessage
