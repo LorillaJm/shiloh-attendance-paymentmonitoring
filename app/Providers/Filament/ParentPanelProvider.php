@@ -65,6 +65,7 @@ class ParentPanelProvider extends PanelProvider
             ->sidebarWidth('16rem')
             ->maxContentWidth('full')
             ->topNavigation(false)
+            ->profile(\App\Filament\Parent\Pages\EditProfile::class)
             ->databaseNotifications()
             ->pages([
                 \App\Filament\Parent\Pages\ParentDashboard::class,

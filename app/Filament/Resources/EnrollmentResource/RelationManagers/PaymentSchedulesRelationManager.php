@@ -151,7 +151,7 @@ class PaymentSchedulesRelationManager extends RelationManager
                             'type' => 'PAYMENT',
                             'amount' => $record->amount_due,
                             'payment_method' => $data['payment_method'],
-                            'receipt_no' => $data['receipt_no'] ?? null,
+                            'reference_no' => $data['receipt_no'] ?? null,
                             'remarks' => $data['remarks'] ?? null,
                             'processed_by_user_id' => auth()->id(),
                         ]);
@@ -177,6 +177,9 @@ class PaymentSchedulesRelationManager extends RelationManager
                             ->title('Payment Recorded')
                             ->body("Payment of ₱" . number_format($record->amount_due, 2) . " marked as paid.")
                             ->send();
+
+                        // Force page refresh to update Balance Overview
+                        redirect(\App\Filament\Resources\EnrollmentResource::getUrl('view', ['record' => $record->enrollment_id]));
                     }),
 
                 Tables\Actions\ViewAction::make(),

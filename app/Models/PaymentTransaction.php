@@ -44,6 +44,15 @@ class PaymentTransaction extends Model
         // Clear cache when payment is created
         static::created(function ($payment) {
             \App\Services\DashboardCacheService::clearPaymentsSummary($payment->transaction_date);
+            
+            // Clear parent portal cache so dashboard reflects new payment
+            if ($payment->enrollment && $payment->enrollment->student) {
+                $guardians = $payment->enrollment->student->guardians;
+                foreach ($guardians as $guardian) {
+                    \Illuminate\Support\Facades\Cache::forget("parent_dashboard_{$guardian->id}");
+                    \Illuminate\Support\Facades\Cache::forget("parent_notifications_{$guardian->id}");
+                }
+            }
         });
 
         // Clear cache when payment is updated

@@ -57,7 +57,7 @@
                             {{-- Total Sessions --}}
                             <div style="background: #f9fafb; border-radius: 12px; padding: 0.875rem; text-align: center;" class="dark:bg-gray-700">
                                 <p style="font-size: 1.5rem; font-weight: 700; color: #1f2937; margin-bottom: 0.25rem;" class="dark:text-white">
-                                    {{ $activeEnrollment->package->total_sessions ?? 0 }}
+                                    {{ $activeEnrollment->total_sessions ?? 0 }}
                                 </p>
                                 <p style="font-size: 0.75rem; color: #6b7280;" class="dark:text-gray-400">
                                     Total Sessions

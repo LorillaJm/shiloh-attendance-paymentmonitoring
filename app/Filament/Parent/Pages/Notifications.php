@@ -82,20 +82,14 @@ class Notifications extends Page
                 ->with(['student', 'package'])
                 ->get()
                 ->filter(function ($enrollment) {
-                    if (!$enrollment->package || !$enrollment->package->total_sessions) {
+                    if (!$enrollment->total_sessions) {
                         return false;
                     }
-                    $used = $enrollment->student->sessionOccurrences()
-                        ->where('status', 'COMPLETED')
-                        ->count();
-                    $remaining = $enrollment->package->total_sessions - $used;
+                    $remaining = $enrollment->total_sessions - ($enrollment->sessions_used ?? 0);
                     return $remaining > 0 && $remaining <= 5;
                 })
                 ->map(function ($enrollment) {
-                    $used = $enrollment->student->sessionOccurrences()
-                        ->where('status', 'COMPLETED')
-                        ->count();
-                    $enrollment->sessions_remaining = $enrollment->package->total_sessions - $used;
+                    $enrollment->sessions_remaining = $enrollment->total_sessions - ($enrollment->sessions_used ?? 0);
                     return $enrollment;
                 });
 

@@ -18,7 +18,7 @@ class ParentPortalService
      */
     public function getDashboardData(Guardian $guardian): array
     {
-        return Cache::remember("parent_dashboard_{$guardian->id}", 60, function () use ($guardian) {
+        return Cache::remember("parent_dashboard_{$guardian->id}", 5, function () use ($guardian) {
             $studentIds = $guardian->students->pluck('id')->toArray();
 
             if (empty($studentIds)) {
@@ -59,11 +59,9 @@ class ParentPortalService
                 $student->remaining_balance = $activeEnrollment?->remaining_balance_computed ?? 0;
                 
                 // Calculate sessions
-                if ($activeEnrollment && $activeEnrollment->package) {
-                    $totalSessions = $activeEnrollment->package->total_sessions ?? 0;
-                    $completedSessions = SessionOccurrence::where('student_id', $student->id)
-                        ->where('status', 'COMPLETED')
-                        ->count();
+                if ($activeEnrollment) {
+                    $totalSessions = $activeEnrollment->total_sessions ?? 0;
+                    $completedSessions = $activeEnrollment->sessions_used ?? 0;
                     
                     $student->total_sessions = $totalSessions;
                     $student->completed_sessions = $completedSessions;
@@ -206,13 +204,10 @@ class ParentPortalService
             ->with(['student', 'package'])
             ->get()
             ->filter(function ($enrollment) {
-                if (!$enrollment->package || !$enrollment->package->total_sessions) {
+                if (!$enrollment->total_sessions) {
                     return false;
                 }
-                $used = SessionOccurrence::where('student_id', $enrollment->student_id)
-                    ->where('status', 'COMPLETED')
-                    ->count();
-                $remaining = $enrollment->package->total_sessions - $used;
+                $remaining = $enrollment->total_sessions - ($enrollment->sessions_used ?? 0);
                 return $remaining > 0 && $remaining <= 5;
             })
             ->count();
