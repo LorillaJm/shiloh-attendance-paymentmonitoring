@@ -128,7 +128,8 @@ class DashboardCacheService
     public static function clearAll(): void
     {
         Cache::forget('dashboard.student_counts');
-        Cache::forget('revenue_chart_30d');
+        $currentMonth = now('Asia/Manila')->format('Y-m');
+        Cache::forget("revenue_chart_{$currentMonth}");
         Cache::forget('dashboard_kpi_stats_v3');
         Cache::forget('dashboard_financial_summary_v1');
     }
@@ -173,7 +174,8 @@ class DashboardCacheService
             Cache::forget($cacheKey);
         }
         // Always clear revenue chart and KPI caches when payments change
-        Cache::forget('revenue_chart_30d');
+        $currentMonth = now('Asia/Manila')->format('Y-m');
+        Cache::forget("revenue_chart_{$currentMonth}");
         Cache::forget('dashboard_kpi_stats_v3');
         Cache::forget('dashboard_financial_summary_v1');
     }
