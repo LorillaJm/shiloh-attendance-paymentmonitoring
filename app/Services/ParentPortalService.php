@@ -56,6 +56,7 @@ class ParentPortalService
                 $student->active_enrollment = $activeEnrollment;
                 $student->package_name = $activeEnrollment?->package?->name ?? 'No Package';
                 $student->total_fee = $activeEnrollment?->total_fee ?? 0;
+                $student->total_paid = $activeEnrollment?->total_paid ?? 0;
                 $student->remaining_balance = $activeEnrollment?->remaining_balance_computed ?? 0;
                 
                 // Calculate sessions
