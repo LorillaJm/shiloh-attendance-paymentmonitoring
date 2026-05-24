@@ -5,11 +5,18 @@
         <div class="mt-6">
             <x-filament::section>
                 <x-slot name="heading">
-                    Students ({{ count($students) }})
+                    Students ({{ $totalStudents }})
                 </x-slot>
 
                 <x-slot name="headerEnd">
-                    <div class="flex flex-wrap gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <select wire:model.live="perPage" class="text-sm border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 py-1.5 px-2 focus:ring-primary-500 focus:border-primary-500">
+                            <option value="10">10 per page</option>
+                            <option value="20">20 per page</option>
+                            <option value="50">50 per page</option>
+                            <option value="100">100 per page</option>
+                        </select>
+
                         <x-filament::button
                             wire:click="markAllPresent"
                             color="success"
@@ -211,6 +218,35 @@
                             </tbody>
                         </table>
                     </div>
+
+                    {{-- Pagination --}}
+                    @if($this->totalPages() > 1)
+                        <div class="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 px-2">
+                            <p class="text-sm text-gray-600 dark:text-gray-400">
+                                Showing {{ (($currentPage - 1) * $perPage) + 1 }} to {{ min($currentPage * $perPage, $totalStudents) }} of {{ $totalStudents }} students
+                            </p>
+                            <div class="flex items-center gap-1">
+                                <button type="button" wire:click="previousPage" @disabled($currentPage <= 1)
+                                    class="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                                    Previous
+                                </button>
+                                @for($i = 1; $i <= $this->totalPages(); $i++)
+                                    @if($this->totalPages() <= 7 || $i <= 2 || $i >= $this->totalPages() - 1 || abs($i - $currentPage) <= 1)
+                                        <button type="button" wire:click="goToPage({{ $i }})"
+                                            class="px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors {{ $i === $currentPage ? 'bg-primary-600 text-white border-primary-600' : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700' }}">
+                                            {{ $i }}
+                                        </button>
+                                    @elseif($i === 3 || $i === $this->totalPages() - 2)
+                                        <span class="px-2 text-gray-400">...</span>
+                                    @endif
+                                @endfor
+                                <button type="button" wire:click="nextPage" @disabled($currentPage >= $this->totalPages())
+                                    class="px-3 py-1.5 text-sm font-medium rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                                    Next
+                                </button>
+                            </div>
+                        </div>
+                    @endif
 
                     <div class="mt-6 flex justify-end">
                         <x-filament::button

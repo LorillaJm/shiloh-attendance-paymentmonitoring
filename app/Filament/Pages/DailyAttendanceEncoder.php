@@ -38,6 +38,9 @@ class DailyAttendanceEncoder extends Page implements HasForms
     public $students = [];
     public $attendanceData = [];
     public $sessionOccurrenceData = [];
+    public int $perPage = 20;
+    public int $currentPage = 1;
+    public int $totalStudents = 0;
 
     public function mount(): void
     {
@@ -87,6 +90,39 @@ class DailyAttendanceEncoder extends Page implements HasForms
             ->statePath('data');
     }
 
+    public function updatedPerPage(): void
+    {
+        $this->currentPage = 1;
+        $this->loadStudents();
+    }
+
+    public function previousPage(): void
+    {
+        if ($this->currentPage > 1) {
+            $this->currentPage--;
+            $this->loadStudents();
+        }
+    }
+
+    public function nextPage(): void
+    {
+        if ($this->currentPage < $this->totalPages()) {
+            $this->currentPage++;
+            $this->loadStudents();
+        }
+    }
+
+    public function goToPage(int $page): void
+    {
+        $this->currentPage = $page;
+        $this->loadStudents();
+    }
+
+    public function totalPages(): int
+    {
+        return max(1, (int) ceil($this->totalStudents / $this->perPage));
+    }
+
     public function loadStudents(): void
     {
         $query = Student::query();
@@ -106,18 +142,17 @@ class DailyAttendanceEncoder extends Page implements HasForms
             });
         }
 
-        // Use limit+1 trick to detect if more records exist without a separate COUNT query
-        $this->students = $query->orderBy('student_no')->limit(101)->get();
-        $hasMore = $this->students->count() > 100;
-        
-        if ($hasMore) {
-            $this->students = $this->students->take(100);
-            \Filament\Notifications\Notification::make()
-                ->info()
-                ->title('Showing First 100 Students')
-                ->body('Use search to find specific students.')
-                ->send();
+        // Get total count
+        $this->totalStudents = $query->count();
+
+        // Ensure current page is valid
+        if ($this->currentPage > $this->totalPages()) {
+            $this->currentPage = $this->totalPages();
         }
+
+        // Paginate
+        $offset = ($this->currentPage - 1) * $this->perPage;
+        $this->students = $query->orderBy('student_no')->skip($offset)->take($this->perPage)->get();
 
         // Load existing attendance for the selected date
         $attendanceDate = $this->data['attendance_date'] ?? now()->format('Y-m-d');
