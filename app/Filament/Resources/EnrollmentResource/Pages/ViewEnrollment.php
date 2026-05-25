@@ -16,9 +16,10 @@ class ViewEnrollment extends ViewRecord
     {
         // Eager load relationships and aggregate counts in a single query
         // instead of 6+ separate queries (~200ms each to Supabase)
+        // Use payment_schedules as source of truth for total_paid
         return \App\Models\Enrollment::query()
             ->with(['student', 'package'])
-            ->withSum(['paymentTransactions as total_paid' => fn ($q) => $q->where('type', 'PAYMENT')], 'amount')
+            ->withSum(['paymentSchedules as total_paid' => fn ($q) => $q->where('status', 'PAID')], 'amount_due')
             ->withCount([
                 'paymentSchedules as paid_count' => fn ($q) => $q->where('status', 'PAID'),
                 'paymentSchedules as unpaid_count' => fn ($q) => $q->where('status', 'UNPAID'),

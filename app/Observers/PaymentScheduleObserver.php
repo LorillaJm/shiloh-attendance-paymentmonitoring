@@ -38,7 +38,12 @@ class PaymentScheduleObserver
      */
     private function clearDashboardCaches(): void
     {
-        \App\Services\DashboardCacheService::clearPaymentCaches();
+        \App\Services\DashboardCacheService::clearPaymentsSummary(now());
+        
+        // Also clear due/overdue payment count caches
+        \Illuminate\Support\Facades\Cache::forget('due_payments_count');
+        \Illuminate\Support\Facades\Cache::forget('overdue_payments_count');
+        \Illuminate\Support\Facades\Cache::forget('overdue_payments_total');
     }
 
     /**

@@ -60,11 +60,12 @@ class RevenueChartWidget extends ChartWidget
         $cacheKey = "revenue_chart_{$filter}";
 
         $revenues = Cache::remember($cacheKey, 300, function () use ($startDate, $endDate) {
-            return DB::table('payment_transactions')
-                ->select(DB::raw("DATE(transaction_date) as pay_date"), DB::raw("COALESCE(SUM(amount), 0) as total"))
-                ->where('type', 'PAYMENT')
-                ->whereBetween(DB::raw('DATE(transaction_date)'), [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
-                ->groupBy(DB::raw('DATE(transaction_date)'))
+            return DB::table('payment_schedules')
+                ->select(DB::raw("DATE(paid_at) as pay_date"), DB::raw("COALESCE(SUM(amount_due), 0) as total"))
+                ->where('status', 'PAID')
+                ->whereNotNull('paid_at')
+                ->whereBetween(DB::raw('DATE(paid_at)'), [$startDate->format('Y-m-d'), $endDate->format('Y-m-d')])
+                ->groupBy(DB::raw('DATE(paid_at)'))
                 ->pluck('total', 'pay_date')
                 ->toArray();
         });

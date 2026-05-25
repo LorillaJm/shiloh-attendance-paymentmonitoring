@@ -58,13 +58,13 @@ class Enrollment extends Model
     }
 
     /**
-     * Get total amount paid from transactions ledger.
+     * Get total amount paid from payment schedules marked as PAID.
      */
     public function getTotalPaidAttribute(): float
     {
-        return $this->paymentTransactions()
-            ->where('type', 'PAYMENT')
-            ->sum('amount');
+        return (float) $this->paymentSchedules()
+            ->where('status', 'PAID')
+            ->sum('amount_due');
     }
 
     /**

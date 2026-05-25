@@ -156,6 +156,17 @@ class PaymentSchedulesRelationManager extends RelationManager
                             'processed_by_user_id' => auth()->id(),
                         ]);
 
+                        // Update enrollment remaining balance (use payment_schedules as source of truth)
+                        $enrollment = $record->enrollment;
+                        if ($enrollment) {
+                            $totalPaid = $enrollment->paymentSchedules()
+                                ->where('status', 'PAID')
+                                ->sum('amount_due');
+                            $enrollment->update([
+                                'remaining_balance' => max(0, $enrollment->total_fee - $totalPaid),
+                            ]);
+                        }
+
                         // Log the activity
                         \App\Services\ActivityLogger::log(
                             description: "Payment marked as paid",

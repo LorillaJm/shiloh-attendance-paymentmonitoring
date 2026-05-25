@@ -18,7 +18,7 @@ class Dashboard extends BaseDashboard
     {
         $user = auth()->user();
         
-        if ($user->isAdmin()) {
+        if ($user->isAdmin() || $user->isSuperadmin()) {
             return 'Command Center';
         }
         
@@ -57,8 +57,8 @@ class Dashboard extends BaseDashboard
                 return [];
             }
             
-            if ($user->isAdmin()) {
-                // Use optimized stats widget + chart
+            if ($user->isAdmin() || $user->isSuperadmin()) {
+                // Use optimized stats widget + chart for admin/superadmin
                 return [
                     \App\Filament\Widgets\OptimizedStatsOverviewWidget::class,
                     \App\Filament\Widgets\RevenueChartWidget::class,

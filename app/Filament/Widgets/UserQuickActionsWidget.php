@@ -14,7 +14,8 @@ class UserQuickActionsWidget extends Widget
 
     public static function canView(): bool
     {
-        return !auth()->user()->isAdmin();
+        $user = auth()->user();
+        return !$user->isAdmin() && !$user->isSuperadmin();
     }
 
     public function getTodayDate(): string

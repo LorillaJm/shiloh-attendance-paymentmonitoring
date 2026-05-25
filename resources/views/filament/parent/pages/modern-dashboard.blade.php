@@ -200,9 +200,9 @@
                     @forelse($data['recent_payments'] as $payment)
                         <div style="display: flex; align-items: center; justify-content: space-between; padding: 0.875rem; background: #f9fafb; border-radius: 12px; transition: all 0.2s;">
                             <div style="flex: 1;">
-                                <p style="font-size: 0.875rem; font-weight: 600; color: #1f2937; margin-bottom: 0.25rem;">₱{{ number_format($payment->amount, 2) }}</p>
+                                <p style="font-size: 0.875rem; font-weight: 600; color: #1f2937; margin-bottom: 0.25rem;">₱{{ number_format($payment->amount_due, 2) }}</p>
                                 <p style="font-size: 0.75rem; color: #6b7280; margin-bottom: 0.125rem;">{{ $payment->enrollment->student->full_name }}</p>
-                                <p style="font-size: 0.75rem; color: #9ca3af;">{{ $payment->transaction_date->format('M d, Y') }}</p>
+                                <p style="font-size: 0.75rem; color: #9ca3af;">{{ $payment->paid_at->format('M d, Y') }}</p>
                             </div>
                         </div>
                     @empty

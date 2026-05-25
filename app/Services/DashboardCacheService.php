@@ -132,6 +132,11 @@ class DashboardCacheService
         Cache::forget("revenue_chart_{$currentMonth}");
         Cache::forget('dashboard_kpi_stats_v3');
         Cache::forget('dashboard_financial_summary_v1');
+        Cache::forget('dashboard_collections_trend_v3');
+        Cache::forget('dashboard_recent_payments_v3');
+        Cache::forget('due_payments_count');
+        Cache::forget('overdue_payments_count');
+        Cache::forget('overdue_payments_total');
     }
 
     /**
@@ -178,5 +183,7 @@ class DashboardCacheService
         Cache::forget("revenue_chart_{$currentMonth}");
         Cache::forget('dashboard_kpi_stats_v3');
         Cache::forget('dashboard_financial_summary_v1');
+        Cache::forget('dashboard_collections_trend_v3');
+        Cache::forget('dashboard_recent_payments_v3');
     }
 }

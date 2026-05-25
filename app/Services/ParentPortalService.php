@@ -6,6 +6,7 @@ use App\Models\Guardian;
 use App\Models\Student;
 use App\Models\AttendanceRecord;
 use App\Models\PaymentTransaction;
+use App\Models\PaymentSchedule;
 use App\Models\SessionOccurrence;
 use App\Models\Enrollment;
 use Illuminate\Support\Facades\Cache;
@@ -147,16 +148,17 @@ class ParentPortalService
     }
 
     /**
-     * Get recent payment transactions
+     * Get recent paid payment schedules (source of truth for payments)
      */
     private function getRecentPayments(array $studentIds, int $limit = 5): \Illuminate\Support\Collection
     {
-        return PaymentTransaction::whereHas('enrollment', function ($query) use ($studentIds) {
+        return PaymentSchedule::whereHas('enrollment', function ($query) use ($studentIds) {
                 $query->whereIn('student_id', $studentIds);
             })
             ->with(['enrollment.student:id,first_name,last_name,student_no'])
-            ->where('type', 'PAYMENT')
-            ->orderBy('transaction_date', 'desc')
+            ->where('status', 'PAID')
+            ->whereNotNull('paid_at')
+            ->orderBy('paid_at', 'desc')
             ->limit($limit)
             ->get();
     }
