@@ -15,6 +15,12 @@ class SessionHistory extends Page
     protected static ?string $navigationGroup = 'Reports';
     protected static ?string $navigationLabel = 'Session History Report';
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
+    }
+
     public ?int $studentId = null;
     public ?string $startDate = null;
     public ?string $endDate = null;
@@ -66,7 +72,8 @@ class SessionHistory extends Page
 
     public static function canAccess(): bool
     {
-        // Only ADMIN can access session history
-        return Auth::check() && Auth::user()?->isAdmin();
+        // Only SUPERADMIN and ADMIN can access session history
+        $user = Auth::user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 }

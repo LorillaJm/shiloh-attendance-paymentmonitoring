@@ -27,6 +27,18 @@ class MonthlyAttendanceSummary extends Page implements HasTable
 
     protected static ?int $navigationSort = 2;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
+    }
+
     public $selectedMonth;
     public $selectedYear;
 

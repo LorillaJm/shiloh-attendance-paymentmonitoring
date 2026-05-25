@@ -33,7 +33,8 @@ class DuePayments extends Page implements HasTable
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->isAdmin() ?? false;
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
     }
 
     public function table(Table $table): Table

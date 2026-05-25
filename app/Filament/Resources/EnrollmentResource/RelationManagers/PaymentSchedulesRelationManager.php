@@ -194,6 +194,85 @@ class PaymentSchedulesRelationManager extends RelationManager
                     }),
 
                 Tables\Actions\ViewAction::make(),
+
+                Tables\Actions\Action::make('editSchedule')
+                    ->label('Edit')
+                    ->icon('heroicon-m-pencil-square')
+                    ->color('warning')
+                    ->visible(fn ($record) => $record->status !== 'PAID')
+                    ->form(fn ($record) => [
+                        Forms\Components\DatePicker::make('due_date')
+                            ->label('Due Date')
+                            ->default($record->due_date)
+                            ->required()
+                            ->native(false),
+
+                        Forms\Components\TextInput::make('amount_due')
+                            ->label('Amount Due')
+                            ->prefix('₱')
+                            ->numeric()
+                            ->default($record->amount_due)
+                            ->required()
+                            ->minValue(0)
+                            ->step(0.01),
+
+                        Forms\Components\Textarea::make('remarks')
+                            ->label('Remarks')
+                            ->placeholder('Optional notes for this change')
+                            ->default($record->remarks)
+                            ->rows(2),
+                    ])
+                    ->action(function ($record, array $data) {
+                        $oldAmount = $record->amount_due;
+                        $oldDueDate = $record->due_date;
+                        
+                        // Update the payment schedule
+                        $record->update([
+                            'due_date' => $data['due_date'],
+                            'amount_due' => $data['amount_due'],
+                            'remarks' => $data['remarks'] ?? null,
+                        ]);
+
+                        // Recalculate enrollment remaining balance
+                        $enrollment = $record->enrollment;
+                        if ($enrollment) {
+                            $totalScheduled = $enrollment->paymentSchedules()->sum('amount_due');
+                            $totalPaid = $enrollment->paymentSchedules()
+                                ->where('status', 'PAID')
+                                ->sum('amount_due');
+                            
+                            // Update total_fee to match sum of all schedules
+                            $enrollment->update([
+                                'total_fee' => $totalScheduled,
+                                'remaining_balance' => max(0, $totalScheduled - $totalPaid),
+                            ]);
+                        }
+
+                        // Log the activity
+                        \App\Services\ActivityLogger::log(
+                            description: "Payment schedule modified",
+                            subject: $record,
+                            properties: [
+                                'enrollment_id' => $record->enrollment_id,
+                                'installment_no' => $record->installment_no,
+                                'old_amount' => $oldAmount,
+                                'new_amount' => $data['amount_due'],
+                                'old_due_date' => $oldDueDate?->format('Y-m-d'),
+                                'new_due_date' => $data['due_date'],
+                                'modified_by' => auth()->user()->name,
+                            ],
+                            logName: 'payment'
+                        );
+
+                        Notification::make()
+                            ->success()
+                            ->title('Schedule Updated')
+                            ->body("Payment schedule updated successfully.")
+                            ->send();
+
+                        // Refresh the page
+                        redirect(\App\Filament\Resources\EnrollmentResource::getUrl('view', ['record' => $record->enrollment_id]));
+                    }),
             ])
             ->bulkActions([
                 // No bulk actions for payment schedules

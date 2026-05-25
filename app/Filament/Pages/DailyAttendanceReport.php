@@ -28,6 +28,18 @@ class DailyAttendanceReport extends Page implements HasTable
 
     protected static ?int $navigationSort = 1;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
+    }
+
     public $selectedDate;
 
     public function mount(): void

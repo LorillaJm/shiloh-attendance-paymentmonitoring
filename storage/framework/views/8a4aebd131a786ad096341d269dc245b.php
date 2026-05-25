@@ -20,4 +20,4 @@
 <?php $component = $__componentOriginal166a02a7c5ef5a9331faf66fa665c256; ?>
 <?php unset($__componentOriginal166a02a7c5ef5a9331faf66fa665c256); ?>
 <?php endif; ?>
-<?php /**PATH C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\resources\views/filament/parent/pages/my-children-sessions.blade.php ENDPATH**/ ?>
+<?php /**PATH C:\Users\HUAWEI\OneDrive\shiloh-attendance-paymentmonitoring\resources\views/filament/pages/due-payments.blade.php ENDPATH**/ ?>

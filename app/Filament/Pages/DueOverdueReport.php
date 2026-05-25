@@ -30,6 +30,18 @@ class DueOverdueReport extends Page implements HasTable, HasForms
 
     protected static ?int $navigationSort = 12;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
+    }
+
     public ?array $data = [];
 
     public function mount(): void

@@ -26,6 +26,18 @@ class StudentLedger extends Page implements HasForms
 
     protected static ?int $navigationSort = 11;
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
+    }
+
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+        return $user && ($user->isSuperadmin() || $user->isAdmin());
+    }
+
     public ?array $data = [];
     public $student = null;
     public $enrollments = [];
