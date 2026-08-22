@@ -19,7 +19,7 @@ class Dashboard extends BaseDashboard
         $user = auth()->user();
         
         if ($user->isAdmin() || $user->isSuperadmin()) {
-            return 'Command Center';
+            return 'Dashboard';
         }
         
         return 'My Dashboard';
