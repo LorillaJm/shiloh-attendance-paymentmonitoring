@@ -109,7 +109,7 @@ class CollectionReport extends Page implements HasTable, HasForms
             ->columns([
                 Tables\Columns\TextColumn::make('paid_at')
                     ->label('Payment Date')
-                    ->dateTime()
+                    ->dateTime('Y-m-d H:i:s')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('enrollment.student.student_no')

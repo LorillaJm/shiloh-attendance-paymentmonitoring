@@ -151,7 +151,7 @@
         <tbody>
             @foreach($records as $record)
             <tr>
-                <td class="col-date">{{ $record->paid_at->format('Y-m-d H:i') }}</td>
+                <td class="col-date">{{ $record->paid_at ? $record->paid_at->timezone(config('app.timezone', 'UTC'))->format('Y-m-d H:i:s') : '-' }}</td>
                 <td class="col-student-no">{{ $record->enrollment?->student?->student_no ?? '-' }}</td>
                 <td class="col-student-name">{{ $record->enrollment?->student?->full_name ?? '-' }}</td>
                 <td class="col-package">{{ Str::limit($record->enrollment?->package?->name ?? '-', 30) }}</td>
