@@ -15,7 +15,7 @@ class OverduePayments extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-m-exclamation-triangle';
+    protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
 
     protected static string $view = 'filament.pages.overdue-payments';
 

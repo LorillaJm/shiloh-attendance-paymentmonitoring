@@ -22,7 +22,7 @@ class CollectionReport extends Page implements HasTable, HasForms
 {
     use InteractsWithTable, InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-m-banknotes';
+    protected static ?string $navigationIcon = 'heroicon-o-document-currency-dollar';
 
     protected static string $view = 'filament.pages.collection-report';
 

@@ -19,7 +19,7 @@ class StudentAttendanceView extends Page implements HasTable, HasForms
 {
     use InteractsWithTable, InteractsWithForms;
 
-    protected static ?string $navigationIcon = 'heroicon-m-eye';
+    protected static ?string $navigationIcon = 'heroicon-o-eye';
 
     protected static string $view = 'filament.pages.student-attendance-view';
 

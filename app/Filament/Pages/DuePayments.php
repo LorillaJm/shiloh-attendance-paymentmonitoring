@@ -15,7 +15,7 @@ class DuePayments extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-m-clock';
+    protected static ?string $navigationIcon = 'heroicon-o-clock';
 
     protected static string $view = 'filament.pages.due-payments';
 

@@ -17,7 +17,7 @@ class MonthlyAttendanceSummary extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-m-chart-bar';
+    protected static ?string $navigationIcon = 'heroicon-o-presentation-chart-bar';
 
     protected static string $view = 'filament.pages.monthly-attendance-summary';
 

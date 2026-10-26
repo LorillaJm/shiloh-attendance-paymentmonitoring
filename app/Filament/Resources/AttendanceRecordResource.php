@@ -18,7 +18,7 @@ class AttendanceRecordResource extends Resource
 {
     protected static ?string $model = AttendanceRecord::class;
 
-    protected static ?string $navigationIcon = 'heroicon-m-clipboard-document-check';
+    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
 
     protected static ?string $navigationGroup = 'Attendance Management';
 

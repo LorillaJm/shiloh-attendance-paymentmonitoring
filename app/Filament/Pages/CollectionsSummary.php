@@ -16,7 +16,7 @@ class CollectionsSummary extends Page implements HasTable
 {
     use InteractsWithTable;
 
-    protected static ?string $navigationIcon = 'heroicon-m-currency-dollar';
+    protected static ?string $navigationIcon = 'heroicon-o-chart-bar';
 
     protected static string $view = 'filament.pages.collections-summary';
 
