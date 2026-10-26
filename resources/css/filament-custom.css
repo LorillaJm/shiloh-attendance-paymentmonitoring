@@ -1,0 +1,192 @@
+/* Modern Colored Navigation Icons */
+
+/* Dashboard & Home */
+[data-navigation-label*="Dashboard"] .fi-sidebar-item-icon,
+[href*="/admin"] .fi-sidebar-item-icon:first-of-type {
+    color: #3b82f6 !important; /* Blue */
+}
+
+/* Students */
+[data-navigation-label*="Students"] .fi-sidebar-item-icon,
+[href*="/students"] .fi-sidebar-item-icon {
+    color: #8b5cf6 !important; /* Purple */
+}
+
+/* Guardians / Parents */
+[data-navigation-label*="Guardians"] .fi-sidebar-item-icon,
+[data-navigation-label*="Parent"] .fi-sidebar-item-icon,
+[href*="/guardians"] .fi-sidebar-item-icon {
+    color: #ec4899 !important; /* Pink */
+}
+
+/* Enrollments */
+[data-navigation-label*="Enrollment"] .fi-sidebar-item-icon,
+[href*="/enrollments"] .fi-sidebar-item-icon {
+    color: #10b981 !important; /* Green */
+}
+
+/* Attendance */
+[data-navigation-label*="Attendance"] .fi-sidebar-item-icon,
+[href*="/attendance"] .fi-sidebar-item-icon {
+    color: #f59e0b !important; /* Amber */
+}
+
+/* Payments / Financial */
+[data-navigation-label*="Payment"] .fi-sidebar-item-icon,
+[data-navigation-label*="Due"] .fi-sidebar-item-icon,
+[data-navigation-label*="Overdue"] .fi-sidebar-item-icon,
+[data-navigation-label*="Collection"] .fi-sidebar-item-icon,
+[data-navigation-label*="Ledger"] .fi-sidebar-item-icon,
+[href*="/payment"] .fi-sidebar-item-icon,
+[href*="/due"] .fi-sidebar-item-icon,
+[href*="/collection"] .fi-sidebar-item-icon {
+    color: #059669 !important; /* Emerald */
+}
+
+/* Sessions & Schedule */
+[data-navigation-label*="Session"] .fi-sidebar-item-icon,
+[data-navigation-label*="Schedule"] .fi-sidebar-item-icon,
+[href*="/session"] .fi-sidebar-item-icon,
+[href*="/schedule"] .fi-sidebar-item-icon {
+    color: #0ea5e9 !important; /* Sky Blue */
+}
+
+/* Packages & Programs */
+[data-navigation-label*="Package"] .fi-sidebar-item-icon,
+[data-navigation-label*="Program"] .fi-sidebar-item-icon,
+[href*="/packages"] .fi-sidebar-item-icon {
+    color: #6366f1 !important; /* Indigo */
+}
+
+/* Reports */
+[data-navigation-label*="Report"] .fi-sidebar-item-icon,
+[href*="/report"] .fi-sidebar-item-icon {
+    color: #14b8a6 !important; /* Teal */
+}
+
+/* Users & Administration */
+[data-navigation-label*="Users"] .fi-sidebar-item-icon,
+[data-navigation-label*="Admin"] .fi-sidebar-item-icon,
+[href*="/users"] .fi-sidebar-item-icon {
+    color: #64748b !important; /* Slate */
+}
+
+/* Announcements */
+[data-navigation-label*="Announcement"] .fi-sidebar-item-icon,
+[href*="/announcements"] .fi-sidebar-item-icon {
+    color: #f97316 !important; /* Orange */
+}
+
+/* Notifications */
+[data-navigation-label*="Notification"] .fi-sidebar-item-icon,
+[href*="/notifications"] .fi-sidebar-item-icon {
+    color: #ef4444 !important; /* Red */
+}
+
+/* Settings */
+[data-navigation-label*="Setting"] .fi-sidebar-item-icon,
+[href*="/settings"] .fi-sidebar-item-icon {
+    color: #6b7280 !important; /* Gray */
+}
+
+/* Backup */
+[data-navigation-label*="Backup"] .fi-sidebar-item-icon,
+[href*="/backup"] .fi-sidebar-item-icon {
+    color: #84cc16 !important; /* Lime */
+}
+
+/* Active state - brighter colors */
+.fi-sidebar-item-button[aria-current="page"] .fi-sidebar-item-icon {
+    filter: brightness(1.2) saturate(1.3);
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
+/* Hover effect */
+.fi-sidebar-item-button:hover .fi-sidebar-item-icon {
+    filter: brightness(1.15);
+    transform: scale(1.02);
+    transition: all 0.15s ease;
+}
+
+/* Icon size enhancement for better visibility */
+.fi-sidebar-item-icon {
+    width: 1.35rem !important;
+    height: 1.35rem !important;
+    transition: all 0.2s ease;
+}
+
+/* Navigation group labels - add accent color */
+.fi-sidebar-group-label {
+    color: #6b7280 !important;
+    font-weight: 600 !important;
+    font-size: 0.75rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* Dark mode adjustments */
+.dark .fi-sidebar-group-label {
+    color: #9ca3af !important;
+}
+
+/* Badge colors for counts */
+.fi-sidebar-item-badge {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Sidebar background gradient subtle enhancement */
+.fi-sidebar {
+    background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%) !important;
+}
+
+.dark .fi-sidebar {
+    background: linear-gradient(180deg, #1e1e1e 0%, #0f0f0f 100%) !important;
+}
+
+/* Add subtle animation to icons on page load */
+@keyframes iconFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.fi-sidebar-item-icon {
+    animation: iconFadeIn 0.3s ease-out;
+}
+
+/* Enhanced navigation item styling */
+.fi-sidebar-item-button {
+    border-radius: 0.5rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.fi-sidebar-item-button:hover {
+    background: rgba(59, 130, 246, 0.08) !important;
+}
+
+.dark .fi-sidebar-item-button:hover {
+    background: rgba(59, 130, 246, 0.15) !important;
+}
+
+.fi-sidebar-item-button[aria-current="page"] {
+    background: rgba(59, 130, 246, 0.12) !important;
+    font-weight: 600 !important;
+}
+
+.dark .fi-sidebar-item-button[aria-current="page"] {
+    background: rgba(59, 130, 246, 0.2) !important;
+}
+
+/* Improve icon spacing */
+.fi-sidebar-item-label {
+    margin-left: 0.75rem !important;
+}

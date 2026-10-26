@@ -292,6 +292,10 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook(
                 'panels::scripts.after',
                 fn () => view('components.push-notification-scripts')->render()
+            )
+            ->renderHook(
+                'panels::styles.after',
+                fn () => '<link rel="stylesheet" href="' . asset('build/resources/css/filament-custom.css') . '">'
             );
     }
 }
