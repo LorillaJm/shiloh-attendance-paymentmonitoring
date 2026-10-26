@@ -4,6 +4,10 @@
     if (file_exists($logoPath)) {
         $logoBase64 = 'data:image/jpeg;base64,' . base64_encode(file_get_contents($logoPath));
     }
+    
+    // Force Asia/Manila timezone for PDF generation
+    $currentTime = \Carbon\Carbon::now();
+    $currentTime->setTimezone('Asia/Manila');
 @endphp
 <div class="report-header">
     @if($logoBase64)
@@ -14,5 +18,5 @@
     @if(isset($reportSubtitle))
         <p>{{ $reportSubtitle }}</p>
     @endif
-    <p>Generated: {{ \Carbon\Carbon::now(config('app.timezone'))->format('F d, Y h:i A') }}</p>
+    <p>Generated: {{ $currentTime->format('F d, Y h:i A') }}</p>
 </div>

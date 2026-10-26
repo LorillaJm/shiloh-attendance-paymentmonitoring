@@ -95,9 +95,13 @@
     </div>
     @endforeach
 
+    @php
+        $printTime = \Carbon\Carbon::now();
+        $printTime->setTimezone('Asia/Manila');
+    @endphp
     <div class="footer">
         <p>This is a computer-generated report from Shiloh Attendance and Payment System</p>
-        <p>Printed on {{ \Carbon\Carbon::now(config('app.timezone'))->format('F d, Y h:i A') }}</p>
+        <p>Printed on {{ $printTime->format('F d, Y h:i A') }}</p>
     </div>
 </body>
 </html>
