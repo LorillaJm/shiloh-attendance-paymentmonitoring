@@ -14,5 +14,5 @@
     @if(isset($reportSubtitle))
         <p>{{ $reportSubtitle }}</p>
     @endif
-    <p>Generated: {{ now()->format('F d, Y h:i A') }}</p>
+    <p>Generated: {{ \Carbon\Carbon::now(config('app.timezone'))->format('F d, Y h:i A') }}</p>
 </div>
