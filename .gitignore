@@ -22,6 +22,76 @@ yarn-error.log
 # Documentation files (keep local only)
 *.md
 !README.md
+!SETUP.md
 
 # Database backups (local only)
 /data backup
+
+# Development/Testing Scripts (local only)
+*.bat
+*.sh
+!render-build.sh
+check-*.php
+create-*.php
+fix-*.php
+link-*.php
+list-*.php
+reset-*.php
+setup-*.php
+test-*.php
+verify-*.php
+deploy-*.bat
+deploy-*.sh
+prepare-*.bat
+start-*.bat
+start-*.sh
+build-*.bat
+build-*.sh
+
+# Temporary/Log Files
+*.log
+php-ini-*.txt
+composer-setup.php
+
+# Conversion/Build Scripts
+convert*.py
+convert*.cjs
+convert*.bat
+print-to-pdf.ps1
+
+# SQL Files (local only)
+*.sql
+
+# Documentation Duplicates
+DASHBOARD_*.txt
+DASHBOARD_*.php
+PARENT_PORTAL_*.txt
+PREMIUM_*.md
+QUICK_START_*.md
+REALTIME_*.md
+!SETUP.md
+RENDER_*.txt
+ROLLBACK_*.md
+STUDENTS_PAGE_*.php
+FLOWCHART_*.txt
+HOW_TO_*.md
+PDF_CONVERSION_*.md
+README_PDF_*.txt
+DATA_DICTIONARY.html
+APPLY_*.md
+www.*.md
+
+# Environment Files
+*.env
+!.env.example
+!.env.production.example
+
+# Image Files in Root
+*.jpg
+*.png
+*.webp
+
+# Config files
+.user.ini
+.stylelintrc.json
+shiloh-attendance-paymentmonitoring.env
